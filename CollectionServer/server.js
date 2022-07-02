@@ -12,8 +12,8 @@ function updateMetadata(request, callback) {
     callback(null, {});
 }
 
-grpc.bindRpcHandler("updateMetadata", updateMetadata);
-grpc.startServer();
+grpc.bindRpcHandler('updateMetadata', updateMetadata);
+grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
     db.teardown()
