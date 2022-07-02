@@ -1,4 +1,5 @@
 const db = require('./database/mysql');
+const grpc = require('./grpc');
 
 db.init().then(() => {
     console.log('table created');
@@ -6,6 +7,13 @@ db.init().then(() => {
     console.error(err);
     process.exit(1);
 });
+
+function updateMetadata(request, callback) {
+    callback(null, {});
+}
+
+grpc.bindRpcHandler("updateMetadata", updateMetadata);
+grpc.startServer();
 
 const gracefulShutdown = () => {
     db.teardown()
