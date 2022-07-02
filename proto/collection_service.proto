@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package card_collection.service;
+
+// The collection service definition.
+service CollectionService {
+    // Updates collection metadata from scryfall
+    rpc UpdateMetadata (UpdateMetadataRequest) returns (UpdateMetadataResponse) {}
+}
+
+message UpdateMetadataRequest {
+}
+
+message UpdateMetadataResponse {
+}
+  
