@@ -1,0 +1,11 @@
+services:
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - cardcollection-develop-mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: card_collection
+    
+volumes:
+  cardcollection-develop-mysql-data:
