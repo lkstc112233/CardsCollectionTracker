@@ -8,6 +8,7 @@ const {
     MYSQL_PASSWORD: PASSWORD,
 } = process.env;
 
+let pool;
 
 async function init() {
     const host = HOST;
@@ -45,8 +46,6 @@ async function updateCardMetadata(id, card_name, language, scryfall_api_uri, scr
             queries.buildCardMetadataQuery(id, card_name, language, scryfall_api_uri, scryfall_card_url, args),
             err => {
                 if (err) return rej(err);
-
-                console.log(`Insert succeed.`);
                 acc();
             },
         );
