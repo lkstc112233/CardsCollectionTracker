@@ -37,3 +37,5 @@ async function handleAllCards() {
         });
     });
 }
+
+module.exports = {handleAllCards};

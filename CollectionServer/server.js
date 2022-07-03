@@ -1,5 +1,6 @@
 const db = require('./database/mysql');
 const grpc = require('./grpc');
+const bulk_data_query = require('./scryfall/bulk_data_query');
 
 db.init().then(() => {
     console.log('table created');
@@ -9,7 +10,9 @@ db.init().then(() => {
 });
 
 function updateMetadata(request, callback) {
-    callback(null, {cards_downloaded: 0});
+    bulk_data_query.handleAllCards().then(count => {
+        callback(null, {cards_downloaded: 0});
+    });
 }
 
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
