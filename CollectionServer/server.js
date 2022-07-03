@@ -9,7 +9,7 @@ db.init().then(() => {
 });
 
 function updateMetadata(request, callback) {
-    callback(null, {});
+    callback(null, {cards_downloaded: 0});
 }
 
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
