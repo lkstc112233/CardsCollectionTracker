@@ -7,12 +7,10 @@ function getAllCardsUrl() {
             console.log('Status Code:', res.statusCode);
             console.log('Date in Response header:', headerDate);
 
-            const dataList = res.body.data;
-            console.log('Got dataList');
-            for (bulk_data of dataList) {
-                if (bulk_data.type === 'all_cards') {
-                    console.log('All cards data url: ' + bulk_data.download_uri);
-                }
+            const data = res.body.data.find(bulk_data => bulk_data.type === 'all_cards');
+            console.log('Got data');
+            if (data) {
+                console.log('All cards data url: ' + data.download_uri);
             }
             console.log('Finished processing dataList');
         })
