@@ -7,6 +7,7 @@
       "@grpc/proto-loader": "^0.6.9",
       "google-protobuf": "^3.20.0",
       "@grpc/grpc-js": "^1.6.7",
-      "wait-port": "^0.2.2"
+      "wait-port": "^0.2.2",
+      "got": "^11.8.5"
     }
 }
