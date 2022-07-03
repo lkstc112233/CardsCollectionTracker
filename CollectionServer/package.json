@@ -8,6 +8,7 @@
       "google-protobuf": "^3.20.0",
       "@grpc/grpc-js": "^1.6.7",
       "wait-port": "^0.2.2",
+      "stream-json": "^1.7.3",
       "got": "^11.8.5"
     }
 }
