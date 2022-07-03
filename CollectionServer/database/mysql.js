@@ -39,6 +39,20 @@ async function init() {
     });
 }
 
+async function updateCardMetadata(id, card_name, language, scryfall_api_uri, scryfall_card_url, args) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.buildCardMetadataQuery(id, card_name, language, scryfall_api_uri, scryfall_card_url, args),
+            err => {
+                if (err) return rej(err);
+
+                console.log(`Insert succeed.`);
+                acc();
+            },
+        );
+    });
+}
+
 async function teardown() {
     return new Promise((acc, rej) => {
         pool.end(err => {
@@ -51,4 +65,5 @@ async function teardown() {
 module.exports = {
     init,
     teardown,
+    updateCardMetadata,
 };
