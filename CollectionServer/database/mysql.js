@@ -25,6 +25,7 @@ async function init() {
         password,
         database,
         charset: 'utf8mb4',
+        multipleStatements: true,
     });
 
     return new Promise((acc, rej) => {
