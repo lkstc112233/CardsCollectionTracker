@@ -42,6 +42,7 @@ const INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY = `INSERT INTO
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
+const RENAME_BINDER_QUERY = `UPDATE binder_infos SET name = ? WHERE id = ?`;
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
 function buildInsertOrUpdateMetadataTableQuery(count) {
@@ -117,6 +118,7 @@ module.exports = {
     INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
+    RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
     buildInsertOrUpdateMetadataTableQuery,
     formCardMetadataQueryValues,
