@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package card_collection;
+
+// Info for binder.
+message Binder {
+    string name = 1;
+}
