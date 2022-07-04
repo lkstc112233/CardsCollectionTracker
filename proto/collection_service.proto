@@ -10,6 +10,7 @@ service CollectionService {
     rpc UpdateMetadata (UpdateMetadataRequest) returns (UpdateMetadataResponse) {}
     rpc AddBinder (AddBinderRequest) returns (AddBinderResponse) {}
     rpc ListBinders (ListBindersRequest) returns (ListBindersResponse) {}
+    rpc UpdateBinder (UpdateBinderRequest) returns (UpdateBinderResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -32,4 +33,12 @@ message ListBindersRequest {
 
 message ListBindersResponse {
     repeated card_collection.Binder binders = 1;
+}
+
+message UpdateBinderRequest{
+    int32 id = 1;
+    string new_name = 2;
+}
+
+message UpdateBinderResponse {
 }
