@@ -77,8 +77,45 @@ async function addBinder(name) {
             [name],
             err => {
                 if (err) return rej(err);
-
                 acc();
+            },
+        );
+    });
+}
+
+async function renameBinder(id, newName) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.RENAME_BINDER_QUERY,
+            [newName, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function deleteBinder(id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.DELETE_BINDERS_QUERY,
+            [id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function queryBinders() {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.GET_BINDERS_QUERY,
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
             },
         );
     });
@@ -99,4 +136,7 @@ module.exports = {
     updateCardMetadata,
     updateCardObjectsMetadata,
     addBinder,
+    renameBinder,
+    deleteBinder,
+    queryBinders,
 };
