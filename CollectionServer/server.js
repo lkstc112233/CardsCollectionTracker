@@ -9,14 +9,14 @@ db.init().then(() => {
     process.exit(1);
 });
 
-function updateMetadata(request, callback) {
+function updateMetadata(call, callback) {
     bulk_data_query.handleAllCards().then(count => {
         callback(null, {cards_downloaded: count});
     });
 }
 
-function addBinder(request, callback) {
-    db.addBinder(request.name).then(() => {
+function addBinder(call, callback) {
+    db.addBinder(call.request.name).then(() => {
         callback(null, {});
     });
 }
