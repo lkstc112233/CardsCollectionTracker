@@ -70,6 +70,20 @@ async function updateCardObjectsMetadata(cardList) {
     });
 }
 
+async function addBinder(name) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.INSERT_INTO_BINDERS_QUERY,
+            [name],
+            err => {
+                if (err) return rej(err);
+
+                acc();
+            },
+        );
+    });
+}
+
 async function teardown() {
     return new Promise((acc, rej) => {
         pool.end(err => {
@@ -84,4 +98,5 @@ module.exports = {
     teardown,
     updateCardMetadata,
     updateCardObjectsMetadata,
+    addBinder,
 };
