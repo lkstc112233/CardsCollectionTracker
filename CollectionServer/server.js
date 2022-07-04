@@ -11,7 +11,7 @@ db.init().then(() => {
 
 function updateMetadata(request, callback) {
     bulk_data_query.handleAllCards().then(count => {
-        callback(null, {cards_downloaded: 0});
+        callback(null, {cards_downloaded: count});
     });
 }
 
