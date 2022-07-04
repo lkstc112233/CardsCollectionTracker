@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "binder.proto";
+
 package card_collection.service;
 
 // The collection service definition.
@@ -7,6 +9,7 @@ service CollectionService {
     // Updates collection metadata from scryfall
     rpc UpdateMetadata (UpdateMetadataRequest) returns (UpdateMetadataResponse) {}
     rpc AddBinder (AddBinderRequest) returns (AddBinderResponse) {}
+    rpc ListBinders (ListBindersRequest) returns (ListBindersResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -19,4 +22,14 @@ message UpdateMetadataResponse {
 
 message AddBinderRequest {
     string name = 1;
+}
+
+message AddBinderResponse {
+}
+
+message ListBindersRequest {
+}
+
+message ListBindersResponse {
+    repeated card_collection.Binder binders = 1;
 }
