@@ -27,6 +27,12 @@ function listBinders(call, callback) {
     });
 }
 
+function updateBinder(call, callback) {
+    db.renameBinder(call.request.id, call.request.new_name).then(() => {
+        callback(null, {});
+    });
+}
+
 function deleteBinder(call, callback) {
     db.deleteBinder(call.request.id).then(() => {
         callback(null, {});
@@ -36,6 +42,7 @@ function deleteBinder(call, callback) {
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
+grpc.bindRpcHandler('updateBinder', updateBinder);
 grpc.bindRpcHandler('deleteBinder', deleteBinder);
 grpc.startServer('0.0.0.0:33333');
 
