@@ -47,7 +47,23 @@ async function updateCardMetadata(id, card_name, language, scryfall_api_uri, scr
             err => {
                 if (err) return rej(err);
 
-                console.log(`Insert succeed.`);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateCardObjectsMetadata(cardList) {
+    return new Promise((acc, rej) => {
+        if (!Array.isArray(cardList) || cardList.length < 1) {
+            rej('Input is not list.');
+        }
+        pool.query(
+            queries.buildInsertOrUpdateMetadataTableQuery(cardList.length),
+            cardList.flatMap(obj => queries.formCardMetadataQueryValuesFromCardObject(obj)),
+            err => {
+                if (err) return rej(err);
+
                 acc();
             },
         );
@@ -67,4 +83,5 @@ module.exports = {
     init,
     teardown,
     updateCardMetadata,
+    updateCardObjectsMetadata,
 };

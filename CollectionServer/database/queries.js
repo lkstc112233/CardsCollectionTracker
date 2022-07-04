@@ -35,6 +35,31 @@ const INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY = `INSERT INTO
     version = VALUES(version),
     reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
 
+function buildInsertOrUpdateMetadataTableQuery(count) {
+    return `INSERT INTO
+    card_infos(scryfall_id, 
+        card_name,
+        lang,
+        scryfall_api_uri,
+        scryfall_card_url,
+        card_printed_name,
+        scryfall_image_uri,
+        version,
+        reference_usd_cent_price
+    )
+    VALUES${new Array(count).fill('(?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
+    ON DUPLICATE KEY UPDATE
+    scryfall_id=VALUES(scryfall_id),
+    card_name=VALUES(card_name),
+    lang=VALUES(lang),
+    scryfall_api_uri=VALUES(scryfall_api_uri),
+    scryfall_card_url=VALUES(scryfall_card_url),
+    card_printed_name = VALUES(card_printed_name),
+    scryfall_image_uri = VALUES(scryfall_image_uri),
+    version = VALUES(version),
+    reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
+}
+
 // valid args: card_printed_name, scryfall_image_uri, version_string, reference_usd_cent_price
 function formCardMetadataQueryValues(id, card_name, language, scryfall_api_uri, scryfall_card_url, args) {
     var values = [
@@ -67,8 +92,21 @@ function formCardMetadataQueryValues(id, card_name, language, scryfall_api_uri, 
     return values;
 }
 
+function formCardMetadataQueryValuesFromCardObject(card) {
+    return formCardMetadataQueryValues(
+        card.id, 
+        card.card_name, 
+        card.language, 
+        card.scryfall_api_uri, 
+        card.scryfall_card_url, 
+        card.args
+    );
+}
+
 module.exports = {
     CREATE_TABLES,
     INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY,
+    buildInsertOrUpdateMetadataTableQuery,
     formCardMetadataQueryValues,
+    formCardMetadataQueryValuesFromCardObject,
 };
