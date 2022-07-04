@@ -40,9 +40,9 @@ const INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY = `INSERT INTO
     version = VALUES(version),
     reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
 
-const INSERT_INTO_BINDERS_QUERY = `INSERT INTO
-    binder_infos(binder_name)
-    VALUES(?)`;
+const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
+const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
+const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
 function buildInsertOrUpdateMetadataTableQuery(count) {
     return `INSERT INTO
@@ -116,6 +116,8 @@ module.exports = {
     CREATE_TABLES,
     INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY,
     INSERT_INTO_BINDERS_QUERY,
+    GET_BINDERS_QUERY,
+    DELETE_BINDERS_QUERY,
     buildInsertOrUpdateMetadataTableQuery,
     formCardMetadataQueryValues,
     formCardMetadataQueryValuesFromCardObject,
