@@ -11,6 +11,7 @@ service CollectionService {
     rpc AddBinder (AddBinderRequest) returns (AddBinderResponse) {}
     rpc ListBinders (ListBindersRequest) returns (ListBindersResponse) {}
     rpc UpdateBinder (UpdateBinderRequest) returns (UpdateBinderResponse) {}
+    rpc DeleteBinder (DeleteBinderRequest) returns (DeleteBinderResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -41,4 +42,11 @@ message UpdateBinderRequest{
 }
 
 message UpdateBinderResponse {
+}
+
+message DeleteBinderRequest {
+    int32 id = 1;
+}
+
+message DeleteBinderResponse {
 }
