@@ -3,6 +3,8 @@ const { parser } = require('stream-json/Parser');
 const { streamArray } = require('stream-json/streamers/StreamArray')
 const db = require('../database/mysql');
 
+const DEFAULT_BATCH_SIZE = 1000;
+
 function getAllCardsUrl() {
     return got.get('https://api.scryfall.com/bulk-data', {responseType: 'json'})
         .then(res => {
@@ -22,30 +24,44 @@ function getAllCardsUrl() {
         });
 }
 
-async function handleAllCards() {
+async function handleAllCards(batch_size = DEFAULT_BATCH_SIZE) {
     var bulk_data_url = await getAllCardsUrl();
     const pipeline = got.stream(bulk_data_url).pipe(parser()).pipe(streamArray());
     return new Promise(function(resolve, reject) {
         var objectCounter = 0;
+        var cardsList = [];
         pipeline.on('data', data => {
             if (data.value?.object === 'card') {
                 ++objectCounter;
-                updateCard(data.value).catch(err => {
-                    console.log('Error happened while handling all cards: ' + 
-                    err.message + 
-                    ', handling card ' + 
-                    data.value.name);
-                });
+                cardsList.push(buildCardsObject(data.value));
+                if (cardsList.length >= batch_size) {
+                    updateCards(cardsList).catch(err => {
+                        console.log('Error happened while handling all cards: ' + 
+                        err.message + 
+                        ', handling card list ' + 
+                        cardsList.map(cards => cards.card_name).join(', '));
+                    });
+                    cardsList = [];
+                }
             }
         });
         pipeline.on('end', () => {
             console.log(`Found ${objectCounter} objects.`);
+            if (cardsList.length > 0) {
+                updateCards(cardsList).catch(err => {
+                    console.log('Error happened while handling all cards: ' + 
+                    err.message + 
+                    ', handling card list ' + 
+                    cardsList.map(cards => cards.card_name).join(', '));
+                });
+                cardsList = [];
+            }
             resolve(objectCounter);
         });
     });
 }
 
-async function updateCard(cardData) {
+function buildCardsObject(cardData) {
     optionalArgs = {}
     if ('printed_name' in cardData) {
         optionalArgs.card_printed_name = cardData.printed_name;
@@ -59,7 +75,18 @@ async function updateCard(cardData) {
     if ('prices' in cardData && 'usd' in cardData.prices && cardData.prices.usd) {
         optionalArgs.reference_usd_cent_price = cardData.prices.usd * 100;
     }
-    return db.updateCardMetadata(cardData.id, cardData.name, cardData.lang, cardData.uri, cardData.scryfall_uri, optionalArgs);
+    return {
+        'id': cardData.id,
+        'card_name': cardData.name,
+        'language': cardData.lang,
+        'scryfall_api_uri': cardData.uri,
+        'scryfall_card_url': cardData.scryfall_uri,
+        'args': optionalArgs,
+    };
+}
+
+async function updateCards(cardList) {
+    return db.updateCardObjectsMetadata(cardList);
 }
 
 module.exports = {handleAllCards};
