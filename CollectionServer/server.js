@@ -15,7 +15,14 @@ function updateMetadata(request, callback) {
     });
 }
 
+function addBinder(request, callback) {
+    db.addBinder(request.name).then(() => {
+        callback(null, {});
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
+grpc.bindRpcHandler('addBinder', addBinder);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
