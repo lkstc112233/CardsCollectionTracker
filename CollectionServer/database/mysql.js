@@ -43,7 +43,25 @@ async function init() {
 async function updateCardMetadata(id, card_name, language, scryfall_api_uri, scryfall_card_url, args) {
     return new Promise((acc, rej) => {
         pool.query(
-            queries.buildCardMetadataQuery(id, card_name, language, scryfall_api_uri, scryfall_card_url, args),
+            queries.INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY,
+            queries.formCardMetadataQueryValues(id, card_name, language, scryfall_api_uri, scryfall_card_url, args),
+            err => {
+                if (err) return rej(err);
+
+                acc();
+            },
+        );
+    });
+}
+
+async function updateCardObjectsMetadata(cardList) {
+    return new Promise((acc, rej) => {
+        if (!Array.isArray(cardList) || cardList.length < 1) {
+            rej('Input is not list.');
+        }
+        pool.query(
+            queries.buildInsertOrUpdateMetadataTableQuery(cardList.length),
+            cardList.flatMap(obj => queries.formCardMetadataQueryValuesFromCardObject(obj)),
             err => {
                 if (err) return rej(err);
                 acc();
@@ -65,4 +83,5 @@ module.exports = {
     init,
     teardown,
     updateCardMetadata,
+    updateCardObjectsMetadata,
 };

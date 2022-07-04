@@ -1,5 +1,3 @@
-const { escape } = require('mysql');
-
 const CREATE_TABLES = `CREATE TABLE IF NOT EXISTS card_infos (
     scryfall_id VARCHAR(36),
     card_name VARCHAR(255),
@@ -14,40 +12,101 @@ const CREATE_TABLES = `CREATE TABLE IF NOT EXISTS card_infos (
     UNIQUE INDEX(scryfall_id)
 ) DEFAULT CHARSET utf8mb4`;
 
+const INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY = `INSERT INTO
+    card_infos(scryfall_id, 
+        card_name,
+        lang,
+        scryfall_api_uri,
+        scryfall_card_url,
+        card_printed_name,
+        scryfall_image_uri,
+        version,
+        reference_usd_cent_price
+    )
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+    scryfall_id=VALUES(scryfall_id),
+    card_name=VALUES(card_name),
+    lang=VALUES(lang),
+    scryfall_api_uri=VALUES(scryfall_api_uri),
+    scryfall_card_url=VALUES(scryfall_card_url),
+    card_printed_name = VALUES(card_printed_name),
+    scryfall_image_uri = VALUES(scryfall_image_uri),
+    version = VALUES(version),
+    reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
+
+function buildInsertOrUpdateMetadataTableQuery(count) {
+    return `INSERT INTO
+    card_infos(scryfall_id, 
+        card_name,
+        lang,
+        scryfall_api_uri,
+        scryfall_card_url,
+        card_printed_name,
+        scryfall_image_uri,
+        version,
+        reference_usd_cent_price
+    )
+    VALUES${new Array(count).fill('(?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
+    ON DUPLICATE KEY UPDATE
+    scryfall_id=VALUES(scryfall_id),
+    card_name=VALUES(card_name),
+    lang=VALUES(lang),
+    scryfall_api_uri=VALUES(scryfall_api_uri),
+    scryfall_card_url=VALUES(scryfall_card_url),
+    card_printed_name = VALUES(card_printed_name),
+    scryfall_image_uri = VALUES(scryfall_image_uri),
+    version = VALUES(version),
+    reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
+}
+
 // valid args: card_printed_name, scryfall_image_uri, version_string, reference_usd_cent_price
-function buildCardMetadataQuery(id, card_name, language, scryfall_api_uri, scryfall_card_url, args) {
-    var keys = ['scryfall_id', 'card_name', 'lang', 'scryfall_api_uri', 'scryfall_card_url'];
+function formCardMetadataQueryValues(id, card_name, language, scryfall_api_uri, scryfall_card_url, args) {
     var values = [
-        escape(id),
-        escape(card_name),
-        escape(language),
-        escape(scryfall_api_uri),
-        escape(scryfall_card_url)
+        id,
+        card_name,
+        language,
+        scryfall_api_uri,
+        scryfall_card_url,
     ];
     if ('card_printed_name' in args) {
-        keys.push('card_printed_name');
-        values.push(escape(args.card_printed_name));
+        values.push(args.card_printed_name);
+    } else {
+        values.push(null);
     }
     if ('scryfall_image_uri' in args) {
-        keys.push('scryfall_image_uri');
-        values.push(escape(args.scryfall_image_uri));
+        values.push(args.scryfall_image_uri);
+    } else {
+        values.push(null);
     }
     if ('version_string' in args) {
-        keys.push('version');
-        values.push(escape(args.version_string));
+        values.push(args.version_string);
+    } else {
+        values.push(null);
     }
     if ('reference_usd_cent_price' in args) {
-        keys.push('reference_usd_cent_price');
-        values.push(escape(args.reference_usd_cent_price));
+        values.push(args.reference_usd_cent_price);
+    } else {
+        values.push(null);
     }
-    var updateArray = values.map((value, index) => (keys[index] + '=' + value));
-    return `INSERT INTO
-    card_infos(${keys.join(', ')})
-    VALUES(${values.join(', ')})
-    ON DUPLICATE KEY UPDATE ${updateArray.join(', ')}`;
+    return values;
+}
+
+function formCardMetadataQueryValuesFromCardObject(card) {
+    return formCardMetadataQueryValues(
+        card.id, 
+        card.card_name, 
+        card.language, 
+        card.scryfall_api_uri, 
+        card.scryfall_card_url, 
+        card.args
+    );
 }
 
 module.exports = {
     CREATE_TABLES,
-    buildCardMetadataQuery,
+    INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY,
+    buildInsertOrUpdateMetadataTableQuery,
+    formCardMetadataQueryValues,
+    formCardMetadataQueryValuesFromCardObject,
 };
