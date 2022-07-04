@@ -21,8 +21,22 @@ function addBinder(call, callback) {
     });
 }
 
+function listBinders(call, callback) {
+    db.queryBinders().then(binders => {
+        callback(null, {binders: binders.map(b => {return {name: b.binder_name, id: b.id};})});
+    });
+}
+
+function deleteBinder(call, callback) {
+    db.deleteBinder(call.request.id).then(() => {
+        callback(null, {});
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
+grpc.bindRpcHandler('listBinders', listBinders);
+grpc.bindRpcHandler('deleteBinder', deleteBinder);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
