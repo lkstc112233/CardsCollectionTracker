@@ -184,7 +184,11 @@ async function updateCards(cardList) {
     return db.updateCardObjectsMetadata(cardList);
 }
 
-module.exports = {
-    handleAllCards,
-    handleAllSets,
-};
+async function handleAllMetadata(batch_size = DEFAULT_BATCH_SIZE) {
+    const set_count = await handleAllSets(batch_size);
+    const oracle_count = await handleAllOracle(batch_size);
+    const cards_count = await handleAllCards(batch_size);
+    return {set_count, oracle_count, cards_count};
+}
+
+module.exports = {handleAllMetadata};
