@@ -71,6 +71,22 @@ async function updateCardObjectsMetadata(cardList) {
     });
 }
 
+async function updateSetObjectsMetadata(setList) {
+    return new Promise((acc, rej) => {
+        if (!Array.isArray(setList) || setList.length < 1) {
+            rej('Input is not list.');
+        }
+        pool.query(
+            queries.buildInsertOrUpdateCardMetadataTableQuery(setList.length),
+            setList.flatMap(obj => [obj.id, obj.name, obj.code, obj.uri, obj.icon_svg_uri]),
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 async function addBinder(name) {
     return new Promise((acc, rej) => {
         pool.query(
@@ -136,6 +152,7 @@ module.exports = {
     teardown,
     updateCardMetadata,
     updateCardObjectsMetadata,
+    updateSetObjectsMetadata,
     addBinder,
     renameBinder,
     deleteBinder,
