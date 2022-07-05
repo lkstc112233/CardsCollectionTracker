@@ -149,6 +149,19 @@ async function teardown() {
     });
 }
 
+async function queryCardsByName(card_name) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.QUERY_CARD_INFO_BY_NAME,
+            [card_name],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -159,4 +172,5 @@ module.exports = {
     renameBinder,
     deleteBinder,
     queryBinders,
+    queryCardsByName,
 };
