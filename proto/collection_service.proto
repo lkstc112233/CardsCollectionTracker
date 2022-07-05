@@ -20,6 +20,8 @@ message UpdateMetadataRequest {
 message UpdateMetadataResponse {
     // A counter for downloaded cards count.
     int32 cards_downloaded = 1;
+    // A counter for downloaded sets count.
+    int32 sets_downloaded = 2;
 }
 
 message AddBinderRequest {
