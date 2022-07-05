@@ -93,7 +93,7 @@ async function updateOracleObjectsMetadata(oracleList) {
             rej('Input is not list.');
         }
         pool.query(
-            queries.buildInsertOrUpdateSetMetadataTableQuery(oracleList.length),
+            queries.buildInsertOrUpdateOracleMetadataTableQuery(oracleList.length),
             oracleList.flatMap(obj => [obj.id, obj.name]),
             err => {
                 if (err) return rej(err);
