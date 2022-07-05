@@ -36,32 +36,6 @@ CREATE TABLE IF NOT EXISTS binder_infos (
     PRIMARY KEY(id)
 ) DEFAULT CHARSET utf8mb4;`;
 
-const INSERT_INTO_OR_UPDATE_CARD_METADATA_TABLE_QUERY = `INSERT INTO
-    card_infos(
-        scryfall_id, 
-        card_name,
-        lang,
-        set_id,
-        scryfall_api_uri,
-        scryfall_card_url,
-        card_printed_name,
-        scryfall_image_uri,
-        version,
-        reference_usd_cent_price
-    )
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-    scryfall_id=VALUES(scryfall_id),
-    card_name=VALUES(card_name),
-    lang=VALUES(lang),
-    set_id=VALUES(set_id),
-    scryfall_api_uri=VALUES(scryfall_api_uri),
-    scryfall_card_url=VALUES(scryfall_card_url),
-    card_printed_name = VALUES(card_printed_name),
-    scryfall_image_uri = VALUES(scryfall_image_uri),
-    version = VALUES(version),
-    reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
-
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
@@ -152,21 +126,6 @@ function formCardMetadataQueryValuesFromCardObject(card) {
     );
 }
 
-const INSERT_INTO_OR_UPDATE_SET_METADATA_TABLE_QUERY = `INSERT INTO
-    set_infos(
-        scryfall_id, 
-        set_name,
-        set_code,
-        scryfall_api_uri,
-        scryfall_image_uri
-    )
-    VALUES(?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-    set_name=VALUES(set_name),
-    set_code=VALUES(set_code),
-    scryfall_api_uri=VALUES(scryfall_api_uri),
-    scryfall_image_uri = VALUES(scryfall_image_uri)`;
-
 function buildInsertOrUpdateSetMetadataTableQuery(count) {
     return `INSERT INTO
     set_infos(
@@ -197,8 +156,6 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
 
 module.exports = {
     CREATE_TABLES,
-    INSERT_INTO_OR_UPDATE_CARD_METADATA_TABLE_QUERY,
-    INSERT_INTO_OR_UPDATE_SET_METADATA_TABLE_QUERY,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
