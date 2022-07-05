@@ -87,6 +87,22 @@ async function updateSetObjectsMetadata(setList) {
     });
 }
 
+async function updateOracleObjectsMetadata(oracleList) {
+    return new Promise((acc, rej) => {
+        if (!Array.isArray(oracleList) || oracleList.length < 1) {
+            rej('Input is not list.');
+        }
+        pool.query(
+            queries.buildInsertOrUpdateSetMetadataTableQuery(oracleList.length),
+            oracleList.flatMap(obj => [obj.id, obj.name]),
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 async function addBinder(name) {
     return new Promise((acc, rej) => {
         pool.query(
@@ -153,6 +169,7 @@ module.exports = {
     updateCardMetadata,
     updateCardObjectsMetadata,
     updateSetObjectsMetadata,
+    updateOracleObjectsMetadata,
     addBinder,
     renameBinder,
     deleteBinder,
