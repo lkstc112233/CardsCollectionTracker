@@ -44,14 +44,51 @@ async function handleAllSets(batch_size = DEFAULT_BATCH_SIZE) {
     });
 }
 
-function getAllCardsUrl() {
+async function handleAllOracle(batch_size = DEFAULT_BATCH_SIZE) {
+    var bulk_data_url = await getAllCardsUrl('oracle_cards');
+    const pipeline = got.stream(bulk_data_url).pipe(parser()).pipe(streamArray());
+    return new Promise(function(resolve, reject) {
+        var objectCounter = 0;
+        var oracleList = [];
+        pipeline.on('data', data => {
+            if (data.value?.object === 'card') {
+                ++objectCounter;
+                oracleList.push(buildOracleObject(data.value));
+                if (oracleList.length >= batch_size) {
+                    db.updateOracleObjectsMetadata(oracleList).catch(err => {
+                        console.log('Error happened while handling all oracle: ' + 
+                        err.message + 
+                        ', handling oracle list ' + 
+                        oracleList.map(obj => obj.name).join(', '));
+                    });
+                    oracleList = [];
+                }
+            }
+        });
+        pipeline.on('end', () => {
+            console.log(`Found ${objectCounter} objects.`);
+            if (oracleList.length > 0) {
+                db.updateOracleObjectsMetadata(oracleList).catch(err => {
+                    console.log('Error happened while handling all oracle: ' + 
+                    err.message + 
+                    ', handling oracle list ' + 
+                    oracleList.map(obj => obj.name).join(', '));
+                });
+                oracleList = [];
+            }
+            resolve(objectCounter);
+        });
+    });
+}
+
+function getAllCardsUrl(type) {
     return got.get('https://api.scryfall.com/bulk-data', {responseType: 'json'})
         .then(res => {
             const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
             console.log('Status Code:', res.statusCode);
             console.log('Date in Response header:', headerDate);
 
-            const data = res.body.data.find(bulk_data => bulk_data.type === 'all_cards');
+            const data = res.body.data.find(bulk_data => bulk_data.type === type);
             console.log('Got data');
             if (data) {
                 return data.download_uri;
@@ -64,7 +101,7 @@ function getAllCardsUrl() {
 }
 
 async function handleAllCards(batch_size = DEFAULT_BATCH_SIZE) {
-    var bulk_data_url = await getAllCardsUrl();
+    var bulk_data_url = await getAllCardsUrl('all_cards');
     const pipeline = got.stream(bulk_data_url).pipe(parser()).pipe(streamArray());
     return new Promise(function(resolve, reject) {
         var objectCounter = 0;
@@ -133,6 +170,13 @@ function buildSetObject(setData) {
         'code': setData.code,
         'uri': setData.uri,
         'icon_svg_uri': setData.icon_svg_uri,
+    };
+}
+
+function buildOracleObject(cardData) {
+    return {
+        'id': cardData.oracle_id,
+        'name': cardData.name,
     };
 }
 
