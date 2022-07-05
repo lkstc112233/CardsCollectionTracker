@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS card_oracle_infos (
     scryfall_id VARCHAR(36),
     card_oracle_name VARCHAR(255),
     PRIMARY KEY(scryfall_id),
-    UNIQUE INDEX(scryfall_id),
-    UNIQUE INDEX(card_oracle_name)
+    UNIQUE INDEX(scryfall_id)
 ) DEFAULT CHARSET utf8mb4;
 CREATE TABLE IF NOT EXISTS card_infos (
     scryfall_id VARCHAR(36),
@@ -163,7 +162,6 @@ const INSERT_INTO_OR_UPDATE_SET_METADATA_TABLE_QUERY = `INSERT INTO
     )
     VALUES(?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
-    scryfall_id=VALUES(scryfall_id),
     set_name=VALUES(set_name),
     set_code=VALUES(set_code),
     scryfall_api_uri=VALUES(scryfall_api_uri),
@@ -180,7 +178,6 @@ function buildInsertOrUpdateSetMetadataTableQuery(count) {
     )
     VALUES${new Array(count).fill('(?, ?, ?, ?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
-    scryfall_id=VALUES(scryfall_id),
     set_name=VALUES(set_name),
     set_code=VALUES(set_code),
     scryfall_api_uri=VALUES(scryfall_api_uri),
@@ -195,7 +192,6 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
     )
     VALUES${new Array(count).fill('(?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
-    scryfall_id=VALUES(scryfall_id),
     card_oracle_name=VALUES(card_oracle_name)`;
 }
 
