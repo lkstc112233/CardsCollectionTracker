@@ -7,20 +7,28 @@ const CREATE_TABLES = `CREATE TABLE IF NOT EXISTS set_infos (
     PRIMARY KEY(scryfall_id),
     UNIQUE INDEX(scryfall_id)
 ) DEFAULT CHARSET utf8mb4;
+CREATE TABLE IF NOT EXISTS card_oracle_infos (
+    scryfall_id VARCHAR(36),
+    card_oracle_name VARCHAR(255),
+    PRIMARY KEY(scryfall_id),
+    UNIQUE INDEX(scryfall_id)
+) DEFAULT CHARSET utf8mb4;
 CREATE TABLE IF NOT EXISTS card_infos (
     scryfall_id VARCHAR(36),
     card_name VARCHAR(255),
+    oracle_id VARCHAR(36),
     card_printed_name VARCHAR(255),
     lang VARCHAR(10),
     scryfall_api_uri VARCHAR(70),
     scryfall_card_url VARCHAR(1000),
     scryfall_image_uri VARCHAR(1000),
     version VARCHAR(50),
-    set_id VARCHAR(70),
+    set_id VARCHAR(36),
     reference_usd_cent_price INT,
     PRIMARY KEY(scryfall_id),
     UNIQUE INDEX(scryfall_id),
-    FOREIGN KEY (set_id) REFERENCES set_infos(scryfall_id)
+    FOREIGN KEY (set_id) REFERENCES set_infos(scryfall_id),
+    FOREIGN KEY (oracle_id) REFERENCES card_oracle_infos(scryfall_id)
 ) DEFAULT CHARSET utf8mb4;
 CREATE TABLE IF NOT EXISTS binder_infos (
     id INT AUTO_INCREMENT,
