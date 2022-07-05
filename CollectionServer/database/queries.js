@@ -61,7 +61,9 @@ const QUERY_CARD_INFO_BY_NAME = `
 SELECT 
     card_infos.scryfall_id AS id,
     card_infos.card_name AS name,
-    card_infos.scryfall_image_uri AS image
+    card_infos.scryfall_image_uri AS image,
+    card_infos.card_printed_name AS printed_name,
+    card_infos.lang AS language
 FROM card_infos
 JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
 WHERE card_oracle_infos.constructed = 1

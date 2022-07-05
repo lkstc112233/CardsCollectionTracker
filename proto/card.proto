@@ -6,8 +6,12 @@ package card_collection;
 message CardInfo {
     // Id of the card
     string id = 1;
-    // Card name
+    // Card oracle name
     string name = 2;
     // Image uri
     string image_uri = 3;
+    // Card display name
+    string printed_name = 4;
+    // Card language
+    string language = 5;
 }

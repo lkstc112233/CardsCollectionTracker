@@ -156,7 +156,6 @@ async function queryCardsInfoByName(card_name) {
             [card_name],
             (err, rows) => {
                 if (err) return rej(err);
-                console.log('query result: ' + rows);
                 acc(rows);
             },
         );
