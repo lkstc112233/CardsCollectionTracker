@@ -22,6 +22,8 @@ message UpdateMetadataResponse {
     int32 cards_downloaded = 1;
     // A counter for downloaded sets count.
     int32 sets_downloaded = 2;
+    // A counter for downloaded oracle count.
+    int32 oracle_downloaded = 3;
 }
 
 message AddBinderRequest {
