@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS binder_infos (
     PRIMARY KEY(id)
 ) DEFAULT CHARSET utf8mb4;`;
 
-const INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY = `INSERT INTO
+const INSERT_INTO_OR_UPDATE_CARD_METADATA_TABLE_QUERY = `INSERT INTO
     card_infos(scryfall_id, 
         card_name,
         lang,
@@ -56,7 +56,7 @@ const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
-function buildInsertOrUpdateMetadataTableQuery(count) {
+function buildInsertOrUpdateCardMetadataTableQuery(count) {
     return `INSERT INTO
     card_infos(scryfall_id, 
         card_name,
@@ -126,12 +126,12 @@ function formCardMetadataQueryValuesFromCardObject(card) {
 
 module.exports = {
     CREATE_TABLES,
-    INSERT_INTO_OR_UPDATE_METADATA_TABLE_QUERY,
+    INSERT_INTO_OR_UPDATE_CARD_METADATA_TABLE_QUERY,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
-    buildInsertOrUpdateMetadataTableQuery,
+    buildInsertOrUpdateCardMetadataTableQuery,
     formCardMetadataQueryValues,
     formCardMetadataQueryValuesFromCardObject,
 };
