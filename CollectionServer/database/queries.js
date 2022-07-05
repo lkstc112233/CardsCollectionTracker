@@ -58,7 +58,10 @@ const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = 
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
 const QUERY_CARD_INFO_BY_NAME = `
-SELECT card_infos.scryfall_id, card_infos.card_name, card_infos.scryfall_image_uri
+SELECT 
+    card_infos.scryfall_id AS id,
+    card_infos.card_name AS name,
+    card_infos.scryfall_image_uri AS image
 FROM card_infos
 JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
 WHERE card_oracle_infos.constructed = 1

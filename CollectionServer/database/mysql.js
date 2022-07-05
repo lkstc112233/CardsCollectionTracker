@@ -149,13 +149,14 @@ async function teardown() {
     });
 }
 
-async function queryCardsByName(card_name) {
+async function queryCardsInfoByName(card_name) {
     return new Promise((acc, rej) => {
         pool.query(
             queries.QUERY_CARD_INFO_BY_NAME,
             [card_name],
             (err, rows) => {
                 if (err) return rej(err);
+                console.log('query result: ' + rows);
                 acc(rows);
             },
         );
@@ -172,5 +173,5 @@ module.exports = {
     renameBinder,
     deleteBinder,
     queryBinders,
-    queryCardsByName,
+    queryCardsInfoByName,
 };

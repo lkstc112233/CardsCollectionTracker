@@ -43,11 +43,23 @@ function deleteBinder(call, callback) {
     });
 }
 
+function queryCardInfoByName(call, callback) {
+    db.queryCardsInfoByName(call.request.query).then(cards => {
+        callback(null, {info: cards.map(card => {return {
+                id: card.id,
+                name: card.name,
+                image_uri: card.image,
+            };
+        })});
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
 grpc.bindRpcHandler('updateBinder', updateBinder);
 grpc.bindRpcHandler('deleteBinder', deleteBinder);
+grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
