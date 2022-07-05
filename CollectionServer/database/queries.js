@@ -62,7 +62,7 @@ SELECT card_infos.scryfall_id, card_infos.card_name, card_infos.scryfall_image_u
 FROM card_infos
 JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
 WHERE card_oracle_infos.constructed = 1
-    AND card_oracle_infos.card_oracle_name LIKE concat('%', ?, '%')
+    AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat('%', UPPER(?), '%')
 `;
 
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
