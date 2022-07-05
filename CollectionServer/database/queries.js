@@ -10,7 +10,7 @@ const CREATE_TABLES = `CREATE TABLE IF NOT EXISTS set_infos (
 CREATE TABLE IF NOT EXISTS card_oracle_infos (
     scryfall_id VARCHAR(36),
     card_oracle_name VARCHAR(255),
-    constructed TINYINT,
+    constructed TINYINT(1),
     PRIMARY KEY(scryfall_id),
     UNIQUE INDEX(scryfall_id)
 ) DEFAULT CHARSET utf8mb4;
@@ -153,7 +153,8 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
     )
     VALUES${new Array(count).fill('(?, ?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
-    card_oracle_name=VALUES(card_oracle_name)`;
+    card_oracle_name=VALUES(card_oracle_name),
+    constructed=VALUES(constructed)`;
 }
 
 module.exports = {

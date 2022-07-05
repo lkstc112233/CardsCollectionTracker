@@ -42,9 +42,9 @@ async function handleAllOracle(batch_size) {
 }
 
 function buildOracleObject(cardData) {
-    let constructed = false;
+    let constructed = 0;
     if ('legalities' in cardData) {
-        constructed = Object.values(cardData.legalities).some((leg) => leg !== 'not_legal');
+        constructed = Object.values(cardData.legalities).some((leg) => (leg !== 'not_legal'))? 1: 0;
     }
     return {
         'id': cardData.oracle_id,
