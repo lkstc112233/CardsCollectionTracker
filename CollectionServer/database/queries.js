@@ -75,6 +75,7 @@ function buildInsertOrUpdateCardMetadataTableQuery(count) {
         card_name,
         lang,
         set_id,
+        oracle_id,
         scryfall_api_uri,
         scryfall_card_url,
         card_printed_name,
@@ -82,12 +83,13 @@ function buildInsertOrUpdateCardMetadataTableQuery(count) {
         version,
         reference_usd_cent_price
     )
-    VALUES${new Array(count).fill('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
+    VALUES${new Array(count).fill('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
     scryfall_id=VALUES(scryfall_id),
     card_name=VALUES(card_name),
     lang=VALUES(lang),
     set_id=VALUES(set_id),
+    oracle_id=VALUES(oracle_id),
     scryfall_api_uri=VALUES(scryfall_api_uri),
     scryfall_card_url=VALUES(scryfall_card_url),
     card_printed_name = VALUES(card_printed_name),
@@ -97,12 +99,21 @@ function buildInsertOrUpdateCardMetadataTableQuery(count) {
 }
 
 // valid args: card_printed_name, scryfall_image_uri, version_string, reference_usd_cent_price
-function formCardMetadataQueryValues(id, card_name, language, scryfall_api_uri, scryfall_card_url, set_id, args) {
+function formCardMetadataQueryValues(
+        id, 
+        card_name, 
+        language, 
+        scryfall_api_uri, 
+        scryfall_card_url, 
+        set_id, 
+        oracle_id, 
+        args) {
     var values = [
         id,
         card_name,
         language,
         set_id,
+        oracle_id,
         scryfall_api_uri,
         scryfall_card_url,
     ];
@@ -137,6 +148,7 @@ function formCardMetadataQueryValuesFromCardObject(card) {
         card.scryfall_api_uri, 
         card.scryfall_card_url,
         card.set_id,
+        card.oracle_id,
         card.args
     );
 }
