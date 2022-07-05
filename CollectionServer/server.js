@@ -10,8 +10,10 @@ db.init().then(() => {
 });
 
 function updateMetadata(call, callback) {
-    bulk_data_query.handleAllCards().then(count => {
-        callback(null, {cards_downloaded: count});
+    bulk_data_query.handleAllSets().then(set_count => {
+        bulk_data_query.handleAllCards().then(card_count => {
+            callback(null, {sets_downloaded: set_count, cards_downloaded: card_count});
+        });
     });
 }
 
