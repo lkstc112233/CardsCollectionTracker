@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "binder.proto";
+import "card.proto";
 
 package card_collection.service;
 
@@ -12,6 +13,7 @@ service CollectionService {
     rpc ListBinders (ListBindersRequest) returns (ListBindersResponse) {}
     rpc UpdateBinder (UpdateBinderRequest) returns (UpdateBinderResponse) {}
     rpc DeleteBinder (DeleteBinderRequest) returns (DeleteBinderResponse) {}
+    rpc QueryCardInfoByName (QueryCardInfoByNameRequest) returns (QueryCardInfoByNameResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -53,4 +55,13 @@ message DeleteBinderRequest {
 }
 
 message DeleteBinderResponse {
+}
+
+message QueryCardInfoByNameRequest {
+    // Will be used for partial match
+    string query = 1;
+}
+
+message QueryCardInfoByNameResponse {
+    repeated card_collection.CardInfo info = 1;
 }
