@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS binder_infos (
     binder_name VARCHAR(255),
     PRIMARY KEY(id)
 ) DEFAULT CHARSET utf8mb4;
+ALTER TABLE binder_infos AUTO_INCREMENT = 10;
 CREATE TABLE IF NOT EXISTS cards_collection (
     id INT AUTO_INCREMENT,
     card_id VARCHAR(36),
@@ -44,7 +45,12 @@ CREATE TABLE IF NOT EXISTS cards_collection (
     PRIMARY KEY(id),
     FOREIGN KEY (card_id) REFERENCES card_infos(scryfall_id),
     FOREIGN KEY (binder_id) REFERENCES binder_infos(id)
-) DEFAULT CHARSET utf8mb4;`;
+) DEFAULT CHARSET utf8mb4;
+INSERT INTO
+binder_infos(id, binder_name)
+VALUES(1, 'Unbinded')
+ON DUPLICATE KEY UPDATE
+binder_name=VALUES(binder_name)`;
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
