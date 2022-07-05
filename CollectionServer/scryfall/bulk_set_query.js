@@ -1,5 +1,4 @@
 const got = require('got');
-const { parser } = require('stream-json/Parser');
 const Pick = require('stream-json/filters/Pick');
 const { streamArray } = require('stream-json/streamers/StreamArray')
 const db = require('../database/mysql');
