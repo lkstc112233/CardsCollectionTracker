@@ -6,25 +6,6 @@ const db = require('../database/mysql');
 
 const DEFAULT_BATCH_SIZE = 1000;
 
-function getAllCardsUrl() {
-    return got.get('https://api.scryfall.com/bulk-data', {responseType: 'json'})
-        .then(res => {
-            const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
-            console.log('Status Code:', res.statusCode);
-            console.log('Date in Response header:', headerDate);
-
-            const data = res.body.data.find(bulk_data => bulk_data.type === 'all_cards');
-            console.log('Got data');
-            if (data) {
-                return data.download_uri;
-            }
-            throw 'bulk_data not available at this time.';
-        })
-        .catch(err => {
-            console.log('Scryfall api request error: ' + err.message);
-        });
-}
-
 async function handleAllSets(batch_size = DEFAULT_BATCH_SIZE) {
     const pipeline = got.stream('https://api.scryfall.com/sets')
         .pipe(Pick.withParser({filter: 'data'}))
@@ -61,6 +42,25 @@ async function handleAllSets(batch_size = DEFAULT_BATCH_SIZE) {
             resolve(objectCounter);
         });
     });
+}
+
+function getAllCardsUrl() {
+    return got.get('https://api.scryfall.com/bulk-data', {responseType: 'json'})
+        .then(res => {
+            const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
+            console.log('Status Code:', res.statusCode);
+            console.log('Date in Response header:', headerDate);
+
+            const data = res.body.data.find(bulk_data => bulk_data.type === 'all_cards');
+            console.log('Got data');
+            if (data) {
+                return data.download_uri;
+            }
+            throw 'bulk_data not available at this time.';
+        })
+        .catch(err => {
+            console.log('Scryfall api request error: ' + err.message);
+        });
 }
 
 async function handleAllCards(batch_size = DEFAULT_BATCH_SIZE) {
@@ -118,6 +118,7 @@ function buildCardObject(cardData) {
         'id': cardData.id,
         'card_name': cardData.name,
         'language': cardData.lang,
+        'set_id': cardData.set_id,
         'scryfall_api_uri': cardData.uri,
         'scryfall_card_url': cardData.scryfall_uri,
         'args': optionalArgs,
