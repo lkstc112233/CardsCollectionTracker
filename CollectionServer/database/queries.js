@@ -34,6 +34,15 @@ CREATE TABLE IF NOT EXISTS binder_infos (
     id INT AUTO_INCREMENT,
     binder_name VARCHAR(255),
     PRIMARY KEY(id)
+) DEFAULT CHARSET utf8mb4;
+CREATE TABLE IF NOT EXISTS cards_collection (
+    id INT AUTO_INCREMENT,
+    card_id VARCHAR(36),
+    version VARCHAR(10),
+    binder_id INT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (card_id) REFERENCES card_infos(scryfall_id),
+    FOREIGN KEY (binder_id) REFERENCES binder_infos(id)
 ) DEFAULT CHARSET utf8mb4;`;
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
