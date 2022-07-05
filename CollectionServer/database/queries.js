@@ -124,14 +124,48 @@ function formCardMetadataQueryValuesFromCardObject(card) {
     );
 }
 
+const INSERT_INTO_OR_UPDATE_SET_METADATA_TABLE_QUERY = `INSERT INTO
+    set_infos(scryfall_id, 
+        set_name,
+        set_code,
+        scryfall_api_uri,
+        scryfall_image_uri
+    )
+    VALUES(?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+    scryfall_id=VALUES(scryfall_id),
+    set_name=VALUES(set_name),
+    set_code=VALUES(set_code),
+    scryfall_api_uri=VALUES(scryfall_api_uri),
+    scryfall_image_uri = VALUES(scryfall_image_uri)`;
+
+function buildInsertOrUpdateSetMetadataTableQuery(count) {
+    return `INSERT INTO
+    set_infos(scryfall_id, 
+        set_name,
+        set_code,
+        scryfall_api_uri,
+        scryfall_image_uri
+    )
+    VALUES${new Array(count).fill('(?, ?, ?, ?, ?)').join(', ')}
+    ON DUPLICATE KEY UPDATE
+    scryfall_id=VALUES(scryfall_id),
+    set_name=VALUES(set_name),
+    set_code=VALUES(set_code),
+    scryfall_api_uri=VALUES(scryfall_api_uri),
+    scryfall_image_uri = VALUES(scryfall_image_uri)`;
+}
+
 module.exports = {
     CREATE_TABLES,
     INSERT_INTO_OR_UPDATE_CARD_METADATA_TABLE_QUERY,
+    INSERT_INTO_OR_UPDATE_SET_METADATA_TABLE_QUERY,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
     buildInsertOrUpdateCardMetadataTableQuery,
+    buildInsertOrUpdateSetMetadataTableQuery,
     formCardMetadataQueryValues,
     formCardMetadataQueryValuesFromCardObject,
 };
