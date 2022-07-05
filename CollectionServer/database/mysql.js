@@ -80,7 +80,7 @@ async function updateOracleObjectsMetadata(oracleList) {
         }
         pool.query(
             queries.buildInsertOrUpdateOracleMetadataTableQuery(oracleList.length),
-            oracleList.flatMap(obj => [obj.id, obj.name]),
+            oracleList.flatMap(obj => [obj.id, obj.name, obj.is_constructed]),
             err => {
                 if (err) return rej(err);
                 acc();
