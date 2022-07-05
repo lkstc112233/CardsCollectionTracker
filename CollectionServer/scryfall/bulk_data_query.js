@@ -119,6 +119,7 @@ function buildCardObject(cardData) {
         'card_name': cardData.name,
         'language': cardData.lang,
         'set_id': cardData.set_id,
+        'oracle_id': cardData.oracle_id,
         'scryfall_api_uri': cardData.uri,
         'scryfall_card_url': cardData.scryfall_uri,
         'args': optionalArgs,
