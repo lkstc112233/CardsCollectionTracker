@@ -50,6 +50,10 @@ const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
+const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
+const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
+const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
+
 function buildInsertOrUpdateCardMetadataTableQuery(count) {
     return `INSERT INTO
     card_infos(
