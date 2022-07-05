@@ -77,7 +77,7 @@ async function updateSetObjectsMetadata(setList) {
             rej('Input is not list.');
         }
         pool.query(
-            queries.buildInsertOrUpdateCardMetadataTableQuery(setList.length),
+            queries.buildInsertOrUpdateSetMetadataTableQuery(setList.length),
             setList.flatMap(obj => [obj.id, obj.name, obj.code, obj.uri, obj.icon_svg_uri]),
             err => {
                 if (err) return rej(err);
