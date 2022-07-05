@@ -57,6 +57,14 @@ const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
+const QUERY_CARD_INFO_BY_NAME = `
+SELECT card_infos.scryfall_id, card_infos.card_name, card_infos.scryfall_image_uri
+FROM card_infos
+JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+WHERE card_oracle_infos.constructed = 1
+    AND card_oracle_infos.card_oracle_name LIKE concat('%', ?, '%')
+`;
+
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
 const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
@@ -182,6 +190,7 @@ module.exports = {
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
+    QUERY_CARD_INFO_BY_NAME,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
     buildInsertOrUpdateOracleMetadataTableQuery,
