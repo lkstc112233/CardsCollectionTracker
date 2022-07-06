@@ -16,30 +16,40 @@ function updateMetadata(call, callback) {
             cards_downloaded: result.cards_count, 
             oracle_downloaded: result.oracle_count
         });
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function addBinder(call, callback) {
     db.addBinder(call.request.name).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function listBinders(call, callback) {
     db.queryBinders().then(binders => {
         callback(null, {binders: binders.map(b => {return {name: b.binder_name, id: b.id};})});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function updateBinder(call, callback) {
     db.renameBinder(call.request.id, call.request.new_name).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function deleteBinder(call, callback) {
     db.deleteBinder(call.request.id).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
@@ -54,6 +64,8 @@ function queryCardInfoByName(call, callback) {
                 versions: card.possible_version?.split('|'),
             };
         })});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
@@ -63,12 +75,24 @@ function addCardToCollection(call, callback) {
             'version' in call.request? call.request.version : null,
             call.request.binder_id).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function deleteCardInCollection(call, callback) {
     db.deleteCardInCollection(call.request.id).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
+function moveCardToAnotherBinder(call, callback) {
+    db.moveCardToAnotherBinder(call.request.card_id, call.request.new_binder_id).then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
@@ -80,6 +104,7 @@ grpc.bindRpcHandler('deleteBinder', deleteBinder);
 grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
 grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
 grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
+grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {

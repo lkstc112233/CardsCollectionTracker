@@ -194,6 +194,19 @@ async function deleteCardInCollection(id) {
     });
 }
 
+async function moveCardToAnotherBinder(id, new_binder) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+            [new_binder, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -207,4 +220,5 @@ module.exports = {
     queryCardsInfoByName,
     addCardToCollection,
     deleteCardInCollection,
+    moveCardToAnotherBinder,
 };

@@ -16,6 +16,7 @@ service CollectionService {
     rpc QueryCardInfoByName (QueryCardInfoByNameRequest) returns (QueryCardInfoByNameResponse) {}
     rpc AddCardToCollection (AddCardToCollectionRequest) returns (AddCardToCollectionResponse) {}
     rpc DeleteCardInCollection (DeleteCardInCollectionRequest) returns (DeleteCardInCollectionResponse) {}
+    rpc MoveCardToAnotherBinder (MoveCardToAnotherBinderRequest) returns (MoveCardToAnotherBinderResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -90,5 +91,13 @@ message DeleteCardInCollectionRequest {
 }
 
 message DeleteCardInCollectionResponse {
-    
+
+}
+
+message MoveCardToAnotherBinderRequest {
+    int32 card_id = 1;
+    int32 new_binder_id = 2;
+}
+
+message MoveCardToAnotherBinderResponse {
 }
