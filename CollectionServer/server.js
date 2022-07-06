@@ -57,12 +57,22 @@ function queryCardInfoByName(call, callback) {
     });
 }
 
+function addCardToCollection(call, callback) {
+    db.addCardToCollection(
+            call.request.card_id,
+            call.request.version,
+            call.request.binder_id).then(() => {
+        callback(null, {});
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
 grpc.bindRpcHandler('updateBinder', updateBinder);
 grpc.bindRpcHandler('deleteBinder', deleteBinder);
 grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
+grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
