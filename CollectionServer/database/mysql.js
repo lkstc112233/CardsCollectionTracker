@@ -117,9 +117,12 @@ async function renameBinder(id, newName) {
 
 async function deleteBinder(id) {
     return new Promise((acc, rej) => {
+        if (id === 1) {
+            rej('Unbinded binder cannot be deleted.');
+        }
         pool.query(
             queries.DELETE_BINDERS_QUERY,
-            [id],
+            [id, id],
             err => {
                 if (err) return rej(err);
                 acc();

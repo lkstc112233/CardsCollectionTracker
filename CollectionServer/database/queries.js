@@ -55,7 +55,11 @@ binder_name=VALUES(binder_name)`;
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
-const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
+
+const DELETE_BINDERS_QUERY = `
+UPDATE cards_collection SET binder_id = 1 WHERE binder_id = ?;
+DELETE FROM binder_infos WHERE id = ?;
+`;
 
 function buildQueryCardInfoByName(en_only, front_match) {
     return `SELECT 
