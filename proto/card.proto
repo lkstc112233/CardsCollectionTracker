@@ -17,3 +17,14 @@ message CardInfo {
     // Possible versions. If left empty, only nonfoil is possible.
     repeated string versions = 6;
 }
+
+// Info for card in collection
+message Card {
+    int32 id = 1;
+    // Card scryfall id, can be used for querying.
+    string card_info_id = 2;
+    // If left empty, nonfoil
+    string version = 3;
+    // binder id
+    int32 binder_id = 4;
+}
