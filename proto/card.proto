@@ -21,8 +21,8 @@ message CardInfo {
 // Info for card in collection
 message Card {
     int32 id = 1;
-    // Card scryfall id, can be used for querying.
-    string card_info_id = 2;
+    // Card info
+    CardInfo card_info = 2;
     // If left empty, nonfoil
     string version = 3;
     // binder id

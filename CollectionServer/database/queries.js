@@ -77,6 +77,36 @@ const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, vers
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
 const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
 
+function buildListCardsInBinderQuery(all_binders) {
+    return `
+    SELECT
+        cards_collection.id AS id,
+        cards_collection.version AS version,
+        cards_collection.binder_id AS binder_id,
+        card_infos.scryfall_id AS card_id,
+        card_infos.card_name AS name,
+        card_infos.scryfall_image_uri AS image,
+        card_infos.card_printed_name AS printed_name,
+        card_infos.lang AS language
+    FROM cards_collection
+    JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+    ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
+    `;
+}
+
+function buildCountCardsInBinderQuery(all_binders) {
+    return `
+    SELECT
+        card_oracle_infos.card_oracle_name AS name,
+        COUNT(*) AS count
+    FROM cards_collection
+    JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+    JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+    ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
+    GROUP BY card_infos.oracle_id
+    `;
+}
+
 function buildInsertOrUpdateCardMetadataTableQuery(count) {
     return `INSERT INTO
     card_infos(
@@ -202,6 +232,8 @@ module.exports = {
     DELETE_CARD_IN_COLLECTION_QUERY,
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
     buildQueryCardInfoByName,
+    buildListCardsInBinderQuery,
+    buildCountCardsInBinderQuery,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
     buildInsertOrUpdateOracleMetadataTableQuery,

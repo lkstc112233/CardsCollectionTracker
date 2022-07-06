@@ -162,6 +162,32 @@ async function queryCardsInfoByName(card_name, en_only, front_match) {
     });
 }
 
+async function listCardInBinder(binder_id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.buildListCardsInBinderQuery(binder_id === 0),
+            binder_id === 0? []: [binder_id],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
+async function countCardsInBinder(binder_id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.buildCountCardsInBinderQuery(binder_id === 0),
+            binder_id === 0? []: [binder_id],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
 async function addCardToCollection(card_id, version, binder_id = 1) {
     if (version === 'nonfoil' || version === '') {
         version = null;
@@ -218,6 +244,8 @@ module.exports = {
     deleteBinder,
     queryBinders,
     queryCardsInfoByName,
+    listCardInBinder,
+    countCardsInBinder,
     addCardToCollection,
     deleteCardInCollection,
     moveCardToAnotherBinder,

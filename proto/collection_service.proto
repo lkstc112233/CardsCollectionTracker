@@ -17,6 +17,7 @@ service CollectionService {
     rpc AddCardToCollection (AddCardToCollectionRequest) returns (AddCardToCollectionResponse) {}
     rpc DeleteCardInCollection (DeleteCardInCollectionRequest) returns (DeleteCardInCollectionResponse) {}
     rpc MoveCardToAnotherBinder (MoveCardToAnotherBinderRequest) returns (MoveCardToAnotherBinderResponse) {}
+    rpc ListCardInBinder (ListCardInBinderRequest) returns (ListCardInBinderResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -100,4 +101,18 @@ message MoveCardToAnotherBinderRequest {
 }
 
 message MoveCardToAnotherBinderResponse {
+}
+
+message ListCardInBinderRequest {
+    // If unset, will respond by all collection.
+    int32 binder_id = 1;
+    // If true, will respond by only card and count.
+    bool name_only = 2;
+}
+
+message ListCardInBinderResponse {
+    // populated only if name_only is off.
+    repeated card_collection.Card cards = 1;
+    // populated only if name_only is on.
+    map<string, int32> cards_names = 2;
 }

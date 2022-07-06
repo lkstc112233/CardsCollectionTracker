@@ -96,6 +96,39 @@ function moveCardToAnotherBinder(call, callback) {
     });
 }
 
+async function listOrCountCardInBinder(binder_id, name_only) {
+    if (name_only) {
+        return db.countCardsInBinder(binder_id).then(res => {
+            return {cards_names: res.reduce((a, v) => ({...a, [v.name]: v.count}), {})};
+        });
+    }
+    return db.listCardInBinder(binder_id).then(res => {
+        return {cards:
+            res.map(card => {return {
+                id: card.id,
+                version: card.version,
+                binder_id: card.binder_id,
+                card_info: {
+                    id: card.card_id,
+                    name: card.name,
+                    image_uri: card.image,
+                    printed_name: card.printed_name,
+                    language: card.language,
+                },
+            };
+        })};
+    });
+}
+
+function listCardInBinder(call, callback) {
+    listOrCountCardInBinder(call.request.binder_id, call.request.name_only).then(res => {
+        callback(null, res);
+    });
+    // .catch(err => {
+    //     callback({code: 2, message: err}, null);
+    // });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -105,6 +138,7 @@ grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
 grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
 grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
 grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
+grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
