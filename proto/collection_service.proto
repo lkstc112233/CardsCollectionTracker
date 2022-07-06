@@ -14,6 +14,7 @@ service CollectionService {
     rpc UpdateBinder (UpdateBinderRequest) returns (UpdateBinderResponse) {}
     rpc DeleteBinder (DeleteBinderRequest) returns (DeleteBinderResponse) {}
     rpc QueryCardInfoByName (QueryCardInfoByNameRequest) returns (QueryCardInfoByNameResponse) {}
+    rpc AddCardToCollection (AddCardToCollectionRequest) returns (AddCardToCollectionResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -64,4 +65,17 @@ message QueryCardInfoByNameRequest {
 
 message QueryCardInfoByNameResponse {
     repeated card_collection.CardInfo info = 1;
+}
+
+message AddCardToCollectionRequest {
+    // Card scryfall id, found in Card object.
+    string card_id = 1;
+    // Card version. Left empty for non-foil cards.
+    string version = 2;
+    // Binder id to be added into. Left empty for the "Unbinded" binder.
+    int32 binder_id = 3;
+}
+
+message AddCardToCollectionResponse {
+
 }
