@@ -57,19 +57,21 @@ const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
-const QUERY_CARD_INFO_BY_NAME = `
-SELECT 
-    card_infos.scryfall_id AS id,
-    card_infos.card_name AS name,
-    card_infos.scryfall_image_uri AS image,
-    card_infos.card_printed_name AS printed_name,
-    card_infos.lang AS language,
-    card_infos.version AS possible_version
-FROM card_infos
-JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
-WHERE card_oracle_infos.constructed = 1
-    AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat('%', UPPER(?), '%')
-`;
+function buildQueryCardInfoByName(en_only, front_match) {
+    return `SELECT 
+        card_infos.scryfall_id AS id,
+        card_infos.card_name AS name,
+        card_infos.scryfall_image_uri AS image,
+        card_infos.card_printed_name AS printed_name,
+        card_infos.lang AS language,
+        card_infos.version AS possible_version
+    FROM card_infos
+    JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+    WHERE card_oracle_infos.constructed = 1
+        ${en_only?"AND card_infos.lang = 'en'":''}
+        AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')
+    `;
+}
 
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
@@ -196,8 +198,8 @@ module.exports = {
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
-    QUERY_CARD_INFO_BY_NAME,
     ADD_CARD_TO_COLLECTION_QUERY,
+    buildQueryCardInfoByName,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
     buildInsertOrUpdateOracleMetadataTableQuery,

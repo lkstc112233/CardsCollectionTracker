@@ -149,10 +149,10 @@ async function teardown() {
     });
 }
 
-async function queryCardsInfoByName(card_name) {
+async function queryCardsInfoByName(card_name, en_only, front_match) {
     return new Promise((acc, rej) => {
         pool.query(
-            queries.QUERY_CARD_INFO_BY_NAME,
+            queries.buildQueryCardInfoByName(en_only, front_match),
             [card_name],
             (err, rows) => {
                 if (err) return rej(err);
