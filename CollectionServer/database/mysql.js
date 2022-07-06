@@ -162,6 +162,22 @@ async function queryCardsInfoByName(card_name) {
     });
 }
 
+async function addCardToCollection(card_id, version, binder_id = 1) {
+    if (version === 'nonfoil') {
+        version = null
+    }
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.ADD_CARD_TO_COLLECTION_QUERY,
+            [card_id, version, binder_id],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -173,4 +189,5 @@ module.exports = {
     deleteBinder,
     queryBinders,
     queryCardsInfoByName,
+    addCardToCollection,
 };

@@ -197,6 +197,7 @@ module.exports = {
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
     QUERY_CARD_INFO_BY_NAME,
+    ADD_CARD_TO_COLLECTION_QUERY,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
     buildInsertOrUpdateOracleMetadataTableQuery,
