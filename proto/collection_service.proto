@@ -61,6 +61,10 @@ message DeleteBinderResponse {
 message QueryCardInfoByNameRequest {
     // Will be used for partial match
     string query = 1;
+    // Whether only query English cards.
+    bool en_only = 2;
+    // Whether the query will match the first part of the query.
+    bool front_match = 3;
 }
 
 message QueryCardInfoByNameResponse {
