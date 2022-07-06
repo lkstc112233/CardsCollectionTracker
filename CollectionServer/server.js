@@ -16,35 +16,45 @@ function updateMetadata(call, callback) {
             cards_downloaded: result.cards_count, 
             oracle_downloaded: result.oracle_count
         });
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function addBinder(call, callback) {
     db.addBinder(call.request.name).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function listBinders(call, callback) {
     db.queryBinders().then(binders => {
         callback(null, {binders: binders.map(b => {return {name: b.binder_name, id: b.id};})});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function updateBinder(call, callback) {
     db.renameBinder(call.request.id, call.request.new_name).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function deleteBinder(call, callback) {
     db.deleteBinder(call.request.id).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
 function queryCardInfoByName(call, callback) {
-    db.queryCardsInfoByName(call.request.query).then(cards => {
+    db.queryCardsInfoByName(call.request.query, call.request.en_only, call.request.front_match).then(cards => {
         callback(null, {info: cards.map(card => {return {
                 id: card.id,
                 name: card.name,
@@ -54,6 +64,8 @@ function queryCardInfoByName(call, callback) {
                 versions: card.possible_version?.split('|'),
             };
         })});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
@@ -63,6 +75,56 @@ function addCardToCollection(call, callback) {
             'version' in call.request? call.request.version : null,
             call.request.binder_id).then(() => {
         callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
+function deleteCardInCollection(call, callback) {
+    db.deleteCardInCollection(call.request.id).then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
+function moveCardToAnotherBinder(call, callback) {
+    db.moveCardToAnotherBinder(call.request.card_id, call.request.new_binder_id).then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
+async function listOrCountCardInBinder(binder_id, name_only) {
+    if (name_only) {
+        return db.countCardsInBinder(binder_id).then(res => {
+            return {cards_names: res.reduce((a, v) => ({...a, [v.name]: v.count}), {})};
+        });
+    }
+    return db.listCardInBinder(binder_id).then(res => {
+        return {cards:
+            res.map(card => {return {
+                id: card.id,
+                version: card.version,
+                binder_id: card.binder_id,
+                card_info: {
+                    id: card.card_id,
+                    name: card.name,
+                    image_uri: card.image,
+                    printed_name: card.printed_name,
+                    language: card.language,
+                },
+            };
+        })};
+    });
+}
+
+function listCardInBinder(call, callback) {
+    listOrCountCardInBinder(call.request.binder_id, call.request.name_only).then(res => {
+        callback(null, res);
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
 }
 
@@ -73,6 +135,9 @@ grpc.bindRpcHandler('updateBinder', updateBinder);
 grpc.bindRpcHandler('deleteBinder', deleteBinder);
 grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
 grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
+grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
+grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
+grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {

@@ -117,9 +117,12 @@ async function renameBinder(id, newName) {
 
 async function deleteBinder(id) {
     return new Promise((acc, rej) => {
+        if (id === 1) {
+            rej('Unbinded binder cannot be deleted.');
+        }
         pool.query(
             queries.DELETE_BINDERS_QUERY,
-            [id],
+            [id, id],
             err => {
                 if (err) return rej(err);
                 acc();
@@ -149,11 +152,37 @@ async function teardown() {
     });
 }
 
-async function queryCardsInfoByName(card_name) {
+async function queryCardsInfoByName(card_name, en_only, front_match) {
     return new Promise((acc, rej) => {
         pool.query(
-            queries.QUERY_CARD_INFO_BY_NAME,
+            queries.buildQueryCardInfoByName(en_only, front_match),
             [card_name],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
+async function listCardInBinder(binder_id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.buildListCardsInBinderQuery(binder_id === 0),
+            binder_id === 0? []: [binder_id],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
+async function countCardsInBinder(binder_id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.buildCountCardsInBinderQuery(binder_id === 0),
+            binder_id === 0? []: [binder_id],
             (err, rows) => {
                 if (err) return rej(err);
                 acc(rows);
@@ -181,6 +210,32 @@ async function addCardToCollection(card_id, version, binder_id = 1) {
     });
 }
 
+async function deleteCardInCollection(id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.DELETE_CARD_IN_COLLECTION_QUERY,
+            [id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function moveCardToAnotherBinder(id, new_binder) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+            [new_binder, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -192,5 +247,9 @@ module.exports = {
     deleteBinder,
     queryBinders,
     queryCardsInfoByName,
+    listCardInBinder,
+    countCardsInBinder,
     addCardToCollection,
+    deleteCardInCollection,
+    moveCardToAnotherBinder,
 };

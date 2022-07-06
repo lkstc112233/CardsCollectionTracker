@@ -55,25 +55,61 @@ binder_name=VALUES(binder_name)`;
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
-const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
 
-const QUERY_CARD_INFO_BY_NAME = `
-SELECT 
-    card_infos.scryfall_id AS id,
-    card_infos.card_name AS name,
-    card_infos.scryfall_image_uri AS image,
-    card_infos.card_printed_name AS printed_name,
-    card_infos.lang AS language,
-    card_infos.version AS possible_version
-FROM card_infos
-JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
-WHERE card_oracle_infos.constructed = 1
-    AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat('%', UPPER(?), '%')
+const DELETE_BINDERS_QUERY = `
+UPDATE cards_collection SET binder_id = 1 WHERE binder_id = ?;
+DELETE FROM binder_infos WHERE id = ?;
 `;
+
+function buildQueryCardInfoByName(en_only, front_match) {
+    return `SELECT 
+        card_infos.scryfall_id AS id,
+        card_infos.card_name AS name,
+        card_infos.scryfall_image_uri AS image,
+        card_infos.card_printed_name AS printed_name,
+        card_infos.lang AS language,
+        card_infos.version AS possible_version
+    FROM card_infos
+    JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+    WHERE card_oracle_infos.constructed = 1
+        ${en_only?"AND card_infos.lang = 'en'":''}
+        AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')
+    `;
+}
 
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
 const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
+
+function buildListCardsInBinderQuery(all_binders) {
+    return `
+    SELECT
+        cards_collection.id AS id,
+        cards_collection.version AS version,
+        cards_collection.binder_id AS binder_id,
+        card_infos.scryfall_id AS card_id,
+        card_infos.card_name AS name,
+        card_infos.scryfall_image_uri AS image,
+        card_infos.card_printed_name AS printed_name,
+        card_infos.lang AS language
+    FROM cards_collection
+    JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+    ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
+    `;
+}
+
+function buildCountCardsInBinderQuery(all_binders) {
+    return `
+    SELECT
+        card_oracle_infos.card_oracle_name AS name,
+        COUNT(*) AS count
+    FROM cards_collection
+    JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+    JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+    ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
+    GROUP BY card_infos.oracle_id
+    `;
+}
 
 function buildInsertOrUpdateCardMetadataTableQuery(count) {
     return `INSERT INTO
@@ -196,8 +232,12 @@ module.exports = {
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
-    QUERY_CARD_INFO_BY_NAME,
     ADD_CARD_TO_COLLECTION_QUERY,
+    DELETE_CARD_IN_COLLECTION_QUERY,
+    MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+    buildQueryCardInfoByName,
+    buildListCardsInBinderQuery,
+    buildCountCardsInBinderQuery,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
     buildInsertOrUpdateOracleMetadataTableQuery,
