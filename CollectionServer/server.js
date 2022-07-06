@@ -123,10 +123,9 @@ async function listOrCountCardInBinder(binder_id, name_only) {
 function listCardInBinder(call, callback) {
     listOrCountCardInBinder(call.request.binder_id, call.request.name_only).then(res => {
         callback(null, res);
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
     });
-    // .catch(err => {
-    //     callback({code: 2, message: err}, null);
-    // });
 }
 
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
