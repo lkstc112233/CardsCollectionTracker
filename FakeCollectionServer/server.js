@@ -1,9 +1,9 @@
 const grpc = require('./grpc');
 
-function bindFakeHandler(name, response) {
-    grpc.bindRpcHandler(name, function (call, callback) {
-        console.log(`#${name} Request: ` + JSON.stringify(call.request, null, 4));
-        console.log(`#${name} Response: ` + JSON.stringify(response, null, 4));
+function bindFakeHandler(rpc_name, response) {
+    grpc.bindRpcHandler(rpc_name, function (call, callback) {
+        console.log(`#${rpc_name} Request: ` + JSON.stringify(call.request, null, 4));
+        console.log(`#${rpc_name} Response: ` + JSON.stringify(response, null, 4));
         callback(null, response);
     });
 }
