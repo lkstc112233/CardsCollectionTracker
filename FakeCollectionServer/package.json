@@ -1,0 +1,9 @@
+{
+    "name": "fake_collection_server",
+    "version": "0.1.0-dev",
+    "dependencies": {
+      "@grpc/proto-loader": "^0.6.9",
+      "google-protobuf": "^3.20.0",
+      "@grpc/grpc-js": "^1.6.7"
+    }
+}
