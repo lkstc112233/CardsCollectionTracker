@@ -51,6 +51,7 @@ function queryCardInfoByName(call, callback) {
                 image_uri: card.image,
                 printed_name: card.printed_name,
                 language: card.language,
+                versions: card.possible_version?.split('|'),
             };
         })});
     });
