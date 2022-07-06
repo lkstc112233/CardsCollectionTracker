@@ -149,6 +149,38 @@ async function teardown() {
     });
 }
 
+async function queryCardsInfoByName(card_name) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.QUERY_CARD_INFO_BY_NAME,
+            [card_name],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
+async function addCardToCollection(card_id, version, binder_id = 1) {
+    if (version === 'nonfoil' || version === '') {
+        version = null;
+    }
+    if (binder_id == 0) {
+        binder_id = 1;
+    }
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.ADD_CARD_TO_COLLECTION_QUERY,
+            [card_id, version, binder_id],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -159,4 +191,6 @@ module.exports = {
     renameBinder,
     deleteBinder,
     queryBinders,
+    queryCardsInfoByName,
+    addCardToCollection,
 };

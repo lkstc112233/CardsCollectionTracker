@@ -43,11 +43,36 @@ function deleteBinder(call, callback) {
     });
 }
 
+function queryCardInfoByName(call, callback) {
+    db.queryCardsInfoByName(call.request.query).then(cards => {
+        callback(null, {info: cards.map(card => {return {
+                id: card.id,
+                name: card.name,
+                image_uri: card.image,
+                printed_name: card.printed_name,
+                language: card.language,
+                versions: card.possible_version?.split('|'),
+            };
+        })});
+    });
+}
+
+function addCardToCollection(call, callback) {
+    db.addCardToCollection(
+            call.request.card_id,
+            'version' in call.request? call.request.version : null,
+            call.request.binder_id).then(() => {
+        callback(null, {});
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
 grpc.bindRpcHandler('updateBinder', updateBinder);
 grpc.bindRpcHandler('deleteBinder', deleteBinder);
+grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
+grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package card_collection;
+
+// Info for card info.
+message CardInfo {
+    // Id of the card
+    string id = 1;
+    // Card oracle name
+    string name = 2;
+    // Image uri
+    string image_uri = 3;
+    // Card display name
+    string printed_name = 4;
+    // Card language
+    string language = 5;
+    // Possible versions. If left empty, only nonfoil is possible.
+    repeated string versions = 6;
+}

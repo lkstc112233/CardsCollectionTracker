@@ -35,12 +35,45 @@ CREATE TABLE IF NOT EXISTS binder_infos (
     id INT AUTO_INCREMENT,
     binder_name VARCHAR(255),
     PRIMARY KEY(id)
-) DEFAULT CHARSET utf8mb4;`;
+) DEFAULT CHARSET utf8mb4;
+ALTER TABLE binder_infos AUTO_INCREMENT = 10;
+CREATE TABLE IF NOT EXISTS cards_collection (
+    id INT AUTO_INCREMENT,
+    card_id VARCHAR(36),
+    version VARCHAR(10),
+    binder_id INT,
+    PRIMARY KEY(id),
+    FOREIGN KEY (card_id) REFERENCES card_infos(scryfall_id),
+    FOREIGN KEY (binder_id) REFERENCES binder_infos(id)
+) DEFAULT CHARSET utf8mb4;
+INSERT INTO
+binder_infos(id, binder_name)
+VALUES(1, 'Unbinded')
+ON DUPLICATE KEY UPDATE
+binder_name=VALUES(binder_name)`;
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 const DELETE_BINDERS_QUERY = `DELETE FROM binder_infos WHERE id = ?`;
+
+const QUERY_CARD_INFO_BY_NAME = `
+SELECT 
+    card_infos.scryfall_id AS id,
+    card_infos.card_name AS name,
+    card_infos.scryfall_image_uri AS image,
+    card_infos.card_printed_name AS printed_name,
+    card_infos.lang AS language,
+    card_infos.version AS possible_version
+FROM card_infos
+JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+WHERE card_oracle_infos.constructed = 1
+    AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat('%', UPPER(?), '%')
+`;
+
+const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
+const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
+const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
 
 function buildInsertOrUpdateCardMetadataTableQuery(count) {
     return `INSERT INTO
@@ -163,6 +196,8 @@ module.exports = {
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
+    QUERY_CARD_INFO_BY_NAME,
+    ADD_CARD_TO_COLLECTION_QUERY,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
     buildInsertOrUpdateOracleMetadataTableQuery,
