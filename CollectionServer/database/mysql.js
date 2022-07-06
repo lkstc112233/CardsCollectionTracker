@@ -181,6 +181,19 @@ async function addCardToCollection(card_id, version, binder_id = 1) {
     });
 }
 
+async function deleteCardInCollection(id) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.DELETE_CARD_IN_COLLECTION_QUERY,
+            [id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -193,4 +206,5 @@ module.exports = {
     queryBinders,
     queryCardsInfoByName,
     addCardToCollection,
+    deleteCardInCollection,
 };

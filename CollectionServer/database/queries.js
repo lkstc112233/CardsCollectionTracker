@@ -199,6 +199,7 @@ module.exports = {
     RENAME_BINDER_QUERY,
     DELETE_BINDERS_QUERY,
     ADD_CARD_TO_COLLECTION_QUERY,
+    DELETE_CARD_IN_COLLECTION_QUERY,
     buildQueryCardInfoByName,
     buildInsertOrUpdateCardMetadataTableQuery,
     buildInsertOrUpdateSetMetadataTableQuery,
