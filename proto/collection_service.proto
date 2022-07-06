@@ -15,6 +15,7 @@ service CollectionService {
     rpc DeleteBinder (DeleteBinderRequest) returns (DeleteBinderResponse) {}
     rpc QueryCardInfoByName (QueryCardInfoByNameRequest) returns (QueryCardInfoByNameResponse) {}
     rpc AddCardToCollection (AddCardToCollectionRequest) returns (AddCardToCollectionResponse) {}
+    rpc DeleteCardInCollection (DeleteCardInCollectionRequest) returns (DeleteCardInCollectionResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -82,4 +83,12 @@ message AddCardToCollectionRequest {
 
 message AddCardToCollectionResponse {
 
+}
+
+message DeleteCardInCollectionRequest {
+    int32 id = 1;
+}
+
+message DeleteCardInCollectionResponse {
+    
 }

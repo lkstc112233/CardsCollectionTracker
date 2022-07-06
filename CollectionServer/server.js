@@ -66,6 +66,12 @@ function addCardToCollection(call, callback) {
     });
 }
 
+function deleteCardInCollection(call, callback) {
+    db.deleteCardInCollection(call.request.id).then(() => {
+        callback(null, {});
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -73,6 +79,7 @@ grpc.bindRpcHandler('updateBinder', updateBinder);
 grpc.bindRpcHandler('deleteBinder', deleteBinder);
 grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
 grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
+grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
