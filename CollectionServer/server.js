@@ -60,7 +60,7 @@ function queryCardInfoByName(call, callback) {
 function addCardToCollection(call, callback) {
     db.addCardToCollection(
             call.request.card_id,
-            call.request.version,
+            'version' in call.request? call.request.version : null,
             call.request.binder_id).then(() => {
         callback(null, {});
     });

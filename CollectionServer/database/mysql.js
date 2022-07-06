@@ -163,8 +163,11 @@ async function queryCardsInfoByName(card_name) {
 }
 
 async function addCardToCollection(card_id, version, binder_id = 1) {
-    if (version === 'nonfoil') {
-        version = null
+    if (version === 'nonfoil' || version === '') {
+        version = null;
+    }
+    if (binder_id == 0) {
+        binder_id = 1;
     }
     return new Promise((acc, rej) => {
         pool.query(
