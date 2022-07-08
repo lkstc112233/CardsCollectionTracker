@@ -1,8 +1,14 @@
 * { user-select: none; }
-#cards {
+.drag-card {
     position: absolute;
 }
 
-#cards img {
+.drag-card img {
     pointer-events: none;
+}
+
+.card-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

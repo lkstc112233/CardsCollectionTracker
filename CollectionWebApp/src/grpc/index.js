@@ -8,9 +8,9 @@ enableDevTools([
   client,
 ]);
 
-async function listAllBinderCards() {
+async function listAllBinderCards(binder = 0) {
     var request = new collection_service_proto.ListCardInBinderRequest();
-    request.setBinderId(0);
+    request.setBinderId(binder);
     return client.listCardInBinder(request);
 }
 

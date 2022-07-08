@@ -1,16 +1,12 @@
-function create_card_dom(card) {
+function createCardDom(card) {
     var image = `<img id="card-${card.getId()}-image" src="${card.getCardInfo().getImageUri()}" />`;
-    var text = `<span id="card-${card.getId()}-name">${card.getCardInfo().getName()}</span>`;
-    return `<table id="card-${card.getId()}-table">
-      <tr>
-        <th>${image}</th>
-      </tr>
-      <tr>
-        <td>${text}</td>
-      </tr>
-    </table>`;
+    var text = `<div class="card-name" id="card-${card.getId()}-name">${card.getCardInfo().getName()}</div>`;
+    return `<div class="card-box" id="card-${card.getId()}-div">
+        <div>${image}</div>
+        ${text}
+    </div>`;
 }
 
 module.exports = {
-    create_card_dom,
+    createCardDom,
 };
