@@ -1,3 +1,3 @@
-const { loadBinderDom } = require('./dom/load_card_list');
+const { loadBinderDom, loadSearchAddListDom } = require('./dom/load_card_list');
 
-loadBinderDom(0);
+loadSearchAddListDom('123');

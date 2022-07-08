@@ -1,4 +1,4 @@
-const { createCardDom } = require('./create_card');
+const { createCardDom, createCardInfoDom } = require('./create_card');
 const grpc = require('../grpc');
 const DragSelect = require('dragselect');
 
@@ -14,6 +14,19 @@ async function loadBinderDom(binder = 0) {
     });
 }
 
+async function loadSearchAddListDom(query = '') {
+    // Search is not performed for empty query.
+    if (query === '') {
+        return;
+    }
+    return grpc.queryCardInfoByName(query).then(listResponse => {
+        document.getElementById('search-add-list').innerHTML = listResponse.getInfoList()
+            .map(card => createCardInfoDom(card))
+            .join('');
+    });
+}
+
 module.exports = {
     loadBinderDom,
+    loadSearchAddListDom,
 }
