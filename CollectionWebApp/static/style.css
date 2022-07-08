@@ -13,7 +13,11 @@
     align-items: center;
 }
 
-.search-add-list {
+#cards-collection, #search-add-list, #search-add-box {
     display: flex;
     flex-wrap: wrap;
+}
+
+#search-add-box-input {
+    width: 100%;
 }
