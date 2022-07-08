@@ -14,6 +14,15 @@ async function listAllBinderCards(binder = 0) {
     return client.listCardInBinder(request);
 }
 
+async function queryCardInfoByName(query) {
+    var request = new collection_service_proto.QueryCardInfoByNameRequest();
+    request.setQuery(query);
+    request.setEnOnly(true);
+    request.setFrontMathc(true);
+    return client.queryCardInfoByName(request);
+}
+
 module.exports = {
     listAllBinderCards,
+    queryCardInfoByName,
 };
