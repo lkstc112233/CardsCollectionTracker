@@ -1,4 +1,8 @@
 * { user-select: none; }
-.cards {
+#cards {
     position: absolute;
+}
+
+#cards img {
+    pointer-events: none;
 }
