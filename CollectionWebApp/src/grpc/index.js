@@ -8,6 +8,18 @@ enableDevTools([
   client,
 ]);
 
+async function addCardToCollection(card_id, version, binder_id) {
+    var request = new collection_service_proto.AddCardToCollectionRequest();
+    request.setCardId(card_id);
+    if (version !== undefined && version !== null) {
+        request.setVersion(version);
+    }
+    if (binder_id !== undefined && binder_id !== null) {
+        request.setBinderId(binder_id);
+    }
+    return client.addCardToCollection(request);
+}
+
 async function listAllBinderCards(binder = 0) {
     var request = new collection_service_proto.ListCardInBinderRequest();
     request.setBinderId(binder);
@@ -23,6 +35,7 @@ async function queryCardInfoByName(query) {
 }
 
 module.exports = {
+    addCardToCollection,
     listAllBinderCards,
     queryCardInfoByName,
 };
