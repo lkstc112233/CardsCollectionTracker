@@ -7,16 +7,36 @@ function createCardDom(card) {
     </div>`;
 }
 
+function createButtonRowDom(card, version) {
+    var buttonElem = document.createElement('button');
+    buttonElem.className = 'circle-button plus';
+    var buttonRowText = document.createElement('span');
+    buttonRowText.innerText = version? version: 'nonfoil';
+    buttonRowText.style.color = 'white';
+    var buttonRowDiv = document.createElement('div');
+    buttonRowDiv.className = 'hidden-hover-button';
+    buttonRowDiv.appendChild(buttonRowText);
+    buttonRowDiv.appendChild(buttonElem);
+    return buttonRowDiv;
+}
+
 function createCardInfoDom(card) {
     var imageElem = document.createElement('img');
     imageElem.src = card.getImageUri();
     imageElem.id = `card-${card.getId()}-image`;
     imageElem.className = 'card-img';
-    var buttonElem = document.createElement('button');
-    buttonElem.className = 'hidden-hover-button circle-button plus';
     var buttonDiv = document.createElement('div');
     buttonDiv.className = 'hidden-hover-content';
-    buttonDiv.appendChild(buttonElem);
+    const versionsList = card.getVersionsList();
+    if (versionsList.length === 0) {
+        buttonDiv.appendChild(createButtonRowDom(card));
+    } else {
+        versionsList
+            .map(version => createButtonRowDom(card, version))
+            .forEach(element => {
+                buttonDiv.appendChild(element);
+            });
+    }
     var imageDiv = document.createElement('div');
     imageDiv.className = 'hidden-hover-base';
     imageDiv.appendChild(imageElem);

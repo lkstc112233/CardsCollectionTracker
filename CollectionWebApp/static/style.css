@@ -40,19 +40,17 @@ img.card-img {
     height: 100%;
     top: 0px;
     left: 0px;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
     display: none;
     z-index: 1;
 }
 .hidden-hover-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: none;
     z-index: 2;
-    transform: translate(-50%, -50%);
 }
 .hidden-hover-base:hover .hidden-hover-content { 
-    display:block;
+    display:flex;
 }
 .hidden-hover-base:hover .hidden-hover-button { 
     display:block;
@@ -67,6 +65,7 @@ img.card-img {
     display: inline-block;
     vertical-align: middle;
     background: #ffffff4f;
+    margin: auto auto auto 10px;
 }
 .circle-button:hover{
     background: #6363634f;
