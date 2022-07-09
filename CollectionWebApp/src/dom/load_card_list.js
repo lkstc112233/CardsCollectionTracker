@@ -20,9 +20,8 @@ async function loadSearchAddListDom(query = '') {
         return;
     }
     return grpc.queryCardInfoByName(query).then(listResponse => {
-        document.getElementById('search-add-list').innerHTML = listResponse.getInfoList()
-            .map(card => createCardInfoDom(card))
-            .join('');
+        document.getElementById('search-add-list')
+            .replaceChildren(...listResponse.getInfoList().map(card => createCardInfoDom(card)));
     });
 }
 
