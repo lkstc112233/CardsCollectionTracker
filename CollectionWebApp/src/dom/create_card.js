@@ -1,3 +1,5 @@
+const grpc = require('../grpc');
+
 function createCardDom(card) {
     var image = `<img class="card-img" id="card-${card.getId()}-image" src="${card.getCardInfo().getImageUri()}" />`;
     var text = `<div class="card-name" id="card-${card.getId()}-name">${card.getCardInfo().getName()}</div>`;
@@ -10,6 +12,9 @@ function createCardDom(card) {
 function createButtonRowDom(card, version) {
     var buttonElem = document.createElement('button');
     buttonElem.className = 'circle-button plus';
+    buttonElem.onclick = function() {
+        grpc.addCardToCollection(card.getId(), version);
+    }
     var buttonRowText = document.createElement('span');
     buttonRowText.innerText = version? version: 'nonfoil';
     buttonRowText.style.color = 'white';
