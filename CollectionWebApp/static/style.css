@@ -22,7 +22,24 @@
     width: 100%;
 }
 
-.circle{
+.hidden-hover-base {
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    margin: 0 auto;
+}
+.hidden-hover-content {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    display: none;
+    z-index: 1;
+}
+.hidden-hover-base:hover .hidden-hover-content { 
+    display:block;
+}
+
+.circle-button{
     border: 1px solid #aaa;
     width: 30px;
     height: 30px;
@@ -32,43 +49,48 @@
     vertical-align: middle;
     background: #ffffff4f;
 }
-.circle:hover{
+.circle-button:hover{
     background: #6363634f;
 }
-.circle:active{
+.circle-button:active{
     background: #aaaaaa4f;
 }
-.circle:before,
-.circle:after{
-    content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+.circle-button:before,
+.circle-button:after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 /* PLUS */
-.circle.plus:before,
-.circle.plus:after {
+.circle-button.plus:before,
+.circle-button.plus:after {
     background: gray;
 }
-.circle.plus:before{
+.circle-button.plus:before{
     width: 10%;
     margin: 15% auto;
 }
-.circle.plus:after{
+.circle-button.plus:after{
     margin: auto 15%;
     height: 10%;
 }
 /* MINUS */
-.circle.minus:before{
+.circle-button.minus:before{
     background: gray;
     margin: auto 15%;
     height: 10%;
 }
 /* CROSS */
-.circle.cross:after,
-.circle.cross:before{
+.circle-button.cross:after,
+.circle-button.cross:before{
     background: gray;
     margin: auto 20%;
     height: 10%;
-    transform:rotateZ(45deg);
+    transform: rotateZ(45deg);
 }
-.circle.cross:after{
-    transform:rotateZ(-45deg);
+.circle-button.cross:after{
+    transform: rotateZ(-45deg);
 }
