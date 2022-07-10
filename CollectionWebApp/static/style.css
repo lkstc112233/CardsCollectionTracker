@@ -144,6 +144,17 @@ img.card-img {
     font-size: 36px;
 }
 
+.binder-sidebar .menu-button {
+    padding: 8px 8px 8px 58px;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+}
+
+.binder-sidebar .menu-text {
+    font-size: 16px;
+}
+
 #main-panel {
     margin-right: 50px;
     transition: margin-right .5s;

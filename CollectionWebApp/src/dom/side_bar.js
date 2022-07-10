@@ -19,7 +19,10 @@ function loadBinderSidebar() {
     toggleButton.className = 'toggle-button';
     toggleButton.onclick = toggleSidebar;
     toggleButton.innerText = '☰';
-    document.getElementById("binder-sidebar").replaceChildren(toggleButton);
+    const addBinderButton = document.createElement('a');
+    addBinderButton.className = 'menu-button';
+    addBinderButton.innerHTML = '+<span class="menu-text">Add Binder</span>';
+    document.getElementById("binder-sidebar").replaceChildren(toggleButton, addBinderButton);
 }
 
 module.exports = {
