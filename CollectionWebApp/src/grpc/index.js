@@ -34,8 +34,14 @@ async function queryCardInfoByName(query) {
     return client.queryCardInfoByName(request);
 }
 
+async function listBinders(query) {
+    var request = new collection_service_proto.ListBindersRequest();
+    return client.listBinders(request);
+}
+
 module.exports = {
     addCardToCollection,
     listAllBinderCards,
     queryCardInfoByName,
+    listBinders,
 };
