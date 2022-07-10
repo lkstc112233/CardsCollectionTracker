@@ -15,6 +15,7 @@ function toggleSidebar() {
 }
 
 let selectedBinder = 1;
+let selectedBinderName = '';
 
 function getSelectedBinder() {
     return selectedBinder;
@@ -39,10 +40,30 @@ async function loadBinderListDoms() {
         binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()}</span>`;
         binderButton.onclick = function() {
             selectedBinder = binder.getId();
+            selectedBinderName = binder.getName();
             loadBinderSidebar();
         };
         return binderButton;
     });
+}
+
+function maybeDeleteSelectedBinder() {
+    if (selectedBinder === 1) {
+        alert('Unbinded binder cannot be deleted.');
+        return;
+    }
+    if (!confirm(`Are you sure to delete binder ${selectedBinderName}?\nThis operation cannot be reverted!`)) {
+        return;
+    }
+    let binder = prompt(`Type in the name of binder "${selectedBinderName}" to confirm deletion`, '');
+    if (binder === null) {
+        return;
+    }
+    if (binder.toUpperCase() === selectedBinderName.toUpperCase()) {
+        grpc.deleteBinder(selectedBinder).then(() => loadBinderSidebar());
+    } else {
+        alert('Please type in the correct name.');
+    }
 }
 
 async function loadBinderSidebar() {
@@ -76,9 +97,13 @@ async function loadBinderSidebar() {
             loadBinderSidebar();
         }
     };
+    const deleteBinderButton = document.createElement('a');
+    deleteBinderButton.className = 'menu-button';
+    deleteBinderButton.innerHTML = '☠<span class="menu-text">Remove Binder</span>';
+    deleteBinderButton.onclick = maybeDeleteSelectedBinder;
     listOfBindersDom = await loadBinderListDoms();
     document.getElementById("binder-sidebar")
-        .replaceChildren(toggleButton, refreshButton, addBinderButton, ...listOfBindersDom);
+        .replaceChildren(toggleButton, refreshButton, addBinderButton, ...listOfBindersDom, deleteBinderButton);
 }
 
 module.exports = {

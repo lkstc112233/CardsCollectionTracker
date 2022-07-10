@@ -50,6 +50,12 @@ async function updateMetadata() {
     return client.updateMetadata(request);
 }
 
+async function deleteBinder(id) {
+    var request = new collection_service_proto.DeleteBinderRequest();
+    request.setId(id);
+    return client.deleteBinder(request);
+}
+
 module.exports = {
     addCardToCollection,
     listAllBinderCards,
@@ -57,4 +63,5 @@ module.exports = {
     listBinders,
     addBinder,
     updateMetadata,
+    deleteBinder,
 };
