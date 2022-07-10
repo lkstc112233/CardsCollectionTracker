@@ -112,3 +112,39 @@ img.card-img {
 .circle-button.cross:after{
     transform: rotateZ(-45deg);
 }
+
+.binder-sidebar {
+    height: 100%;
+    width: 50px;
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    left: calc(100% - 50px);
+    background-color: #000;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+  
+.binder-sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    transition: 0.5s;
+}
+
+.binder-sidebar a:hover {
+    color: #ccc;
+}
+
+.binder-sidebar .toggle-button {
+    padding: 8px 8px 8px 8px;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+}
+
+#main-panel {
+    margin-right: 50px;
+    transition: margin-right .5s;
+}
