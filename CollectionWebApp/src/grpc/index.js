@@ -39,9 +39,22 @@ async function listBinders(query) {
     return client.listBinders(request);
 }
 
+async function addBinder(name) {
+    var request = new collection_service_proto.AddBinderRequest();
+    request.setName(name);
+    return client.addBinder(request);
+}
+
+async function updateMetadata() {
+    var request = new collection_service_proto.UpdateMetadataRequest();
+    return client.updateMetadata(request);
+}
+
 module.exports = {
     addCardToCollection,
     listAllBinderCards,
     queryCardInfoByName,
     listBinders,
+    addBinder,
+    updateMetadata,
 };
