@@ -14,12 +14,22 @@ function toggleSidebar() {
     sidebarOpened = !sidebarOpened;
 }
 
+let selectedBinder = 1;
+
+function getSelectedBinder() {
+    return selectedBinder;
+}
+
 async function loadBinderListDoms() {
     listBindersResponse = await grpc.listBinders();
     return listBindersResponse.getBindersList().map(binder => {
         binderButton = document.createElement('a');
-        binderButton.className = 'menu-button';
+        binderButton.className = `menu-button${binder.getId() === selectedBinder?' selected-menu-item':''}`;
         binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()}</span>`;
+        binderButton.onclick = function() {
+            selectedBinder = binder.getId();
+            loadBinderSidebar();
+        }
         return binderButton;
     });
 }
@@ -39,4 +49,5 @@ async function loadBinderSidebar() {
 
 module.exports = {
     loadBinderSidebar,
+    getSelectedBinder,
 }
