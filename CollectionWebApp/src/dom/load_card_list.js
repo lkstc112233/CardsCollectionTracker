@@ -16,6 +16,14 @@ async function loadBinderDom(binder = 0) {
         });
     document.getElementById('cards-collection').replaceChildren(...cardsList);
     ds.setSelectables(cardsList, /* removeFromSelection */ true);
+    ds.subscribe('callback', (callbackObj) => {
+        if (!callbackObj.isDragging) {
+            return;
+        }
+        callbackObj.items.forEach(element => {
+            element.style.transform = '';
+        });
+    });
 }
 
 async function loadSearchAddListDom(query = '') {
