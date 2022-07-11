@@ -1,4 +1,6 @@
 const grpc = require('../grpc');
+const { createSearchCardElements } = require('./search_card');
+const selected_binder = require('./selected_binder');
 
 let sidebarOpened = false;
 function toggleSidebar() {
@@ -12,13 +14,6 @@ function toggleSidebar() {
         document.getElementById("main-panel").style.marginRight = "250px";
     }
     sidebarOpened = !sidebarOpened;
-}
-
-let selectedBinder = 1;
-let selectedBinderName = '';
-
-function getSelectedBinder() {
-    return selectedBinder;
 }
 
 let refreshingMetadata = false;
@@ -36,11 +31,11 @@ async function loadBinderListDoms() {
     listBindersResponse = await grpc.listBinders();
     return listBindersResponse.getBindersList().map(binder => {
         binderButton = document.createElement('a');
-        binderButton.className = `menu-button${binder.getId() === selectedBinder?' selected-menu-item':''}`;
+        binderButton.className = `menu-button${binder.getId() === selected_binder.getSelectedBinder()?' selected-menu-item':''}`;
         binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()}</span>`;
         binderButton.onclick = function() {
-            selectedBinder = binder.getId();
-            selectedBinderName = binder.getName();
+            selected_binder.setSelectedBinder(binder.getId());
+            selected_binder.setSelectedBinderName(binder.getName());
             loadBinderSidebar();
         };
         return binderButton;
@@ -48,19 +43,19 @@ async function loadBinderListDoms() {
 }
 
 function maybeDeleteSelectedBinder() {
-    if (selectedBinder === 1) {
+    if (selected_binder.getSelectedBinder() === 1) {
         alert('Unbinded binder cannot be deleted.');
         return;
     }
-    if (!confirm(`Are you sure to delete binder ${selectedBinderName}?\nThis operation cannot be reverted!`)) {
+    if (!confirm(`Are you sure to delete binder ${selected_binder.getSelectedBinderName()}?\nThis operation cannot be reverted!`)) {
         return;
     }
-    let binder = prompt(`Type in the name of binder "${selectedBinderName}" to confirm deletion`, '');
+    let binder = prompt(`Type in the name of binder "${selected_binder.getSelectedBinderName()}" to confirm deletion`, '');
     if (binder === null) {
         return;
     }
-    if (binder.toUpperCase() === selectedBinderName.toUpperCase()) {
-        grpc.deleteBinder(selectedBinder).then(() => loadBinderSidebar());
+    if (binder.toUpperCase() === selected_binder.getSelectedBinderName().toUpperCase()) {
+        grpc.deleteBinder(selected_binder.getSelectedBinder()).then(() => loadBinderSidebar());
     } else {
         alert('Please type in the correct name.');
     }
@@ -93,8 +88,7 @@ async function loadBinderSidebar() {
     addBinderButton.onclick = function() {
         let binder = prompt("New binder name", "New binder");
         if (binder !== null) {
-            grpc.addBinder(binder);
-            loadBinderSidebar();
+            grpc.addBinder(binder).then(() => loadBinderSidebar());
         }
     };
     const deleteBinderButton = document.createElement('a');
@@ -108,5 +102,4 @@ async function loadBinderSidebar() {
 
 module.exports = {
     loadBinderSidebar,
-    getSelectedBinder,
 }

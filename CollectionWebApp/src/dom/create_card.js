@@ -1,5 +1,5 @@
 const grpc = require('../grpc');
-const { getSelectedBinder } = require('./side_bar');
+const { getSelectedBinder } = require('./selected_binder');
 
 function createCardDom(card) {
     var image = `<img class="card-img" id="card-${card.getId()}-image" src="${card.getCardInfo().getImageUri()}" />`;
