@@ -2,12 +2,22 @@ const grpc = require('../grpc');
 const { getSelectedBinder } = require('./selected_binder');
 
 function createCardDom(card) {
-    var image = `<img class="card-img" id="card-${card.getId()}-image" src="${card.getCardInfo().getImageUri()}" />`;
-    var text = `<div class="card-name" id="card-${card.getId()}-name">${card.getCardInfo().getName()}</div>`;
-    return `<div class="card-box" id="card-${card.getId()}-div">
-        <div>${image}</div>
-        ${text}
-    </div>`;
+    var imageElem = document.createElement('img');
+    imageElem.src = card.getCardInfo().getImageUri();
+    imageElem.id = `card-${card.getId()}-image`;
+    imageElem.className = 'card-img';
+    var imageDiv = document.createElement('div');
+    imageDiv.appendChild(imageElem);
+    var nameElem = document.createElement('div');
+    nameElem.innerText = card.getCardInfo().getName();
+    nameElem.id = `card-${card.getId()}-name`;
+    nameElem.className = 'card-name';
+    var cardInfoElem = document.createElement('div');
+    cardInfoElem.className = 'card-box';
+    cardInfoElem.id = `card-${card.getId()}-div`;
+    cardInfoElem.appendChild(imageDiv);
+    cardInfoElem.appendChild(nameElem);
+    return cardInfoElem;
 }
 
 function createButtonRowDom(card, version) {

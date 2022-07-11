@@ -6,11 +6,16 @@ const ds = new DragSelect({});
 
 async function loadBinderDom(binder = 0) {
     listResponse = await grpc.listAllBinderCards(binder);
-    document.getElementById('cards-collection').innerHTML = listResponse.getCardsList()
+    cardsList = listResponse.getCardsList()
         .map(card => createCardDom(card))
-        .map(cardDom => '<div class="drag-card">' + cardDom + '</div>')
-        .join('');
-    ds.setSelectables(document.getElementsByClassName('drag-card'), /* removeFromSelection */ true);
+        .map(cardDom => {
+            var dragCardElem = document.createElement('div');
+            dragCardElem.className = 'drag-card';
+            dragCardElem.appendChild(cardDom);
+            return dragCardElem;
+        });
+    document.getElementById('cards-collection').replaceChildren(...cardsList);
+    ds.setSelectables(cardsList, /* removeFromSelection */ true);
 }
 
 async function loadSearchAddListDom(query = '') {
