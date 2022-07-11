@@ -8,12 +8,60 @@ enableDevTools([
   client,
 ]);
 
-async function listAllBinderCards() {
+async function addCardToCollection(card_id, version, binder_id) {
+    var request = new collection_service_proto.AddCardToCollectionRequest();
+    request.setCardId(card_id);
+    if (version !== undefined && version !== null) {
+        request.setVersion(version);
+    }
+    if (binder_id !== undefined && binder_id !== null) {
+        request.setBinderId(binder_id);
+    }
+    return client.addCardToCollection(request);
+}
+
+async function listAllBinderCards(binder = 0) {
     var request = new collection_service_proto.ListCardInBinderRequest();
-    request.setBinderId(0);
+    request.setBinderId(binder);
     return client.listCardInBinder(request);
 }
 
+async function queryCardInfoByName(query) {
+    var request = new collection_service_proto.QueryCardInfoByNameRequest();
+    request.setQuery(query);
+    request.setEnOnly(true);
+    request.setFrontMatch(true);
+    return client.queryCardInfoByName(request);
+}
+
+async function listBinders(query) {
+    var request = new collection_service_proto.ListBindersRequest();
+    return client.listBinders(request);
+}
+
+async function addBinder(name) {
+    var request = new collection_service_proto.AddBinderRequest();
+    request.setName(name);
+    return client.addBinder(request);
+}
+
+async function updateMetadata() {
+    var request = new collection_service_proto.UpdateMetadataRequest();
+    return client.updateMetadata(request);
+}
+
+async function deleteBinder(id) {
+    var request = new collection_service_proto.DeleteBinderRequest();
+    request.setId(id);
+    return client.deleteBinder(request);
+}
+
 module.exports = {
+    addCardToCollection,
     listAllBinderCards,
+    queryCardInfoByName,
+    listBinders,
+    addBinder,
+    updateMetadata,
+    deleteBinder,
 };
