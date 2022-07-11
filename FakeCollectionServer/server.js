@@ -31,7 +31,7 @@ bindFakeHandler('queryCardInfoByName', {
         language: 'en',
         versions: ['nonfoil', 'foil'],
     }, {
-        id: '00000000-0000-0000-0000-000000000000',
+        id: '00000000-0000-0000-0000-000000000001',
         name: 'test 2',
         image_uri: 'https://via.placeholder.com/300.png',
         printed_name: 'print test 2',
@@ -49,7 +49,7 @@ bindFakeHandler('listCardInBinder', {
             version: 'foil',
             binder_id: 1,
             card_info: {
-                id: '00000000-0000-0000-0000-000000000000',
+                id: '00000000-0000-0000-0000-000000000003',
                 name: 'test',
                 image_uri: 'https://via.placeholder.com/300.png',
                 printed_name: 'print test',
