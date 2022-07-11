@@ -3,6 +3,7 @@ const { loadBinderDom } = require('./load_card_list');
 const grpc = require('../grpc');
 const { createSearchCardElements } = require('./search_card');
 const selected_binder = require('./selected_binder');
+const bottom_bar = require('./bottom_bar');
 
 let sidebarOpened = false;
 function toggleSidebar() {
@@ -33,15 +34,30 @@ async function loadBinderListDoms() {
     listBindersResponse = await grpc.listBinders();
     return listBindersResponse.getBindersList().map(binder => {
         binderButton = document.createElement('a');
-        binderButton.className = `menu-button${binder.getId() === selected_binder.getSelectedBinder()?' selected-menu-item':''}`;
+        additionalClassName = '';
+        if (binder.getId() === selected_binder.getSelectedBinder()) {
+            additionalClassName = ' selected-menu-item';
+        } else if (binder.getId() === bottom_bar.getCurrentBottomBinder()) {
+            additionalClassName = ' bottomed-menu-item';
+        }
+        binderButton.className = `menu-button${additionalClassName}`;
         binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()}</span>`;
         binderButton.onclick = function() {
+            bottom_bar.collapseBottomBar();
             selected_binder.setSelectedBinder(binder.getId());
             selected_binder.setSelectedBinderName(binder.getName());
             clearAllPlaceholders();
             loadBinderSidebar();
             loadBinderDom(binder.getId());
         };
+        binderButton.oncontextmenu = function() {
+            if (binder.getId() === selected_binder.getSelectedBinder()) {
+                return false;
+            }
+            bottom_bar.popBottomBar(binder.getId());
+            loadBinderSidebar();
+            return false;
+        }
         return binderButton;
     });
 }
@@ -99,6 +115,7 @@ async function loadBinderSidebar() {
     addCardsButton.className = 'menu-button';
     addCardsButton.innerHTML = '+<span class="menu-text">Add Cards</span>';
     addCardsButton.onclick = function() {
+        bottom_bar.collapseBottomBar();
         createSearchCardElements();
     };
     const deleteBinderButton = document.createElement('a');

@@ -175,6 +175,14 @@ img.card-img {
     color: #700;
 }
 
+.menu-button.bottomed-menu-item {
+    color: #cc0;
+}
+
+.menu-button.bottomed-menu-item:hover {
+    color: #770;
+}
+
 #main-panel {
     margin-right: 50px;
     transition: margin-right .5s, margin-bottom .5s;
