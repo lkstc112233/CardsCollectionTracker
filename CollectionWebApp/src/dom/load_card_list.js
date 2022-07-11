@@ -1,8 +1,10 @@
 const { createCardDom, createCardInfoDom } = require('./create_card');
 const grpc = require('../grpc');
 const DragSelect = require('dragselect');
+const bottomBar = require('./bottom_bar');
 
 const ds = new DragSelect({});
+const cardIdFromElemId = /-(\d+)-/i;
 
 async function loadBinderDom(binder = 0) {
     listResponse = await grpc.listAllBinderCards(binder);
@@ -17,6 +19,9 @@ async function loadBinderDom(binder = 0) {
     document.getElementById('cards-collection').replaceChildren(...cardsList);
     ds.setSelectables(cardsList, /* removeFromSelection */ true);
     ds.subscribe('callback', (callbackObj) => {
+        if (bottomBar.getCurrentBottomBinder() === null) {
+            return;
+        }
         if (!callbackObj.isDragging) {
             return;
         }
@@ -26,9 +31,14 @@ async function loadBinderDom(binder = 0) {
         triggerEvent = callbackObj.event;
         elemBelow = document.elementFromPoint(triggerEvent.clientX, triggerEvent.clientY);
         if (elemBelow == document.getElementById('binder-droparea')) {
-            console.log('Dropped within area');
-        } else {
-            console.log('Dropped without area');
+            callbackObj.items
+                .filter(element => element.childElementCount > 0)
+                .map(element => element.firstChild)
+                .filter(element => element.className === 'card-box')
+                .forEach(element => {
+                    id = element.id.match(cardIdFromElemId)[1];
+                    grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder());
+                });
         }
     });
 }
