@@ -2,15 +2,15 @@ const { createCardDom, createCardInfoDom } = require('./create_card');
 const grpc = require('../grpc');
 const DragSelect = require('dragselect');
 
+const ds = new DragSelect({});
+
 async function loadBinderDom(binder = 0) {
     listResponse = await grpc.listAllBinderCards(binder);
     document.getElementById('cards-collection').innerHTML = listResponse.getCardsList()
         .map(card => createCardDom(card))
         .map(cardDom => '<div class="drag-card">' + cardDom + '</div>')
         .join('');
-    new DragSelect({
-        selectables: document.getElementsByClassName('drag-card')
-    });
+    ds.setSelectables(document.getElementsByClassName('drag-card'), /* removeFromSelection */ true);
 }
 
 async function loadSearchAddListDom(query = '') {

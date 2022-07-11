@@ -1,3 +1,5 @@
+const { clearAllPlaceholders } = require('./clear_placeholders');
+const { loadBinderDom } = require('./load_card_list');
 const grpc = require('../grpc');
 const { createSearchCardElements } = require('./search_card');
 const selected_binder = require('./selected_binder');
@@ -36,7 +38,9 @@ async function loadBinderListDoms() {
         binderButton.onclick = function() {
             selected_binder.setSelectedBinder(binder.getId());
             selected_binder.setSelectedBinderName(binder.getName());
+            clearAllPlaceholders();
             loadBinderSidebar();
+            loadBinderDom(binder.getId());
         };
         return binderButton;
     });
