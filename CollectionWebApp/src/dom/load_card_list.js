@@ -23,6 +23,13 @@ async function loadBinderDom(binder = 0) {
         callbackObj.items.forEach(element => {
             element.style.transform = '';
         });
+        triggerEvent = callbackObj.event;
+        elemBelow = document.elementFromPoint(triggerEvent.clientX, triggerEvent.clientY);
+        if (elemBelow == document.getElementById('binder-droparea')) {
+            console.log('Dropped within area');
+        } else {
+            console.log('Dropped without area');
+        }
     });
 }
 
