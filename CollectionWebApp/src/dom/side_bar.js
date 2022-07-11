@@ -116,6 +116,10 @@ async function loadBinderSidebar() {
     addCardsButton.innerHTML = '+<span class="menu-text">Add Cards</span>';
     addCardsButton.onclick = function() {
         bottom_bar.collapseBottomBar();
+        if (selected_binder.getSelectedBinder() === 0) {
+            alert('Please select a binder first.');
+            return;
+        }
         createSearchCardElements();
     };
     const deleteBinderButton = document.createElement('a');

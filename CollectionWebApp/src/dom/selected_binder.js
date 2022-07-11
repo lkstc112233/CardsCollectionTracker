@@ -1,4 +1,4 @@
-let selectedBinder = 1;
+let selectedBinder = 0;
 let selectedBinderName = '';
 
 function getSelectedBinder() {
