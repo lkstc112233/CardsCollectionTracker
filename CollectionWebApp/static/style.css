@@ -155,6 +155,18 @@ img.card-img {
     font-size: 16px;
 }
 
+.main-panel-bottombar {
+    height: 100px;
+    width: 100%;
+    position: fixed;
+    z-index: 3;
+    top: calc(100% - 100px);
+    left: 0;
+    background-color: #cc0;
+    overflow-y: hidden;
+    transition: 0.5s;
+}
+
 .menu-button.selected-menu-item {
     color: #c00;
 }
@@ -165,5 +177,5 @@ img.card-img {
 
 #main-panel {
     margin-right: 50px;
-    transition: margin-right .5s;
+    transition: margin-right .5s, margin-bottom .5s;
 }
