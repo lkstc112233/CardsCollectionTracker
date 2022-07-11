@@ -5,6 +5,7 @@ const bottomBar = require('./bottom_bar');
 
 const ds = new DragSelect({});
 const cardIdFromElemId = /-(\d+)-/i;
+let currentCallbackId = -1;
 
 async function loadBinderDom(binder = 0) {
     listResponse = await grpc.listAllBinderCards(binder);
@@ -18,26 +19,32 @@ async function loadBinderDom(binder = 0) {
         });
     document.getElementById('cards-collection').replaceChildren(...cardsList);
     ds.setSelectables(cardsList, /* removeFromSelection */ true);
-    ds.subscribe('callback', (callbackObj) => {
-        if (bottomBar.getCurrentBottomBinder() === null) {
-            return;
-        }
+    if (currentCallbackId >= 0) {
+        ds.unsubscribe('callback', null, currentCallbackId);
+    }
+    currentCallbackId = ds.subscribe('callback', (callbackObj) => {
         if (!callbackObj.isDragging) {
             return;
         }
         callbackObj.items.forEach(element => {
             element.style.transform = '';
         });
+        if (bottomBar.getCurrentBottomBinder() === null) {
+            return;
+        }
         triggerEvent = callbackObj.event;
         elemBelow = document.elementFromPoint(triggerEvent.clientX, triggerEvent.clientY);
         if (elemBelow == document.getElementById('binder-droparea')) {
-            callbackObj.items
+            Promise.all(callbackObj.items
                 .filter(element => element.childElementCount > 0)
                 .map(element => element.firstChild)
                 .filter(element => element.className === 'card-box')
-                .forEach(element => {
+                .map(element => {
                     id = element.id.match(cardIdFromElemId)[1];
-                    grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder());
+                    return grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder())
+                        .then(() => element.parentElement);
+                })).then((arr) => {
+                    arr.forEach(element => element.remove());
                 });
         }
     });
