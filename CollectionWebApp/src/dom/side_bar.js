@@ -91,13 +91,24 @@ async function loadBinderSidebar() {
             grpc.addBinder(binder).then(() => loadBinderSidebar());
         }
     };
+    const addCardsButton = document.createElement('a');
+    addCardsButton.className = 'menu-button';
+    addCardsButton.innerHTML = '+<span class="menu-text">Add Cards</span>';
+    addCardsButton.onclick = function() {
+        createSearchCardElements();
+    };
     const deleteBinderButton = document.createElement('a');
     deleteBinderButton.className = 'menu-button';
     deleteBinderButton.innerHTML = '☠<span class="menu-text">Remove Binder</span>';
     deleteBinderButton.onclick = maybeDeleteSelectedBinder;
     listOfBindersDom = await loadBinderListDoms();
     document.getElementById("binder-sidebar")
-        .replaceChildren(toggleButton, refreshButton, addBinderButton, ...listOfBindersDom, deleteBinderButton);
+        .replaceChildren(toggleButton,
+            refreshButton,
+            addBinderButton,
+            addCardsButton,
+            ...listOfBindersDom,
+            deleteBinderButton);
 }
 
 module.exports = {

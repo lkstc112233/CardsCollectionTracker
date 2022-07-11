@@ -3,4 +3,3 @@ const { createSearchCardElements } = require('./dom/search_card');
 const { loadBinderSidebar } = require('./dom/side_bar');
 
 loadBinderSidebar();
-createSearchCardElements();
