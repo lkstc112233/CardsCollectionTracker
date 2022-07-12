@@ -65,7 +65,8 @@ async function loadBinderDom(binder = 0) {
             return dragCardElem;
         });
     document.getElementById('cards-collection').replaceChildren(...cardsList);
-    ds.setSelectables(cardsList, /* removeFromSelection */ true);
+    ds.clearSelection();
+    ds.setSelectables(cardsList);
 }
 
 async function loadSearchAddListDom(query = '') {
