@@ -45,7 +45,7 @@ async function loadBinderDom(binder = 0) {
                 if (!elemsToDelete.find(elem => elem === dragCardElem)) {
                     elemsToDelete.push(dragCardElem);
                 }
-                if (!confirm(`Are you sure to delete ${elemsToDelete.length} card${elemsToDelete>1?'s':''} from your collection?\nThis operation cannot be reverted!`)) {
+                if (!confirm(`Are you sure to delete ${elemsToDelete.length} card${elemsToDelete.length>1?'s':''} from your collection?\nThis operation cannot be reverted!`)) {
                     return false;
                 }
                 Promise.all(elemsToDelete
