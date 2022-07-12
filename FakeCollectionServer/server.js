@@ -55,6 +55,37 @@ bindFakeHandler('listCardInBinder', {
                 printed_name: 'print test',
                 language: 'en',
             },
+        }, {
+            id: 2,
+            binder_id: 1,
+            card_info: {
+                id: '00000000-0000-0000-0000-000000000005',
+                name: 'test 2',
+                image_uri: 'https://via.placeholder.com/300.png',
+                printed_name: '汉字test',
+                language: 'en',
+            },
+        }, {
+            id: 3,
+            version: 'nonfoil',
+            binder_id: 1,
+            card_info: {
+                id: '00000000-0000-0000-0000-000000000006',
+                name: 'test 3',
+                image_uri: 'https://via.placeholder.com/300.png',
+                language: 'en',
+            },
+        }, {
+            id: 4,
+            version: 'foil',
+            binder_id: 1,
+            card_info: {
+                id: '00000000-0000-0000-0000-000000000009',
+                name: 'test 4',
+                image_uri: 'https://via.placeholder.com/300.png',
+                printed_name: '🎯test',
+                language: 'en',
+            },
         }],
 });
 grpc.startServer('0.0.0.0:33333');
