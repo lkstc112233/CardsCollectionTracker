@@ -4,6 +4,7 @@ const DragSelect = require('dragselect');
 const bottomBar = require('./bottom_bar');
 
 const ds = new DragSelect({});
+const cardIdFromElemId = /-(\d+)-/i;
 ds.subscribe('callback', (callbackObj) => {
     if (!callbackObj.isDragging) {
         return;
@@ -30,7 +31,6 @@ ds.subscribe('callback', (callbackObj) => {
             });
     }
 });
-const cardIdFromElemId = /-(\d+)-/i;
 
 async function loadBinderDom(binder = 0) {
     listResponse = await grpc.listAllBinderCards(binder);
