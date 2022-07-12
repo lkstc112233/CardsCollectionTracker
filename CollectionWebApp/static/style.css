@@ -1,7 +1,6 @@
 * { user-select: none; }
 img.card-img {
-    width: 280px;
-    height: 390px;
+    width: 18rem;
 }
 
 .drag-card img {
