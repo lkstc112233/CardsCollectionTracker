@@ -40,6 +40,28 @@ async function loadBinderDom(binder = 0) {
             var dragCardElem = document.createElement('div');
             dragCardElem.className = 'drag-card';
             dragCardElem.appendChild(cardDom);
+            cardDom.oncontextmenu = function() {
+                elemsToDelete = ds.getSelection();
+                if (!elemsToDelete.find(elem => elem === dragCardElem)) {
+                    elemsToDelete.push(dragCardElem);
+                }
+                if (!confirm(`Are you sure to delete ${elemsToDelete.length} card${elemsToDelete>1?'s':''} from your collection?\nThis operation cannot be reverted!`)) {
+                    return false;
+                }
+                Promise.all(elemsToDelete
+                    .filter(element => element.childElementCount > 0)
+                    .map(element => element.firstChild)
+                    .filter(element => element.className === 'card-box')
+                    .map(element => {
+                        id = element.id.match(cardIdFromElemId)[1];
+                        return grpc.deleteCardInCollection(id).then(() => element.parentElement);
+                    })).then((arr) => {
+                        arr.forEach(element => {
+                            element.remove();
+                        });
+                    });
+                return false;
+            };
             return dragCardElem;
         });
     document.getElementById('cards-collection').replaceChildren(...cardsList);
