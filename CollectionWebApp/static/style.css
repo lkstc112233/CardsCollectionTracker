@@ -4,10 +4,6 @@ img.card-img {
     height: 390px;
 }
 
-.drag-card {
-    position: absolute;
-}
-
 .drag-card img {
     pointer-events: none;
 }
@@ -117,7 +113,7 @@ img.card-img {
     height: 100%;
     width: 50px;
     position: fixed;
-    z-index: 3;
+    z-index: 99999;
     top: 0;
     left: calc(100% - 50px);
     background-color: #000;
@@ -159,7 +155,7 @@ img.card-img {
     height: 0;
     width: 100%;
     position: fixed;
-    z-index: 3;
+    z-index: 99998;
     top: 100%;
     left: 0;
     background-color: #cc0;
