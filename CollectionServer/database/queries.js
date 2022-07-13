@@ -61,7 +61,7 @@ UPDATE cards_collection SET binder_id = 1 WHERE binder_id = ?;
 DELETE FROM binder_infos WHERE id = ?;
 `;
 
-function buildQueryCardInfoByName(en_only, front_match) {
+function buildQueryCardInfoByName(en_only, front_match, limit) {
     return `SELECT 
         card_infos.scryfall_id AS id,
         card_infos.card_name AS name,
@@ -74,6 +74,7 @@ function buildQueryCardInfoByName(en_only, front_match) {
     WHERE card_oracle_infos.constructed = 1
         ${en_only?"AND card_infos.lang = 'en'":''}
         AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')
+    ${limit? 'LIMIT ' + limit: ''}
     `;
 }
 
