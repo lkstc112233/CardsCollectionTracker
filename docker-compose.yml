@@ -16,6 +16,17 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /mysql/mysql_root_password
       MYSQL_DATABASE: card_collection
+  envoy:
+    image: envoyproxy/envoy:v1.22.0
+    ports:
+      - 8080:8080
+      - 9901:9901
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml:ro
+  collection_webapp:
+    image: photoncat/collection_web_app
+    ports:
+      - 23333:23333
     
 volumes:
   cardcollection-develop-mysql-data:
