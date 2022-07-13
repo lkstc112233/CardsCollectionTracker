@@ -1,19 +1,21 @@
 const waitPort = require('wait-port');
 const mysql = require('mysql');
+const fs = require('fs');
 const queries = require('./queries');
 
 const {
     MYSQL_HOST: HOST,
     MYSQL_USER: USER,
     MYSQL_PASSWORD: PASSWORD,
+    MYSQL_PASSWORD_FILE: PASSWORD_FILE,
 } = process.env;
 
 let pool;
 
 async function init() {
     const host = HOST;
-    const user = USER;
-    const password = PASSWORD;
+    const user = USER ? USER : 'root';
+    const password = PASSWORD_FILE ? fs.readFileSync(PASSWORD_FILE) : PASSWORD;
     const database = 'card_collection';
 
     await waitPort({ host, port : 3306});

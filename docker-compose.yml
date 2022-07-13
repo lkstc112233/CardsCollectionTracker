@@ -1,10 +1,20 @@
 services:
+  collection_server:
+    image: photoncat/collection_server
+    ports:
+      - 33333:33333
+    volumes:
+      - ./mysql_root_password:/mysql/mysql_root_password
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD_FILE: /mysql/mysql_root_password
   mysql:
     image: mysql:5.7
     volumes:
       - cardcollection-develop-mysql-data:/var/lib/mysql
+      - ./mysql_root_password:/mysql/mysql_root_password
     environment:
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD_FILE: /mysql/mysql_root_password
       MYSQL_DATABASE: card_collection
     
 volumes:
