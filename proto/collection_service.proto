@@ -68,6 +68,8 @@ message QueryCardInfoByNameRequest {
     bool en_only = 2;
     // Whether the query will match the first part of the query.
     bool front_match = 3;
+    // Maximum number of cards to be returned. 0 for unlimited.
+    int32 result_limit = 4;
 }
 
 message QueryCardInfoByNameResponse {
