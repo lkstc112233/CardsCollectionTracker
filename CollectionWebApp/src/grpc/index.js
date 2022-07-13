@@ -30,7 +30,8 @@ async function queryCardInfoByName(query) {
     var request = new collection_service_proto.QueryCardInfoByNameRequest();
     request.setQuery(query);
     request.setEnOnly(true);
-    request.setFrontMatch(true);
+    request.setFrontMatch(false);
+    request.setResultLimit(100);
     return client.queryCardInfoByName(request);
 }
 
