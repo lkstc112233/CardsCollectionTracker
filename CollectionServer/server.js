@@ -54,7 +54,11 @@ function deleteBinder(call, callback) {
 }
 
 function queryCardInfoByName(call, callback) {
-    db.queryCardsInfoByName(call.request.query, call.request.en_only, call.request.front_match).then(cards => {
+    db.queryCardsInfoByName(
+            call.request.query,
+            call.request.en_only,
+            call.request.front_match,
+            call.request.result_limit).then(cards => {
         callback(null, {info: cards.map(card => {return {
                 id: card.id,
                 name: card.name,
