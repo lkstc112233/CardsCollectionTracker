@@ -3,9 +3,15 @@
 
 ## Build
 
-docker build -f .\CollectionServer\Dockerfile .
-docker build -f .\CollectionWebApp\Dockerfile .
+```
+$ docker build -f .\CollectionServer\Dockerfile .
+$ docker build -f .\CollectionWebApp\Dockerfile .
+```
 
 ## Run
 
-docker-compose up
+```
+$ docker-compose up
+```
+
+You may still need to modify docker-compose.yml, and add a custom image tag when building the image.
