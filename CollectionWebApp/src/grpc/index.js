@@ -2,7 +2,7 @@ const collection_service_proto = require('../collection_service_pb');
 const {CollectionServicePromiseClient} = require('../collection_service_grpc_web_pb');
 const enableDevTools = window.__GRPCWEB_DEVTOOLS__ || (() => {});
 
-var client = new CollectionServicePromiseClient(`http://${window.location.hostname}:8080`);
+var client = new CollectionServicePromiseClient(`http://${window.location.hostname}:8888`);
 
 enableDevTools([
   client,
