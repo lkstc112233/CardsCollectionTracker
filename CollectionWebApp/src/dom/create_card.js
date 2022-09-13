@@ -45,6 +45,13 @@ function createButtonRowDom(card, version) {
     buttonElem.onclick = function() {
         grpc.addCardToCollection(card.getId(), version, getSelectedBinder());
     }
+    buttonElem.addEventListener('keydown', (e) => {
+        if (e.code == 'Escape') {
+            var input = document.getElementById('search-add-box-input');
+            input.focus();
+            input.select();
+        }
+    });
     var buttonRowText = document.createElement('span');
     buttonRowText.innerText = version? version: 'nonfoil';
     var buttonRowDiv = document.createElement('div');

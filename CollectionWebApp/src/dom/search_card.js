@@ -6,10 +6,16 @@ function createSearchCardElements() {
     document.getElementById('search-add-box').innerHTML = `
         <input id="search-add-box-input"/>
     `;
-    document.getElementById('search-add-box-input')
-        .addEventListener('input', elem => {
-            loadSearchAddListDom(elem.target.value);
-        });
+    var input = document.getElementById('search-add-box-input');
+    input.addEventListener('input', elem => {
+        loadSearchAddListDom(elem.target.value);
+    });
+    input.addEventListener('keydown', e => {
+        if (e.code == 'Escape') {
+            input.focus();
+            input.select();
+        }
+    });
 }
 
 module.exports = {
