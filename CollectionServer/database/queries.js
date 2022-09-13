@@ -68,9 +68,11 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
         card_infos.scryfall_image_uri AS image,
         card_infos.card_printed_name AS printed_name,
         card_infos.lang AS language,
-        card_infos.version AS possible_version
+        card_infos.version AS possible_version,
+        set_infos.set_name AS set_name
     FROM card_infos
     JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+    JOIN set_infos on card_infos.set_id = set_infos.scryfall_id
     WHERE card_oracle_infos.constructed = 1
         ${en_only?"AND card_infos.lang = 'en'":''}
         AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')

@@ -66,6 +66,7 @@ function queryCardInfoByName(call, callback) {
                 printed_name: card.printed_name,
                 language: card.language,
                 versions: card.possible_version?.split('|'),
+                set_name: card.set_name,
             };
         })});
     }).catch(err => {

@@ -16,6 +16,8 @@ message CardInfo {
     string language = 5;
     // Possible versions. If left empty, only nonfoil is possible.
     repeated string versions = 6;
+    // Name of the set
+    string set_name = 7;
 }
 
 // Info for card in collection
