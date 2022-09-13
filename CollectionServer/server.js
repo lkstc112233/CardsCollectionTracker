@@ -119,6 +119,7 @@ async function listOrCountCardInBinder(binder_id, name_only) {
                     image_uri: card.image,
                     printed_name: card.printed_name,
                     language: card.language,
+                    set_name: card.set_name,
                 },
             };
         })};

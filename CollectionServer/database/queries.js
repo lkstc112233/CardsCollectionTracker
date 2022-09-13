@@ -72,7 +72,7 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
         set_infos.set_name AS set_name
     FROM card_infos
     JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
-    JOIN set_infos on card_infos.set_id = set_infos.scryfall_id
+    JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
     WHERE card_oracle_infos.constructed = 1
         ${en_only?"AND card_infos.lang = 'en'":''}
         AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')
@@ -94,9 +94,11 @@ function buildListCardsInBinderQuery(all_binders) {
         card_infos.card_name AS name,
         card_infos.scryfall_image_uri AS image,
         card_infos.card_printed_name AS printed_name,
-        card_infos.lang AS language
+        card_infos.lang AS language,
+        set_infos.set_name AS set_name
     FROM cards_collection
     JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+    JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
     ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
     `;
 }
