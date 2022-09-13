@@ -6,15 +6,15 @@ function createCardDom(card) {
     nameElem.innerText = card.getCardInfo().getName();
     nameElem.id = `card-${card.getId()}-name`;
     nameElem.className = 'card-name';
-    var set_elem = document.createElement('div');
-    set_elem.innerText = card.getCardInfo().getSetName();
-    set_elem.id = `card-${card.getId()}-set-name`;
-    set_elem.className = 'set-name';
+    var setElem = document.createElement('div');
+    setElem.innerText = card.getCardInfo().getSetName();
+    setElem.id = `card-${card.getId()}-set-name`;
+    setElem.className = 'set-name';
     var cardInfoElem = document.createElement('div');
     cardInfoElem.className = 'card-box';
     cardInfoElem.id = `card-${card.getId()}-div`;
     cardInfoElem.appendChild(nameElem);
-    cardInfoElem.appendChild(set_elem);
+    cardInfoElem.appendChild(setElem);
     return cardInfoElem;
 }
 
@@ -26,21 +26,16 @@ function createButtonRowDom(card, version) {
     }
     var buttonRowText = document.createElement('span');
     buttonRowText.innerText = version? version: 'nonfoil';
-    buttonRowText.style.color = 'white';
     var buttonRowDiv = document.createElement('div');
-    buttonRowDiv.className = 'hidden-hover-button';
+    buttonRowDiv.className = 'add-card-button';
     buttonRowDiv.appendChild(buttonRowText);
     buttonRowDiv.appendChild(buttonElem);
     return buttonRowDiv;
 }
 
 function createCardInfoDom(card) {
-    var imageElem = document.createElement('img');
-    imageElem.src = card.getImageUri();
-    imageElem.id = `card-${card.getId()}-image`;
-    imageElem.className = 'card-img';
     var buttonDiv = document.createElement('div');
-    buttonDiv.className = 'hidden-hover-content';
+    buttonDiv.className = 'add-card-button-div';
     const versionsList = card.getVersionsList();
     if (versionsList.length === 0) {
         buttonDiv.appendChild(createButtonRowDom(card));
@@ -51,19 +46,20 @@ function createCardInfoDom(card) {
                 buttonDiv.appendChild(element);
             });
     }
-    var imageDiv = document.createElement('div');
-    imageDiv.className = 'hidden-hover-base';
-    imageDiv.appendChild(imageElem);
-    imageDiv.appendChild(buttonDiv);
     var nameElem = document.createElement('div');
     nameElem.innerText = card.getName();
     nameElem.id = `card-${card.getId()}-name`;
     nameElem.className = 'card-name';
+    var setElem = document.createElement('div');
+    setElem.innerText = card.getSetName();
+    setElem.id = `card-${card.getId()}-set-name`;
+    setElem.className = 'set-name';
     var cardInfoElem = document.createElement('div');
     cardInfoElem.className = 'card-box';
     cardInfoElem.id = `card-${card.getId()}-div`;
-    cardInfoElem.appendChild(imageDiv);
     cardInfoElem.appendChild(nameElem);
+    cardInfoElem.appendChild(setElem);
+    cardInfoElem.appendChild(buttonDiv);
     return cardInfoElem;
 }
 
