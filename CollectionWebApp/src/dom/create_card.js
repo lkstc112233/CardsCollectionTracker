@@ -2,6 +2,11 @@ const grpc = require('../grpc');
 const { getSelectedBinder } = require('./selected_binder');
 
 function createCardDom(card) {
+    var imageElem = document.createElement('img');
+    imageElem.loading = 'lazy';
+    imageElem.src = card.getCardInfo().getImageUri();
+    imageElem.id = `card-${card.getId()}-image`;
+    imageElem.className = 'card-img';
     var nameElem = document.createElement('div');
     nameElem.innerText = card.getCardInfo().getName();
     nameElem.id = `card-${card.getId()}-name`;
@@ -15,6 +20,22 @@ function createCardDom(card) {
     cardInfoElem.id = `card-${card.getId()}-div`;
     cardInfoElem.appendChild(nameElem);
     cardInfoElem.appendChild(setElem);
+    cardInfoElem.appendChild(imageElem);
+    cardInfoElem.addEventListener('mousemove', (e) => {
+        if (e.buttons & 1) {
+            var boundingRect = e.currentTarget.getBoundingClientRect();
+            imageElem.style.left = `${e.clientX - boundingRect.left}px`;
+            imageElem.style.top = `${e.clientY - boundingRect.top}px`;
+        } else {
+            imageElem.style.left = `${e.pageX}px`;
+            imageElem.style.top = `${e.pageY}px`;
+        }
+        imageElem.style.opacity = 1;
+    });
+    cardInfoElem.addEventListener('mouseleave', (e) => {
+        imageElem.style.opacity = 0;
+        imageElem.style.zIndex = -1;
+    });
     return cardInfoElem;
 }
 
@@ -34,6 +55,11 @@ function createButtonRowDom(card, version) {
 }
 
 function createCardInfoDom(card) {
+    var imageElem = document.createElement('img');
+    imageElem.loading = 'lazy';
+    imageElem.src = card.getImageUri();
+    imageElem.id = `card-${card.getId()}-image`;
+    imageElem.className = 'card-img';
     var buttonDiv = document.createElement('div');
     buttonDiv.className = 'add-card-button-div';
     const versionsList = card.getVersionsList();
@@ -60,6 +86,16 @@ function createCardInfoDom(card) {
     cardInfoElem.appendChild(nameElem);
     cardInfoElem.appendChild(setElem);
     cardInfoElem.appendChild(buttonDiv);
+    cardInfoElem.appendChild(imageElem);
+    cardInfoElem.addEventListener('mousemove', (e) => {
+        imageElem.style.left = `${e.pageX}px`;
+        imageElem.style.top = `${e.pageY}px`;
+        imageElem.style.opacity = 1;
+    });
+    cardInfoElem.addEventListener('mouseleave', (e) => {
+        imageElem.style.opacity = 0;
+        imageElem.style.zIndex = -1;
+    });
     return cardInfoElem;
 }
 
