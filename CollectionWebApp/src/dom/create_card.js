@@ -2,21 +2,19 @@ const grpc = require('../grpc');
 const { getSelectedBinder } = require('./selected_binder');
 
 function createCardDom(card) {
-    var imageElem = document.createElement('img');
-    imageElem.src = card.getCardInfo().getImageUri();
-    imageElem.id = `card-${card.getId()}-image`;
-    imageElem.className = 'card-img';
-    var imageDiv = document.createElement('div');
-    imageDiv.appendChild(imageElem);
     var nameElem = document.createElement('div');
     nameElem.innerText = card.getCardInfo().getName();
     nameElem.id = `card-${card.getId()}-name`;
     nameElem.className = 'card-name';
+    var set_elem = document.createElement('div');
+    set_elem.innerText = card.getCardInfo().getSetName();
+    set_elem.id = `card-${card.getId()}-set-name`;
+    set_elem.className = 'set-name';
     var cardInfoElem = document.createElement('div');
     cardInfoElem.className = 'card-box';
     cardInfoElem.id = `card-${card.getId()}-div`;
-    cardInfoElem.appendChild(imageDiv);
     cardInfoElem.appendChild(nameElem);
+    cardInfoElem.appendChild(set_elem);
     return cardInfoElem;
 }
 

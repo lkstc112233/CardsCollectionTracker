@@ -9,12 +9,21 @@ img.card-img {
 
 .card-box {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+}
+
+.card-name {
+    font-weight: bold;
+}
+
+.card-name, .set-name {
+    flex: 1;
 }
 
 #cards-collection, #search-add-list, #search-add-box {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
 }
 
