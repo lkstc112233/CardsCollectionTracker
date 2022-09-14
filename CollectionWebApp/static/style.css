@@ -182,3 +182,8 @@ img.card-img {
     z-index: -1;
     object-fit: cover;
 }
+
+.search-all-lang-button {
+    color: gray;
+    align-self: center;
+}

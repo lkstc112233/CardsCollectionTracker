@@ -26,10 +26,10 @@ async function listAllBinderCards(binder = 0) {
     return client.listCardInBinder(request);
 }
 
-async function queryCardInfoByName(query) {
+async function queryCardInfoByName(query, allLang) {
     var request = new collection_service_proto.QueryCardInfoByNameRequest();
     request.setQuery(query);
-    request.setEnOnly(true);
+    request.setEnOnly(!allLang);
     request.setFrontMatch(false);
     request.setResultLimit(100);
     return client.queryCardInfoByName(request);

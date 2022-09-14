@@ -69,14 +69,21 @@ async function loadBinderDom(binder = 0) {
     ds.setSelectables(cardsList);
 }
 
-async function loadSearchAddListDom(query = '') {
+async function loadSearchAddListDom(query = '', allLang = false) {
     // Search is not performed for empty query.
     if (query === '') {
         return;
     }
-    listResponse = await grpc.queryCardInfoByName(query);
-    document.getElementById('search-add-list')
-        .replaceChildren(...listResponse.getInfoList().map(card => createCardInfoDom(card)));
+    listResponse = await grpc.queryCardInfoByName(query, allLang);
+    var listParent = document.getElementById('search-add-list');
+    listParent.replaceChildren(...listResponse.getInfoList().map(card => createCardInfoDom(card)));
+    var searchAllElem = document.createElement('div');
+    searchAllElem.innerText = '--Search all language--';
+    searchAllElem.className = 'search-all-lang-button';
+    searchAllElem.onclick = function() {
+        loadSearchAddListDom(query, true);
+    }
+    listParent.appendChild(searchAllElem);
 }
 
 module.exports = {

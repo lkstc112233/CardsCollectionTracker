@@ -8,7 +8,10 @@ function createCardDom(card) {
     imageElem.id = `card-${card.getId()}-image`;
     imageElem.className = 'card-img';
     var nameElem = document.createElement('div');
-    nameElem.innerText = card.getCardInfo().getName();
+    nameElem.innerText = card.getCardInfo().getPrintedName();
+    if (nameElem.innerText === '') {
+        nameElem.innerText = card.getCardInfo().getName();
+    }
     nameElem.id = `card-${card.getId()}-name`;
     nameElem.className = 'card-name';
     var setElem = document.createElement('div');
@@ -80,7 +83,10 @@ function createCardInfoDom(card) {
             });
     }
     var nameElem = document.createElement('div');
-    nameElem.innerText = card.getName();
+    nameElem.innerText = card.getPrintedName();
+    if (nameElem.innerText === '') {
+        nameElem.innerText = card.getName();
+    }
     nameElem.id = `card-${card.getId()}-name`;
     nameElem.className = 'card-name';
     var setElem = document.createElement('div');
