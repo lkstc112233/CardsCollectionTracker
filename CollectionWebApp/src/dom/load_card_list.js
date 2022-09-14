@@ -74,8 +74,11 @@ async function loadSearchAddListDom(query = '', allLang = false) {
     if (query === '') {
         return;
     }
+    var listStub = document.getElementById('search-add-list');
+    var listParent = document.createElement('div');
+    listStub.innerHTML = '';
+    listStub.appendChild(listParent);
     listResponse = await grpc.queryCardInfoByName(query, allLang);
-    var listParent = document.getElementById('search-add-list');
     listParent.replaceChildren(...listResponse.getInfoList().map(card => createCardInfoDom(card)));
     var searchAllElem = document.createElement('div');
     searchAllElem.innerText = '--Search all language--';
