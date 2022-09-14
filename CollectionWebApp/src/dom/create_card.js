@@ -4,13 +4,16 @@ const { getSelectedBinder } = require('./selected_binder');
 function createCardDom(card) {
     var imageElem = document.createElement('img');
     imageElem.loading = 'lazy';
-    imageElem.src = card.getCardInfo().getImageUri();
     imageElem.id = `card-${card.getId()}-image`;
     imageElem.className = 'card-img';
     var nameElem = document.createElement('div');
     nameElem.innerText = card.getCardInfo().getPrintedName();
     if (nameElem.innerText === '') {
         nameElem.innerText = card.getCardInfo().getName();
+    }
+    var versionName = card.getVersion();
+    if (versionName !== '' && versionName !== 'nonfoil') {
+        nameElem.innerText += ` (${versionName})`;
     }
     nameElem.id = `card-${card.getId()}-name`;
     nameElem.className = 'card-name';
@@ -33,6 +36,7 @@ function createCardDom(card) {
             imageElem.style.left = `${e.pageX}px`;
             imageElem.style.top = `${e.pageY}px`;
         }
+        imageElem.src = card.getCardInfo().getImageUri();
         imageElem.style.opacity = 1;
     });
     cardInfoElem.addEventListener('mouseleave', (e) => {
@@ -67,7 +71,6 @@ function createButtonRowDom(card, version) {
 function createCardInfoDom(card) {
     var imageElem = document.createElement('img');
     imageElem.loading = 'lazy';
-    imageElem.src = card.getImageUri();
     imageElem.id = `card-${card.getId()}-image`;
     imageElem.className = 'card-img';
     var buttonDiv = document.createElement('div');
@@ -103,6 +106,7 @@ function createCardInfoDom(card) {
     cardInfoElem.addEventListener('mousemove', (e) => {
         imageElem.style.left = `${e.pageX}px`;
         imageElem.style.top = `${e.pageY}px`;
+        imageElem.src = card.getImageUri();
         imageElem.style.opacity = 1;
     });
     cardInfoElem.addEventListener('mouseleave', (e) => {
