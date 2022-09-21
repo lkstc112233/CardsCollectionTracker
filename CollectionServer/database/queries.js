@@ -53,7 +53,12 @@ ON DUPLICATE KEY UPDATE
 binder_name=VALUES(binder_name)`;
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
-const GET_BINDERS_QUERY = `SELECT * FROM binder_infos`;
+const GET_BINDERS_QUERY = `
+    SELECT binder_infos.*, count(cards_collection.id) AS card_count 
+    FROM binder_infos
+    LEFT JOIN cards_collection ON binder_infos.id = cards_collection.binder_id
+    GROUP BY binder_infos.id
+`;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 
 const DELETE_BINDERS_QUERY = `
