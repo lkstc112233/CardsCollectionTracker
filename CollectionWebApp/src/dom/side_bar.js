@@ -43,10 +43,14 @@ async function loadBinderListDoms() {
         binderButton.className = `menu-button${additionalClassName}`;
         binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()} (${binder.getCardCount()})</span>`;
         binderButton.onclick = function() {
-            bottom_bar.collapseBottomBar();
             selected_binder.setSelectedBinder(binder.getId());
             selected_binder.setSelectedBinderName(binder.getName());
-            selected_binder.setSelectedBinderCount(binder.getCardCount());
+            if (binder.getId() === bottom_bar.getCurrentBottomBinder()) {
+                selected_binder.setSelectedBinderCount(bottom_bar.getBottomBinderCount());
+            } else {
+                selected_binder.setSelectedBinderCount(binder.getCardCount());
+            }
+            bottom_bar.collapseBottomBar();
             clearAllPlaceholders();
             loadBinderSidebar();
             loadBinderDom(binder.getId());
@@ -55,7 +59,7 @@ async function loadBinderListDoms() {
             if (binder.getId() === selected_binder.getSelectedBinder()) {
                 return false;
             }
-            bottom_bar.popBottomBar(binder.getId());
+            bottom_bar.popBottomBar(binder.getId(), binder.getName(), binder.getCardCount());
             loadBinderSidebar();
             return false;
         }

@@ -1,6 +1,7 @@
 const { createCardDom, createCardInfoDom } = require('./create_card');
 const grpc = require('../grpc');
 const DragSelect = require('dragselect');
+const { getSelectedBinderName, increaseSelectedBinderCountBy } = require('./selected_binder');
 const bottomBar = require('./bottom_bar');
 
 const ds = new DragSelect({});
@@ -27,7 +28,16 @@ ds.subscribe('callback', (callbackObj) => {
                 return grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder())
                     .then(() => element.parentElement);
             })).then((arr) => {
+                var size = arr.length;
                 arr.forEach(element => element.remove());
+                var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
+                if (sidebarButton.length === 1) {
+                    sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(-size)})</span>`;
+                }
+                var sidebarButton = document.getElementsByClassName('menu-button bottomed-menu-item');
+                if (sidebarButton.length === 1) {
+                    sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${bottomBar.getBottomBinderName()} (${bottomBar.increaseBottomBinderCountBy(size)})</span>`;
+                }
             });
     }
 });
