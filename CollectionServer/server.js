@@ -31,7 +31,12 @@ function addBinder(call, callback) {
 
 function listBinders(call, callback) {
     db.queryBinders().then(binders => {
-        callback(null, {binders: binders.map(b => {return {name: b.binder_name, id: b.id};})});
+        callback(null, {binders: binders.map(b => {return {
+            name: b.binder_name,
+            id: b.id,
+            card_count: b.card_count,
+            };
+        })});
     }).catch(err => {
         callback({code: 2, message: err}, null);
     });
