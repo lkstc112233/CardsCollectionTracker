@@ -7,4 +7,6 @@ message Binder {
     string name = 1;
     // A handler for the binder used in other APIs.
     int32 id = 2;
+    // Cards in this binder.
+    int32 card_count = 3;
 }
