@@ -20,6 +20,7 @@ ds.subscribe('callback', (callbackObj) => {
     elemBelow = document.elementFromPoint(triggerEvent.clientX, triggerEvent.clientY);
     if (elemBelow == document.getElementById('binder-droparea')) {
         Promise.all(callbackObj.items
+            .filter(element => document.body.contains(element))
             .filter(element => element.childElementCount > 0)
             .map(element => element.firstChild)
             .filter(element => element.className === 'card-box')
