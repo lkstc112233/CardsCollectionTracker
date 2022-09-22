@@ -1,5 +1,5 @@
 const grpc = require('../grpc');
-const { getSelectedBinder } = require('./selected_binder');
+const { getSelectedBinder, getSelectedBinderName, increaseSelectedBinderCountBy } = require('./selected_binder');
 
 function createCardDom(card) {
     var imageElem = document.createElement('img');
@@ -49,8 +49,12 @@ function createCardDom(card) {
 function createButtonRowDom(card, version) {
     var buttonElem = document.createElement('button');
     buttonElem.className = 'circle-button plus';
-    buttonElem.onclick = function() {
-        grpc.addCardToCollection(card.getId(), version, getSelectedBinder());
+    buttonElem.onclick = async function() {
+        await grpc.addCardToCollection(card.getId(), version, getSelectedBinder());
+        var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
+        if (sidebarButton.length === 1) {
+            sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(1)})</span>`;
+        }
     }
     buttonElem.addEventListener('keydown', (e) => {
         if (e.code == 'Escape') {

@@ -46,6 +46,7 @@ async function loadBinderListDoms() {
             bottom_bar.collapseBottomBar();
             selected_binder.setSelectedBinder(binder.getId());
             selected_binder.setSelectedBinderName(binder.getName());
+            selected_binder.setSelectedBinderCount(binder.getCardCount());
             clearAllPlaceholders();
             loadBinderSidebar();
             loadBinderDom(binder.getId());
