@@ -49,6 +49,9 @@ function buildCardObject(cardData) {
     if ('prices' in cardData && 'usd' in cardData.prices && cardData.prices.usd) {
         optionalArgs.reference_usd_cent_price = cardData.prices.usd * 100;
     }
+    if ('collector_number' in cardData) {
+        optionalArgs.collectors_id = cardData.collector_number;
+    }
     return {
         'id': cardData.id,
         'card_name': cardData.name,

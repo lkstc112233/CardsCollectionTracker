@@ -35,6 +35,7 @@ const TABLE_DEFINITIONS = [
             ['version', 'VARCHAR(50)'],
             ['set_id', 'VARCHAR(36)'],
             ['reference_usd_cent_price', 'INT'],
+            ['collectors_id', 'VARCHAR(10)'],
         ],
         'PRIMARY_KEY': 'scryfall_id',
         'UNIQUE_INDEX': 'scryfall_id',
@@ -192,9 +193,10 @@ function buildInsertOrUpdateCardMetadataTableQuery(count) {
         card_printed_name,
         scryfall_image_uri,
         version,
-        reference_usd_cent_price
+        reference_usd_cent_price,
+        collectors_id
     )
-    VALUES${new Array(count).fill('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
+    VALUES${new Array(count).fill('(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
     scryfall_id=VALUES(scryfall_id),
     card_name=VALUES(card_name),
@@ -206,7 +208,8 @@ function buildInsertOrUpdateCardMetadataTableQuery(count) {
     card_printed_name = VALUES(card_printed_name),
     scryfall_image_uri = VALUES(scryfall_image_uri),
     version = VALUES(version),
-    reference_usd_cent_price = VALUES(reference_usd_cent_price)`;
+    reference_usd_cent_price = VALUES(reference_usd_cent_price),
+    collectors_id = VALUES(collectors_id)`;
 }
 
 // valid args: card_printed_name, scryfall_image_uri, version_string, reference_usd_cent_price
@@ -245,6 +248,11 @@ function formCardMetadataQueryValues(
     }
     if ('reference_usd_cent_price' in args) {
         values.push(args.reference_usd_cent_price);
+    } else {
+        values.push(null);
+    }
+    if ('collectors_id' in args) {
+        values.push(args.collectors_id);
     } else {
         values.push(null);
     }
