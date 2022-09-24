@@ -48,7 +48,8 @@ async function addBinder(name) {
 
 async function updateMetadata() {
     var request = new collection_service_proto.UpdateMetadataRequest();
-    return client.updateMetadata(request);
+    var deadline = new Date(Date.now() + 1200 * 1000); // 20 minutes
+    return client.updateMetadata(request, {deadline: deadline});
 }
 
 async function deleteBinder(id) {
