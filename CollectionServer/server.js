@@ -72,6 +72,7 @@ function queryCardInfoByName(call, callback) {
                 language: card.language,
                 versions: card.possible_version?.split('|'),
                 set_name: card.set_name,
+                collectors_id: card.collectors_id,
             };
         })});
     }).catch(err => {
@@ -125,6 +126,7 @@ async function listOrCountCardInBinder(binder_id, name_only) {
                     printed_name: card.printed_name,
                     language: card.language,
                     set_name: card.set_name,
+                    collectors_id: card.collectors_id,
                 },
             };
         })};

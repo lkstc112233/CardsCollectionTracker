@@ -133,7 +133,8 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
         card_infos.card_printed_name AS printed_name,
         card_infos.lang AS language,
         card_infos.version AS possible_version,
-        set_infos.set_name AS set_name
+        set_infos.set_name AS set_name,
+        card_infos.collectors_id AS collectors_id
     FROM card_infos
     JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
     JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
@@ -159,7 +160,8 @@ function buildListCardsInBinderQuery(all_binders) {
         card_infos.scryfall_image_uri AS image,
         card_infos.card_printed_name AS printed_name,
         card_infos.lang AS language,
-        set_infos.set_name AS set_name
+        set_infos.set_name AS set_name,
+        card_infos.collectors_id AS collectors_id
     FROM cards_collection
     JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
     JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
