@@ -89,6 +89,27 @@ ON DUPLICATE KEY UPDATE
 binder_name=VALUES(binder_name);
 `;
 
+const QUERY_TABLE_COLUMNS = `
+    SELECT TABLE_NAME AS t, COLUMN_NAME AS c
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA="card_collection"`;
+
+// No user input allowed!
+function buildAddColumnQuery(existing) {
+    return TABLE_DEFINITIONS
+        .map(table => {return {
+            "table": table.NAME,
+            "columns": table.COLUMNS.filter(
+                col => !existing.some(row => row.t === table.NAME && row.c === col[0])
+            ),
+        }})
+        .filter(table => table.columns.length !== 0)
+        .map(table => `
+            ALTER TABLE ${table.table}
+            ${table.columns.map(col => `ADD COLUMN ${col.join(' ')}`).join(',')};`)
+        .join('');
+}
+
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `
     SELECT binder_infos.*, count(cards_collection.id) AS card_count 
@@ -275,6 +296,7 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
 
 module.exports = {
     CREATE_TABLES,
+    QUERY_TABLE_COLUMNS,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
@@ -282,6 +304,7 @@ module.exports = {
     ADD_CARD_TO_COLLECTION_QUERY,
     DELETE_CARD_IN_COLLECTION_QUERY,
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+    buildAddColumnQuery,
     buildQueryCardInfoByName,
     buildListCardsInBinderQuery,
     buildCountCardsInBinderQuery,

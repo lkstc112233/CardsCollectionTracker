@@ -30,9 +30,33 @@ async function init() {
         multipleStatements: true,
     });
 
-    return new Promise((acc, rej) => {
+    await new Promise((acc, rej) => {
         pool.query(
             queries.CREATE_TABLES,
+            err => {
+                if (err) return rej(err);
+
+                console.log(`Connected to mysql db at host ${HOST}`);
+                acc();
+            },
+        );
+    });
+    tableColumnRows = await new Promise((acc, rej) => {
+        pool.query(
+            queries.QUERY_TABLE_COLUMNS,
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+    return new Promise((acc, rej) => {
+        var query = queries.buildAddColumnQuery(tableColumnRows);
+        if (query.trim().length === 0) {
+            acc();
+        }
+        pool.query(
+            queries.buildAddColumnQuery(tableColumnRows),
             err => {
                 if (err) return rej(err);
 
