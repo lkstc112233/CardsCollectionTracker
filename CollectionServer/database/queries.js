@@ -1,56 +1,93 @@
-const CREATE_TABLES = `CREATE TABLE IF NOT EXISTS set_infos (
-    scryfall_id VARCHAR(36),
-    set_name VARCHAR(255),
-    set_code VARCHAR(10),
-    scryfall_api_uri VARCHAR(70),
-    scryfall_image_uri VARCHAR(1000),
-    PRIMARY KEY(scryfall_id),
-    UNIQUE INDEX(scryfall_id)
-) DEFAULT CHARSET utf8mb4;
-CREATE TABLE IF NOT EXISTS card_oracle_infos (
-    scryfall_id VARCHAR(36),
-    card_oracle_name VARCHAR(255),
-    constructed TINYINT(1),
-    PRIMARY KEY(scryfall_id),
-    UNIQUE INDEX(scryfall_id)
-) DEFAULT CHARSET utf8mb4;
-CREATE TABLE IF NOT EXISTS card_infos (
-    scryfall_id VARCHAR(36),
-    card_name VARCHAR(255),
-    oracle_id VARCHAR(36),
-    card_printed_name VARCHAR(255),
-    lang VARCHAR(10),
-    scryfall_api_uri VARCHAR(70),
-    scryfall_card_url VARCHAR(1000),
-    scryfall_image_uri VARCHAR(1000),
-    version VARCHAR(50),
-    set_id VARCHAR(36),
-    reference_usd_cent_price INT,
-    PRIMARY KEY(scryfall_id),
-    UNIQUE INDEX(scryfall_id),
-    FOREIGN KEY (set_id) REFERENCES set_infos(scryfall_id),
-    FOREIGN KEY (oracle_id) REFERENCES card_oracle_infos(scryfall_id)
-) DEFAULT CHARSET utf8mb4;
-CREATE TABLE IF NOT EXISTS binder_infos (
-    id INT AUTO_INCREMENT,
-    binder_name VARCHAR(255),
-    PRIMARY KEY(id)
-) DEFAULT CHARSET utf8mb4;
+const TABLE_DEFINITIONS = [
+    {
+        'NAME': 'set_infos',
+        'COLUMNS': [
+            ['scryfall_id', 'VARCHAR(36)'],
+            ['set_name', 'VARCHAR(255)'],
+            ['set_code', 'VARCHAR(10)'],
+            ['scryfall_api_uri', 'VARCHAR(70)'],
+            ['scryfall_image_uri', 'VARCHAR(1000)'],
+        ],
+        'PRIMARY_KEY': 'scryfall_id',
+        'UNIQUE_INDEX': 'scryfall_id',
+    },
+    {
+        'NAME': 'card_oracle_infos',
+        'COLUMNS': [
+            ['scryfall_id', 'VARCHAR(36)'],
+            ['card_oracle_name', 'VARCHAR(255)'],
+            ['constructed', 'TINYINT(1)'],
+        ],
+        'PRIMARY_KEY': 'scryfall_id',
+        'UNIQUE_INDEX': 'scryfall_id',
+    },
+    {
+        'NAME': 'card_infos',
+        'COLUMNS': [
+            ['scryfall_id', 'VARCHAR(36)'],
+            ['card_name', 'VARCHAR(255)'],
+            ['oracle_id', 'VARCHAR(36)'],
+            ['card_printed_name', 'VARCHAR(255)'],
+            ['lang', 'VARCHAR(10)'],
+            ['scryfall_api_uri', 'VARCHAR(70)'],
+            ['scryfall_card_url', 'VARCHAR(1000)'],
+            ['scryfall_image_uri', 'VARCHAR(1000)'],
+            ['version', 'VARCHAR(50)'],
+            ['set_id', 'VARCHAR(36)'],
+            ['reference_usd_cent_price', 'INT'],
+        ],
+        'PRIMARY_KEY': 'scryfall_id',
+        'UNIQUE_INDEX': 'scryfall_id',
+        'FOREIGN_KEY': [
+            ['set_id', 'set_infos(scryfall_id)'],
+            ['oracle_id', 'card_oracle_infos(scryfall_id)'],
+        ],
+    },
+    {
+        'NAME': 'binder_infos',
+        'COLUMNS': [
+            ['id', 'INT AUTO_INCREMENT'],
+            ['binder_name', 'VARCHAR(255)'],
+        ],
+        'PRIMARY_KEY': 'id',
+    },
+    {
+        'NAME': 'cards_collection',
+        'COLUMNS': [
+            ['id', 'INT AUTO_INCREMENT'],
+            ['card_id', 'VARCHAR(36)'],
+            ['version', 'VARCHAR(10)'],
+            ['binder_id', 'INT'],
+        ],
+        'PRIMARY_KEY': 'id',
+        'FOREIGN_KEY': [
+            ['card_id', 'card_infos(scryfall_id)'],
+            ['binder_id', 'binder_infos(id)'],
+        ],
+    },
+]
+
+// No user input, it's safe to construct the query.
+const CREATE_TABLES = `${
+    TABLE_DEFINITIONS.map(
+        table => `
+        CREATE TABLE IF NOT EXISTS ${table.NAME} (
+            ${table.COLUMNS.map(col => col.join(' ')).join(',')}
+            ${'PRIMARY_KEY' in table? `, PRIMARY KEY(${table.PRIMARY_KEY})`: ''}
+            ${'UNIQUE_INDEX' in table? `, UNIQUE INDEX(${table.PRIMARY_KEY})`: ''}
+            ${'FOREIGN_KEY' in table? `, ${table.FOREIGN_KEY.map(col => 
+                `FOREIGN KEY (${col[0]}) REFERENCES ${col[1]}`).join(',')}`: ''}
+        ) DEFAULT CHARSET utf8mb4;
+        `
+    ).join('')
+}
 ALTER TABLE binder_infos AUTO_INCREMENT = 10;
-CREATE TABLE IF NOT EXISTS cards_collection (
-    id INT AUTO_INCREMENT,
-    card_id VARCHAR(36),
-    version VARCHAR(10),
-    binder_id INT,
-    PRIMARY KEY(id),
-    FOREIGN KEY (card_id) REFERENCES card_infos(scryfall_id),
-    FOREIGN KEY (binder_id) REFERENCES binder_infos(id)
-) DEFAULT CHARSET utf8mb4;
 INSERT INTO
 binder_infos(id, binder_name)
 VALUES(1, 'Unbinded')
 ON DUPLICATE KEY UPDATE
-binder_name=VALUES(binder_name)`;
+binder_name=VALUES(binder_name);
+`;
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `
