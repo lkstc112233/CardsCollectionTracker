@@ -18,6 +18,8 @@ message CardInfo {
     repeated string versions = 6;
     // Name of the set
     string set_name = 7;
+    // Collector's number.
+    string collectors_id = 8;
 }
 
 // Info for card in collection
