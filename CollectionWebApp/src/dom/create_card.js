@@ -21,6 +21,10 @@ function createCardDom(card) {
     setElem.innerText = card.getCardInfo().getSetName();
     setElem.id = `card-${card.getId()}-set-name`;
     setElem.className = 'set-name';
+    var collectorsId = card.getCardInfo().getCollectorsId();
+    if (collectorsId !== '') {
+        setElem.innerText += ` (${collectorsId})`;
+    }
     var cardInfoElem = document.createElement('div');
     cardInfoElem.className = 'card-box';
     cardInfoElem.id = `card-${card.getId()}-div`;
@@ -100,6 +104,10 @@ function createCardInfoDom(card) {
     setElem.innerText = card.getSetName();
     setElem.id = `card-${card.getId()}-set-name`;
     setElem.className = 'set-name';
+    var collectorsId = card.getCollectorsId();
+    if (collectorsId !== '') {
+        setElem.innerText += ` (${collectorsId})`;
+    }
     var cardInfoElem = document.createElement('div');
     cardInfoElem.className = 'card-box';
     cardInfoElem.id = `card-${card.getId()}-div`;
