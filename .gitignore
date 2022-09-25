@@ -128,3 +128,5 @@ dist
 collection_service_postman.proto
 
 mysql_root_password
+
+CollectionExtension/genfiles
