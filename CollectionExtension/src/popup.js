@@ -10,6 +10,16 @@ async function fetchData() {
     });
 }
 
+function getCountSpanStyle(collectionCount, requiredCount) {
+    if (collectionCount === 0) {
+        return 'background-color: #fadbd8; color: #78281f';
+    }
+    if (collectionCount < requiredCount) {
+        return 'background-color: #fdebd0; color: #7e5109';
+    }
+    return '';
+}
+
 async function updatePlugin() {
     data = await fetchData();
     document.getElementById('decks').replaceChildren(...data.map(
@@ -25,9 +35,30 @@ async function updatePlugin() {
                     return cardDom;
                 }
             ));
+            var showdiffButton = document.createElement('button');
+            showdiffButton.innerHTML = 'Compare diff';
+            showdiffButton.onclick = async function() {
+                cards = (await grpc.listAllBinderCards()).getCardsNamesMap();
+                deckDom.replaceChildren(...deck.cards.map(
+                    c => {
+                        var count = 0;
+                        if (cards.has(c.name)) {
+                            count = Math.min(cards.get(c.name), c.count);
+                        }
+                        var cardEntityDom = document.createElement('div');
+                        var cardCountSpan = document.createElement('span');
+                        cardCountSpan.style = getCountSpanStyle(count, c.count);
+                        cardCountSpan.innerText = `(${count} / ${c.count})`;
+                        cardEntityDom.appendChild(cardCountSpan);
+                        cardEntityDom.appendChild(document.createTextNode(` ${c.name}`));
+                        return cardEntityDom;
+                    }
+                ));
+            }
             var holderDom = document.createElement('div');
             holderDom.appendChild(titleDom);
             holderDom.appendChild(deckDom);
+            holderDom.appendChild(showdiffButton);
             return holderDom;
         }
     ));
