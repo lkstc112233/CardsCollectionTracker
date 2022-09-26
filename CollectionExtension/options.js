@@ -15,11 +15,11 @@ function save_options() {
 
 // Restores settings using the preferences stored in chrome.storage.
 function restore_options() {
-chrome.storage.sync.get({
-    backendAddress: 'localhost:23333'
-}, function(items) {
-    document.getElementById('backend-address').value = items.backendAddress;
-});
+    chrome.storage.sync.get({
+        backendAddress: 'http://localhost:33333'
+    }, function(items) {
+        document.getElementById('backend-address').value = items.backendAddress;
+    });
 }
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
