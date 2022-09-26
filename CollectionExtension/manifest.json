@@ -15,5 +15,8 @@
             "js": ["content_script.js"]
         }
     ],
+    "action": {
+        "default_popup": "popup.html"
+    },
     "manifest_version": 3
 }
