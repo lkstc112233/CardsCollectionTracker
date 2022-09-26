@@ -18,6 +18,8 @@ service CollectionService {
     rpc DeleteCardInCollection (DeleteCardInCollectionRequest) returns (DeleteCardInCollectionResponse) {}
     rpc MoveCardToAnotherBinder (MoveCardToAnotherBinderRequest) returns (MoveCardToAnotherBinderResponse) {}
     rpc ListCardInBinder (ListCardInBinderRequest) returns (ListCardInBinderResponse) {}
+    rpc CheckCardCountInCollection (CheckCardCountInCollectionRequest) 
+        returns (CheckCardCountInCollectionResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -117,4 +119,34 @@ message ListCardInBinderResponse {
     repeated card_collection.Card cards = 1;
     // populated only if name_only is on.
     map<string, int32> cards_names = 2;
+}
+
+message CheckCardCountInCollectionRequest {
+    // List of cards to check. Only name is respected for now.
+    repeated card_collection.CardInfo cards_to_check = 1;
+}
+
+message CheckCardCountInCollectionResponse {
+    enum CardInCollectionStatus {
+        CARD_COLLECTION_STATUS_UNKNOWN = 0;
+        // If an id or name is not found in the metadata.
+        CARD_COLLECTION_STATUS_NOT_VALID_CARD = 1;
+        // If card is found exist in the collection.
+        CARD_COLLECTION_STATUS_EXISTS = 2;
+        // If card is not found exist in the collection.
+        CARD_COLLECTION_STATUS_NOT_EXISTS = 3;
+    }
+
+    message CardInCollectionCount {
+        CardInCollectionStatus status = 1;
+        // Has no meaning if status != CARD_COLLECTION_STATUS_EXISTS.
+        int32 count = 2;
+    }
+
+    // Name to status map.
+    // If a card requested by client is not recognized by metadata:
+    //   1. If name was provided with request, name is returned in key.
+    //   2. If id was provided with request, id is returned in key.
+    //      This is also the case if both is provided.
+    map<string, CardInCollectionCount> cards_status = 1;
 }
