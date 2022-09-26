@@ -262,6 +262,19 @@ async function moveCardToAnotherBinder(id, new_binder) {
     });
 }
 
+async function countCardsInCollection(names) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
+            [names],
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
 module.exports = {
     init,
     teardown,
@@ -278,4 +291,5 @@ module.exports = {
     addCardToCollection,
     deleteCardInCollection,
     moveCardToAnotherBinder,
+    countCardsInCollection,
 };
