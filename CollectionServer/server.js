@@ -141,6 +141,23 @@ function listCardInBinder(call, callback) {
     });
 }
 
+function checkCardCountInCollection(call, callback) {
+    var names = call.request.cards_to_check.map(info => info.name).filter(name => name);
+    db.countCardsInCollection(names).then(res => {
+        var result = res.reduce((a, v) => ({...a, [v.name]: {
+            count: v.count,
+            status: v.count === 0? 3: 2,
+        }}), {});
+        result = names.filter(name => !result.hasOwnProperty(name))
+        .reduce((a, v) => ({...a, [v]: {
+            status: 1,
+        }}), result);
+        callback(null, {cards_status: result});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -151,6 +168,7 @@ grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
 grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
 grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
 grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
+grpc.bindRpcHandler('checkCardCountInCollection', checkCardCountInCollection);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
