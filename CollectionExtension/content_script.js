@@ -13,19 +13,29 @@ function fetchDecks(deckDoms) {
             var name = nameNode === null? 'Untitled': getTitle(nameNode);
             activeCardsNode = node.querySelector('.tab-content>.active');
             cardsTable = activeCardsNode.querySelector('table.deck-view-deck-table');
-            var cards = Array.from(cardsTable.rows)
-            .filter(row => row.className !== 'deck-category-header')
-            .map(
-                row => {
-                    return {
-                        'count': parseInt(row.children[0].textContent),
-                        'name': row.children[1].querySelector('a').textContent.trim(),
+            var cardsMap = Array.from(cardsTable.rows)
+                .filter(row => row.className !== 'deck-category-header')
+                .map(
+                    row => {
+                        return {
+                            'count': parseInt(row.children[0].textContent),
+                            'name': row.children[1].querySelector('a').textContent.trim(),
+                        }
+                    })
+                .reduce((m, c) => {
+                    if (m.has(c.name)) {
+                        m.set(c.name, m.get(c.name) + c.count);
+                    } else {
+                        m.set(c.name, c.count);
                     }
-                }
-            );
+                    return m;
+                }, new Map());
             return {
                 'name': name,
-                'cards': cards,
+                'cards': Array.from(cardsMap.entries(), ([key, value]) => { return {
+                    'count': value,
+                    'name': key,
+                };}).sort((a, b) => a.name > b.name ? 1: a.name < b.name? -1 : 0),
             }
         }
     );
