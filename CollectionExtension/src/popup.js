@@ -11,6 +11,9 @@ async function fetchData() {
 }
 
 function getCountSpanStyle(collectionCount, requiredCount) {
+    if (collectionCount === -1) {
+        return 'background-color: #424242; color: #e0e0e0';
+    }
     if (collectionCount === 0) {
         return 'background-color: #fadbd8; color: #78281f';
     }
@@ -38,17 +41,24 @@ async function updatePlugin() {
             var showdiffButton = document.createElement('button');
             showdiffButton.innerHTML = 'Compare diff';
             showdiffButton.onclick = async function() {
-                cards = (await grpc.listAllBinderCards()).getCardsNamesMap();
+                cards = (await grpc.checkCardCountInCollection(deck.cards.map(c => c.name))).getCardsStatusMap();
                 deckDom.replaceChildren(...deck.cards.map(
                     c => {
                         var count = 0;
-                        if (cards.has(c.name)) {
-                            count = Math.min(cards.get(c.name), c.count);
+                        var status = cards.get(c.name);
+                        if (status.getStatus() === 1) {
+                            count = -1;
+                        }
+                        if (status.getStatus() === 2) {
+                            count = Math.min(status.getCount(), c.count);
                         }
                         var cardEntityDom = document.createElement('div');
                         var cardCountSpan = document.createElement('span');
                         cardCountSpan.style = getCountSpanStyle(count, c.count);
                         cardCountSpan.innerText = `(${count} / ${c.count})`;
+                        if (count === -1) {
+                            cardCountSpan.innerText = '(Not Found)';
+                        }
                         cardEntityDom.appendChild(cardCountSpan);
                         cardEntityDom.appendChild(document.createTextNode(` ${c.name}`));
                         return cardEntityDom;

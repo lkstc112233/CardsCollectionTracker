@@ -1,4 +1,5 @@
 const collection_service_proto = require('../collection_service_pb');
+const card_proto = require('../card_pb');
 const {CollectionServicePromiseClient} = require('../collection_service_grpc_web_pb');
 
 async function getServiceAddress() {
@@ -25,13 +26,17 @@ async function ensureClientInitialized() {
     return Promise.resolve();
 }
 
-async function listAllBinderCards() {
+async function checkCardCountInCollection(names) {
     await ensureClientInitialized();
-    var request = new collection_service_proto.ListCardInBinderRequest();
-    request.setNameOnly(true);
-    return client.listCardInBinder(request);
+    var request = new collection_service_proto.CheckCardCountInCollectionRequest();
+    request.setCardsToCheckList(names.map(name => {
+        var info = new card_proto.CardInfo();
+        info.setName(name);
+        return info;
+    }));
+    return client.checkCardCountInCollection(request);
 }
 
 module.exports = {
-    listAllBinderCards,
+    checkCardCountInCollection,
 };
