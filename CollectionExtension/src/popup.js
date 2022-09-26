@@ -17,9 +17,14 @@ async function updatePlugin() {
             var titleDom = document.createElement('h3');
             titleDom.innerText = deck.name;
             var deckDom = document.createElement('div');
-            deckDom.innerText = deck.cards.map(
-                c => c.count + ' ' + c.name
-            ).join('\n');
+            deckDom.className = 'deck-list';
+            deckDom.replaceChildren(...deck.cards.map(
+                c => {
+                    var cardDom = document.createElement('div');
+                    cardDom.appendChild(document.createTextNode(c.count + ' ' + c.name));
+                    return cardDom;
+                }
+            ));
             var holderDom = document.createElement('div');
             holderDom.appendChild(titleDom);
             holderDom.appendChild(deckDom);
