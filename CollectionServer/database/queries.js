@@ -304,6 +304,17 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
     constructed=VALUES(constructed)`;
 }
 
+COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY = `
+SELECT
+    card_oracle_infos.card_oracle_name AS name,
+    IFNULL(COUNT(cards_collection.card_id), 0) AS count
+FROM cards_collection
+RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+WHERE card_infos.card_name IN (?)
+GROUP BY card_infos.oracle_id
+`;
+
 module.exports = {
     CREATE_TABLES,
     QUERY_TABLE_COLUMNS,
@@ -314,6 +325,7 @@ module.exports = {
     ADD_CARD_TO_COLLECTION_QUERY,
     DELETE_CARD_IN_COLLECTION_QUERY,
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+    COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
     buildAddColumnQuery,
     buildQueryCardInfoByName,
     buildListCardsInBinderQuery,
