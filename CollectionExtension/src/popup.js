@@ -1,3 +1,5 @@
+const grpc = require('./grpc');
+
 async function fetchData() {
     return new Promise(acc => {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
