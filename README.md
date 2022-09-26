@@ -13,6 +13,14 @@ $ docker build -f .\CollectionServer\Dockerfile .
 $ docker build -f .\CollectionWebApp\Dockerfile .
 ```
 
+### Pack Extension
+
+```
+$ docker build -f .\CollectionExtension\Dockerfile --output .\CollectionExtension\genfiles .
+```
+
+Then pack the extension with genfiles.
+
 ## Run
 
 ```
