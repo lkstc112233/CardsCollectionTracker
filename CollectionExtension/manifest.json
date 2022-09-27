@@ -1,7 +1,7 @@
 {
     "name": "Collection Extension",
     "description": "Manages the collection and stuff",
-    "version": "0.5",
+    "version": "0.6",
     "options_page": "options.html",
     "permissions": [
         "storage"
