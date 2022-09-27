@@ -1,0 +1,60 @@
+//
+//  BinderView.swift
+//  CollectionMobileApp
+//
+//  Created by Kevin on 9/27/22.
+//
+
+import SwiftUI
+
+struct BinderView: View {
+    var name: String
+    
+    var body: some View {
+        List {
+            Text("Example Card 1")
+                .contextMenu {
+                    Button {
+                    }label: {
+                        Label("Delete from collection", systemImage: "minus.circle")
+                    }
+                }
+            Text("Example Card 2")
+                .contextMenu {
+                    Button {
+                    }label: {
+                        Label("Delete from collection", systemImage: "minus.circle")
+                    }
+                }
+            Text("Example Card 3")
+                .contextMenu {
+                    Button {
+                    }label: {
+                        Label("Delete from collection", systemImage: "minus.circle")
+                    }
+                }
+            Text("Example Card 4")
+                .contextMenu {
+                    Button {
+                    }label: {
+                        Label("Delete from collection", systemImage: "minus.circle")
+                    }
+                }
+        }
+        .navigationTitle(name)
+        .toolbar{
+            Button{} label: {
+                Label("Cache", systemImage: "archivebox.fill")
+            }
+        }
+        .refreshable {
+            // gRPC
+        }
+    }
+}
+
+struct BinderView_Previews: PreviewProvider {
+    static var previews: some View {
+        BinderView(name: "Example")
+    }
+}
