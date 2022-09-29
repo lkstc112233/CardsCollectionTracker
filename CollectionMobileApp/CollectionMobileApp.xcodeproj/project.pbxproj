@@ -62,6 +62,7 @@
 		0AE9310F28E5912D00599200 /* collection_service.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = collection_service.pb.swift; sourceTree = "<group>"; };
 		0AE9311028E5912D00599200 /* card.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = card.pb.swift; sourceTree = "<group>"; };
 		0AE9311128E5912D00599200 /* binder.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = binder.pb.swift; sourceTree = "<group>"; };
+		0AE9311A28E5922D00599200 /* proto */ = {isa = PBXFileReference; lastKnownFileType = folder; name = proto; path = ../proto; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +95,7 @@
 		0AE930B728E2A99400599200 = {
 			isa = PBXGroup;
 			children = (
+				0AE9311A28E5922D00599200 /* proto */,
 				0AE930C228E2A99400599200 /* CollectionMobileApp */,
 				0AE930D328E2A99500599200 /* CollectionMobileAppTests */,
 				0AE930DD28E2A99500599200 /* CollectionMobileAppUITests */,
