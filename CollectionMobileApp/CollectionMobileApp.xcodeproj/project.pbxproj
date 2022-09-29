@@ -19,6 +19,11 @@
 		0AE930F328E2E49700599200 /* TradingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE930F228E2E49700599200 /* TradingView.swift */; };
 		0AE930F528E2E4DE00599200 /* CachedBinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE930F428E2E4DE00599200 /* CachedBinderView.swift */; };
 		0AE930F928E2E57100599200 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE930F828E2E57100599200 /* SettingsView.swift */; };
+		0AE9311228E5912D00599200 /* collection_service.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9310F28E5912D00599200 /* collection_service.pb.swift */; };
+		0AE9311328E5912D00599200 /* card.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9311028E5912D00599200 /* card.pb.swift */; };
+		0AE9311428E5912D00599200 /* binder.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9311128E5912D00599200 /* binder.pb.swift */; };
+		0AE9311728E591A100599200 /* CGRPCZlib in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE9311628E591A100599200 /* CGRPCZlib */; };
+		0AE9311928E591A100599200 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE9311828E591A100599200 /* GRPC */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +59,9 @@
 		0AE930F228E2E49700599200 /* TradingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradingView.swift; sourceTree = "<group>"; };
 		0AE930F428E2E4DE00599200 /* CachedBinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedBinderView.swift; sourceTree = "<group>"; };
 		0AE930F828E2E57100599200 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		0AE9310F28E5912D00599200 /* collection_service.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = collection_service.pb.swift; sourceTree = "<group>"; };
+		0AE9311028E5912D00599200 /* card.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = card.pb.swift; sourceTree = "<group>"; };
+		0AE9311128E5912D00599200 /* binder.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = binder.pb.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +69,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AE9311928E591A100599200 /* GRPC in Frameworks */,
+				0AE9311728E591A100599200 /* CGRPCZlib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +114,7 @@
 		0AE930C228E2A99400599200 /* CollectionMobileApp */ = {
 			isa = PBXGroup;
 			children = (
+				0AE9310E28E5912D00599200 /* genfiles */,
 				0AE930EF28E2DFB300599200 /* View */,
 				0AE930C328E2A99400599200 /* CollectionMobileApp.swift */,
 				0AE930C728E2A99500599200 /* Assets.xcassets */,
@@ -150,6 +161,16 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		0AE9310E28E5912D00599200 /* genfiles */ = {
+			isa = PBXGroup;
+			children = (
+				0AE9310F28E5912D00599200 /* collection_service.pb.swift */,
+				0AE9311028E5912D00599200 /* card.pb.swift */,
+				0AE9311128E5912D00599200 /* binder.pb.swift */,
+			);
+			path = genfiles;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -166,6 +187,10 @@
 			dependencies = (
 			);
 			name = CollectionMobileApp;
+			packageProductDependencies = (
+				0AE9311628E591A100599200 /* CGRPCZlib */,
+				0AE9311828E591A100599200 /* GRPC */,
+			);
 			productName = CollectionMobileApp;
 			productReference = 0AE930C028E2A99400599200 /* CollectionMobileApp.app */;
 			productType = "com.apple.product-type.application";
@@ -238,6 +263,9 @@
 				Base,
 			);
 			mainGroup = 0AE930B728E2A99400599200;
+			packageReferences = (
+				0AE9311528E591A100599200 /* XCRemoteSwiftPackageReference "grpc-swift" */,
+			);
 			productRefGroup = 0AE930C128E2A99400599200 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -282,10 +310,13 @@
 			files = (
 				0AE930F928E2E57100599200 /* SettingsView.swift in Sources */,
 				0AE930F328E2E49700599200 /* TradingView.swift in Sources */,
+				0AE9311228E5912D00599200 /* collection_service.pb.swift in Sources */,
 				0AE930EE28E2DFA200599200 /* CollectionView.swift in Sources */,
 				0AE930F528E2E4DE00599200 /* CachedBinderView.swift in Sources */,
 				0AE930C628E2A99400599200 /* AppMainView.swift in Sources */,
 				0AE930F128E2E0AE00599200 /* BinderView.swift in Sources */,
+				0AE9311328E5912D00599200 /* card.pb.swift in Sources */,
+				0AE9311428E5912D00599200 /* binder.pb.swift in Sources */,
 				0AE930C428E2A99400599200 /* CollectionMobileApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -611,6 +642,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0AE9311528E591A100599200 /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/grpc/grpc-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0AE9311628E591A100599200 /* CGRPCZlib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AE9311528E591A100599200 /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			productName = CGRPCZlib;
+		};
+		0AE9311828E591A100599200 /* GRPC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AE9311528E591A100599200 /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			productName = GRPC;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0AE930B828E2A99400599200 /* Project object */;
 }
