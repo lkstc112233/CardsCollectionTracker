@@ -4,7 +4,7 @@ RUN mkdir out
 RUN protoc -I=./proto \
     --swift_opt=Visibility=Public \
     --swift_out=out \
-    --grpc-swift_opt=Visibility=Public,AsyncClient=True,AsyncServer=True \
+    --grpc-swift_opt=Visibility=Public \
     --grpc-swift_out=out \
     ./proto/*.proto
 

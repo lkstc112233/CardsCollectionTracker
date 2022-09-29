@@ -24,6 +24,7 @@
 		0AE9311428E5912D00599200 /* binder.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9311128E5912D00599200 /* binder.pb.swift */; };
 		0AE9311728E591A100599200 /* CGRPCZlib in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE9311628E591A100599200 /* CGRPCZlib */; };
 		0AE9311928E591A100599200 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE9311828E591A100599200 /* GRPC */; };
+		0AE9311C28E5981000599200 /* collection_service.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9311B28E5981000599200 /* collection_service.grpc.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		0AE9311028E5912D00599200 /* card.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = card.pb.swift; sourceTree = "<group>"; };
 		0AE9311128E5912D00599200 /* binder.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = binder.pb.swift; sourceTree = "<group>"; };
 		0AE9311A28E5922D00599200 /* proto */ = {isa = PBXFileReference; lastKnownFileType = folder; name = proto; path = ../proto; sourceTree = "<group>"; };
+		0AE9311B28E5981000599200 /* collection_service.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = collection_service.grpc.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 		0AE9310E28E5912D00599200 /* genfiles */ = {
 			isa = PBXGroup;
 			children = (
+				0AE9311B28E5981000599200 /* collection_service.grpc.swift */,
 				0AE9310F28E5912D00599200 /* collection_service.pb.swift */,
 				0AE9311028E5912D00599200 /* card.pb.swift */,
 				0AE9311128E5912D00599200 /* binder.pb.swift */,
@@ -310,6 +313,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AE9311C28E5981000599200 /* collection_service.grpc.swift in Sources */,
 				0AE930F928E2E57100599200 /* SettingsView.swift in Sources */,
 				0AE930F328E2E49700599200 /* TradingView.swift in Sources */,
 				0AE9311228E5912D00599200 /* collection_service.pb.swift in Sources */,
