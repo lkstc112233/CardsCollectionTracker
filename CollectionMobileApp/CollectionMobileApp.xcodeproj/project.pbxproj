@@ -25,6 +25,7 @@
 		0AE9311728E591A100599200 /* CGRPCZlib in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE9311628E591A100599200 /* CGRPCZlib */; };
 		0AE9311928E591A100599200 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE9311828E591A100599200 /* GRPC */; };
 		0AE9311C28E5981000599200 /* collection_service.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9311B28E5981000599200 /* collection_service.grpc.swift */; };
+		0AE9312128E6D7A300599200 /* GrpcClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9312028E6D7A300599200 /* GrpcClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		0AE9311128E5912D00599200 /* binder.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = binder.pb.swift; sourceTree = "<group>"; };
 		0AE9311A28E5922D00599200 /* proto */ = {isa = PBXFileReference; lastKnownFileType = folder; name = proto; path = ../proto; sourceTree = "<group>"; };
 		0AE9311B28E5981000599200 /* collection_service.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = collection_service.grpc.swift; sourceTree = "<group>"; };
+		0AE9312028E6D7A300599200 /* GrpcClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrpcClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 		0AE930C228E2A99400599200 /* CollectionMobileApp */ = {
 			isa = PBXGroup;
 			children = (
+				0AE9311F28E6D78100599200 /* gRPC */,
 				0AE9310E28E5912D00599200 /* genfiles */,
 				0AE930EF28E2DFB300599200 /* View */,
 				0AE930C328E2A99400599200 /* CollectionMobileApp.swift */,
@@ -174,6 +177,14 @@
 				0AE9311128E5912D00599200 /* binder.pb.swift */,
 			);
 			path = genfiles;
+			sourceTree = "<group>";
+		};
+		0AE9311F28E6D78100599200 /* gRPC */ = {
+			isa = PBXGroup;
+			children = (
+				0AE9312028E6D7A300599200 /* GrpcClient.swift */,
+			);
+			path = gRPC;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,6 +330,7 @@
 				0AE9311228E5912D00599200 /* collection_service.pb.swift in Sources */,
 				0AE930EE28E2DFA200599200 /* CollectionView.swift in Sources */,
 				0AE930F528E2E4DE00599200 /* CachedBinderView.swift in Sources */,
+				0AE9312128E6D7A300599200 /* GrpcClient.swift in Sources */,
 				0AE930C628E2A99400599200 /* AppMainView.swift in Sources */,
 				0AE930F128E2E0AE00599200 /* BinderView.swift in Sources */,
 				0AE9311328E5912D00599200 /* card.pb.swift in Sources */,
