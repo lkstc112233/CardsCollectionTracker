@@ -23,10 +23,16 @@ class GrpcClientClass {
     }
     
     private func constructChannel() -> GRPCChannel {
-        let serverAddress = UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333"
+        let serverAddress = (UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333").components(separatedBy: ":")
+        
+        let host = serverAddress[0]
+        var port = 33333
+        if serverAddress.count >= 2 {
+            port = Int(serverAddress[1]) ?? 33333
+        }
         
         return ClientConnection
             .insecure(group: MultiThreadedEventLoopGroup(numberOfThreads: 1))
-            .connect(host: serverAddress, port: 33333)
+            .connect(host: host, port: port)
     }
 }
