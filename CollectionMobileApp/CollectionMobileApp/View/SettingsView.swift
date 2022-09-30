@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var server: String = "localhost:33333"
+    @AppStorage("ServerAddress") var defaults: String = "localhost:33333"
     
     var body: some View {
         Form {
             HStack {
                 Text("Collection Server")
-                TextField(text: $server, prompt: Text("localhost:33333")) {
+                TextField(text: $defaults, prompt: Text("localhost:33333")) {
                     Text("Collection Server")
                 }
                     .onSubmit {
