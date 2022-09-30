@@ -18,7 +18,7 @@ struct SettingsView: View {
                     Text("Collection Server")
                 }
                     .onSubmit {
-                        // Set
+                        GrpcClient.updateAddress()
                     }
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
