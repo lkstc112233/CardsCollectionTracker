@@ -7,25 +7,60 @@
 
 import SwiftUI
 
+struct IdentifiableBinder : Identifiable {
+    var binder: CardCollection_Binder
+    var id: Int32
+    init(binder: CardCollection_Binder) {
+        self.binder = binder
+        self.id = binder.id
+    }
+}
+
 struct CollectionView: View {
+    @State var binders: [IdentifiableBinder] = []
+    @State var error: Bool = false
+    
     var body: some View {
         NavigationView {
-            List {
-                NavigationLink{
-                    BinderView(name: "Unbinded")
-                }label: {
-                    Text("Unbinded")
+            if error {
+                VStack {
+                    Text("Unable to load collections")
+                    Button("Retry") {
+                        Task {
+                            await loadBinders()
+                        }
+                    }
                 }
-                NavigationLink{
-                    BinderView(name: "Example Binder")
-                }label: {
-                    Text("Trading")
+            } else {
+                List(binders) { binder in
+                    NavigationLink{
+                        BinderView(name: binder.binder.name)
+                    }label: {
+                        Text(binder.binder.name)
+                    }
                 }
+                .refreshable {
+                    await loadBinders()
+                }
+                .navigationTitle("Collections")
             }
-            .navigationTitle("Collections")
-            .refreshable {
-                // gRPC
-            }
+        }
+        .task{
+            await loadBinders()
+        }
+    }
+    
+    func loadBinders() async {
+        print("Loading binders")
+        do {
+            self.binders = try await GrpcClient.client.listBinders(CardCollection_Service_ListBindersRequest()).binders.map({ binder in
+                IdentifiableBinder(binder: binder)
+            })
+            error = false
+        } catch {
+            self.error = true
+            self.binders = []
+            print("Error happened loading binders: " + error.localizedDescription)
         }
     }
 }
