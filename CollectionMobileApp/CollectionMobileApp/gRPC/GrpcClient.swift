@@ -43,6 +43,17 @@ class GrpcClientClass {
         return response.binders
     }
     
+    func listCardsInBinder(id: Int32) async throws -> [CardCollection_Card] {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        var request = CardCollection_Service_ListCardInBinderRequest()
+        request.binderID = id
+        request.nameOnly = false
+        let response = try await client.listCardInBinder(request)
+        return response.cards
+    }
+    
     private func constructChannel() -> ClientConnection {
         let serverAddress = (UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333").components(separatedBy: ":")
         
