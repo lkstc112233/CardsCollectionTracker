@@ -54,6 +54,19 @@ class GrpcClientClass {
         return response.cards
     }
     
+    func queryCardInfoByName(name: String) async throws -> [CardCollection_CardInfo] {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        var request = CardCollection_Service_QueryCardInfoByNameRequest()
+        request.query = name
+        request.enOnly = true
+        request.frontMatch = true
+        request.resultLimit = 100
+        let response = try await client.queryCardInfoByName(request)
+        return response.info
+    }
+    
     private func constructChannel() -> ClientConnection {
         let serverAddress = (UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333").components(separatedBy: ":")
         
