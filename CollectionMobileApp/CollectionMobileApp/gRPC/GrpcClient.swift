@@ -11,18 +11,39 @@ import NIO
 
 var GrpcClient = GrpcClientClass()
 
+enum GrpcError: Error {
+    case channelNotReady
+}
+
 class GrpcClientClass {
-    var client: CardCollection_Service_CollectionServiceAsyncClient! = nil
+    private var client: CardCollection_Service_CollectionServiceAsyncClient! = nil
+    private var channel: ClientConnection! = nil
+    
+    private func channelReadyOrIdle() -> Bool {
+        return channel.connectivity.state == ConnectivityState.ready
+        || channel.connectivity.state == ConnectivityState.idle
+    }
     
     func updateAddress() {
-        client = CardCollection_Service_CollectionServiceAsyncClient(channel: constructChannel())
+        channel = constructChannel()
+        client = CardCollection_Service_CollectionServiceAsyncClient(channel: channel)
     }
     
     fileprivate init() {
-        client = CardCollection_Service_CollectionServiceAsyncClient(channel: constructChannel())
+        channel = constructChannel()
+        client = CardCollection_Service_CollectionServiceAsyncClient(channel: channel)
     }
     
-    private func constructChannel() -> GRPCChannel {
+    func listBinders() async throws -> [CardCollection_Binder] {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        let request = CardCollection_Service_ListBindersRequest()
+        let response = try await client.listBinders(request)
+        return response.binders
+    }
+    
+    private func constructChannel() -> ClientConnection {
         let serverAddress = (UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333").components(separatedBy: ":")
         
         let host = serverAddress[0]

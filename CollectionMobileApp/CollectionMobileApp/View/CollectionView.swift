@@ -48,7 +48,7 @@ struct CollectionView: View {
     
     func loadBinders() async {
         do {
-            self.binders = try await GrpcClient.client.listBinders(CardCollection_Service_ListBindersRequest()).binders.map({ binder in
+            self.binders = try await GrpcClient.listBinders().map({ binder in
                 wrapIdentifiable(value: binder, getId: {b in b.id})
             })
             error = false
