@@ -65,7 +65,7 @@ struct BinderView: View {
         } catch {
             self.error = true
             self.cards = []
-            print("Error happened loading binders: " + error.localizedDescription)
+            print("Error happened loading cards in binders: " + error.localizedDescription)
         }
     }
 }
