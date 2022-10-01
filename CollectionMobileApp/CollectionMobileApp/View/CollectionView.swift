@@ -25,7 +25,7 @@ struct CollectionView: View {
             } else {
                 List(binders) { binder in
                     NavigationLink{
-                        BinderView(name: binder.value.name)
+                        BinderView(name: binder.value.name, id: binder.value.id)
                     }label: {
                         HStack{
                             Text(binder.value.name)

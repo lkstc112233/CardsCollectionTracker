@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BinderView: View {
     var name: String
+    var id: Int32
     
     var body: some View {
         List {
@@ -55,6 +56,6 @@ struct BinderView: View {
 
 struct BinderView_Previews: PreviewProvider {
     static var previews: some View {
-        BinderView(name: "Example")
+        BinderView(name: "Example", id: 0)
     }
 }
