@@ -15,7 +15,16 @@ struct AddCardView: View {
     var body: some View {
         NavigationView {
             List(cards) { card in
-                Text(card.value.name)
+                HStack{
+                    Text(card.value.name)
+                    if card.value.collectorsID != "" {
+                        Text(" (\(card.value.collectorsID))")
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Text(card.value.setName)
+                        .foregroundColor(.secondary)
+                }
             }
             .searchable(text: $searchText, prompt: "Card Name")
             .navigationTitle("Add Card")
@@ -25,7 +34,15 @@ struct AddCardView: View {
     }
 
     func runSearch() {
+        Task {
+            do {
+                cards = try await GrpcClient.queryCardInfoByName(name: searchText).map({info in wrapIdentifiable(value: info, getId: {i in i.id})})
+                print("Found \(cards.count) cards.")
+            } catch {
                 cards = []
+                print("Error happened loading cards to add: " + error.localizedDescription)
+            }
+        }
     }
 }
 
