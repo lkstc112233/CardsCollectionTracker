@@ -27,7 +27,12 @@ struct CollectionView: View {
                     NavigationLink{
                         BinderView(name: binder.value.name)
                     }label: {
+                        HStack{
                             Text(binder.value.name)
+                            Spacer()
+                            Text(String(binder.value.cardCount))
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
                 .refreshable {
