@@ -27,6 +27,7 @@
 		0AE9311C28E5981000599200 /* collection_service.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9311B28E5981000599200 /* collection_service.grpc.swift */; };
 		0AE9312128E6D7A300599200 /* GrpcClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9312028E6D7A300599200 /* GrpcClient.swift */; };
 		0AE9312428E8195000599200 /* Identifiables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9312328E8195000599200 /* Identifiables.swift */; };
+		0AE9312828E8DA5800599200 /* AddCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE9312728E8DA5800599200 /* AddCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		0AE9311B28E5981000599200 /* collection_service.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = collection_service.grpc.swift; sourceTree = "<group>"; };
 		0AE9312028E6D7A300599200 /* GrpcClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrpcClient.swift; sourceTree = "<group>"; };
 		0AE9312328E8195000599200 /* Identifiables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiables.swift; sourceTree = "<group>"; };
+		0AE9312728E8DA5800599200 /* AddCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,9 +164,10 @@
 			isa = PBXGroup;
 			children = (
 				0AE930ED28E2DFA200599200 /* CollectionView.swift */,
+				0AE930F028E2E0AE00599200 /* BinderView.swift */,
+				0AE9312728E8DA5800599200 /* AddCardView.swift */,
 				0AE930F228E2E49700599200 /* TradingView.swift */,
 				0AE930C528E2A99400599200 /* AppMainView.swift */,
-				0AE930F028E2E0AE00599200 /* BinderView.swift */,
 				0AE930F428E2E4DE00599200 /* CachedBinderView.swift */,
 				0AE930F828E2E57100599200 /* SettingsView.swift */,
 			);
@@ -341,6 +344,7 @@
 				0AE930F328E2E49700599200 /* TradingView.swift in Sources */,
 				0AE9311228E5912D00599200 /* collection_service.pb.swift in Sources */,
 				0AE930EE28E2DFA200599200 /* CollectionView.swift in Sources */,
+				0AE9312828E8DA5800599200 /* AddCardView.swift in Sources */,
 				0AE930F528E2E4DE00599200 /* CachedBinderView.swift in Sources */,
 				0AE9312128E6D7A300599200 /* GrpcClient.swift in Sources */,
 				0AE930C628E2A99400599200 /* AppMainView.swift in Sources */,
