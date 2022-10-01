@@ -39,6 +39,7 @@ struct CollectionView: View {
                     await loadBinders()
                 }
                 .navigationTitle("Collections")
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
         .task{

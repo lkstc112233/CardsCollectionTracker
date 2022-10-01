@@ -48,6 +48,7 @@ struct BinderView: View {
                     await loadCardsInBinder()
                 }
                 .navigationTitle(name)
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
                     Button{
                         addingCard.toggle()
