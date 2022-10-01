@@ -27,6 +27,7 @@ struct AddCardView: View {
                 }
             }
             .searchable(text: $searchText, prompt: "Card Name")
+            .disableAutocorrection(true)
             .navigationTitle("Add Card")
             .navigationBarTitleDisplayMode(.inline)
         }
