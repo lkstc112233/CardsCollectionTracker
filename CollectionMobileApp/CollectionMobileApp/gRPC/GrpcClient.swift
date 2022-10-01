@@ -61,7 +61,7 @@ class GrpcClientClass {
         var request = CardCollection_Service_QueryCardInfoByNameRequest()
         request.query = name
         request.enOnly = true
-        request.frontMatch = true
+        request.frontMatch = false
         request.resultLimit = 100
         let response = try await client.queryCardInfoByName(request)
         return response.info
