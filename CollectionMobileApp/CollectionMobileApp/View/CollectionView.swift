@@ -7,17 +7,8 @@
 
 import SwiftUI
 
-struct IdentifiableBinder : Identifiable {
-    var binder: CardCollection_Binder
-    var id: Int32
-    init(binder: CardCollection_Binder) {
-        self.binder = binder
-        self.id = binder.id
-    }
-}
-
 struct CollectionView: View {
-    @State var binders: [IdentifiableBinder] = []
+    @State var binders: [IdentifiableWrapper<CardCollection_Binder, Int32>] = []
     @State var error: Bool = false
     
     var body: some View {
@@ -34,9 +25,9 @@ struct CollectionView: View {
             } else {
                 List(binders) { binder in
                     NavigationLink{
-                        BinderView(name: binder.binder.name)
+                        BinderView(name: binder.value.name)
                     }label: {
-                        Text(binder.binder.name)
+                            Text(binder.value.name)
                     }
                 }
                 .refreshable {
@@ -54,7 +45,7 @@ struct CollectionView: View {
         print("Loading binders")
         do {
             self.binders = try await GrpcClient.client.listBinders(CardCollection_Service_ListBindersRequest()).binders.map({ binder in
-                IdentifiableBinder(binder: binder)
+                IdentifiableWrapper(value: binder, getId: {b in b.id})
             })
             error = false
         } catch {
