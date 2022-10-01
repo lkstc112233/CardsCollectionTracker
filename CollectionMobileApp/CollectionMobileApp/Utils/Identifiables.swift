@@ -14,7 +14,7 @@ func wrapIdentifiable<T, Id: Hashable>(value: T, getId: (T) -> Id) -> Identifiab
 struct IdentifiableWrapper<T, Id : Hashable> : Identifiable {
     var value : T
     var id : Id
-    init(value: T, getId: (T) -> Id) {
+    fileprivate init(value: T, getId: (T) -> Id) {
         self.value = value
         self.id = getId(value)
     }
