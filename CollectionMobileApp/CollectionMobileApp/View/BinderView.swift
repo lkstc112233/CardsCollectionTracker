@@ -56,7 +56,11 @@ struct BinderView: View {
                         Label("Add card", systemImage: "plus.circle")
                     }
                 }
-                .sheet(isPresented: $addingCard) {
+                .sheet(isPresented: $addingCard, onDismiss: {
+                    Task {
+                        await loadCardsInBinder()
+                    }
+                }) {
                     AddCardView(id:id)
                 }
             }
