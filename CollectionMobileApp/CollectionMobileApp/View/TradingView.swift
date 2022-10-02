@@ -12,16 +12,38 @@ struct TradingView: View {
 
     var body: some View {
         NavigationView {
-            List {
+            List(store.cachedBinders, id:\.binderInfo.id) { binder in
                 NavigationLink{
-                    CachedBinderView(name: "Unbinded")
+                    CachedBinderView(name: binder.binderInfo.name)
                 }label: {
-                    Text("Trading")
+                    HStack{
+                        Text(binder.binderInfo.name)
+                        Spacer()
+                        Text(String(binder.binderInfo.cardCount))
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
             .navigationTitle("Cached Binders")
             .refreshable {
-                // gRPC
+                BinderDataStore.load { result in
+                    switch result {
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                    case .success(let storage):
+                        store = storage
+                    }
+                }
+            }
+        }
+        .onAppear {
+            BinderDataStore.load { result in
+                switch result {
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                case .success(let storage):
+                    store = storage
+                }
             }
         }
     }
