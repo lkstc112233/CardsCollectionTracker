@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CollectionView: View {
+    @Binding var store: CardCollection_Ios_IosStoreSchema
     @State var binders: [IdentifiableWrapper<CardCollection_Binder, Int32>] = []
     @State var error: Bool = false
     
@@ -63,6 +64,6 @@ struct CollectionView: View {
 
 struct CollectionView_Previews: PreviewProvider {
     static var previews: some View {
-        CollectionView()
+        CollectionView(store: .constant(CardCollection_Ios_IosStoreSchema()))
     }
 }

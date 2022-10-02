@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct CollectionMobileApp: App {
+    @StateObject private var store = BinderDataStore()
     var body: some Scene {
         WindowGroup {
-            AppMainView()
+            AppMainView(store: $store.storage)
         }
     }
 }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct TradingView: View {
+    @Binding var store: CardCollection_Ios_IosStoreSchema
+
     var body: some View {
         NavigationView {
             List {
@@ -27,6 +29,6 @@ struct TradingView: View {
 
 struct TradingView_Previews: PreviewProvider {
     static var previews: some View {
-        TradingView()
+        TradingView(store: .constant(CardCollection_Ios_IosStoreSchema()))
     }
 }

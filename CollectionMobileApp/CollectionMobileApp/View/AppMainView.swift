@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct AppMainView: View {
+    @Binding var store: CardCollection_Ios_IosStoreSchema
     var body: some View {
         TabView {
-            CollectionView()
+            CollectionView(store: $store)
                 .tabItem{Label("Collections", systemImage: "tray.fill")
                 }
-            TradingView()
+            TradingView(store: $store)
                 .tabItem {Label("Trading", systemImage: "arrow.left.arrow.right")}
             SettingsView()
                 .tabItem{
@@ -25,6 +26,6 @@ struct AppMainView: View {
 
 struct AppMainView_Previews: PreviewProvider {
     static var previews: some View {
-        AppMainView()
+        AppMainView(store: .constant(CardCollection_Ios_IosStoreSchema()))
     }
 }
