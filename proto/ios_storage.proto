@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "binder.proto";
+import "collection_service.proto";
+
+package card_collection.ios;
+
+// Storage schema for ios apps.
+message IosStoreSchema {
+    // Whether the schema is initialized
+    bool initialized = 1;
+    
+    message CachedBinders {
+        card_collection.Binder binder_info = 1;
+        card_collection.service.ListCardInBinderResponse cards_in_binder = 2;
+    }
+    
+    // A list of stored binders.
+    repeated CachedBinders cached_binders = 2;
+}
