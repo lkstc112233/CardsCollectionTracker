@@ -43,6 +43,11 @@ struct BinderView: View {
                         Text(card.value.cardInfo.setName)
                             .foregroundColor(.secondary)
                     }
+                    .contextMenu(menuItems: {
+                        Text(card.value.cardInfo.name)
+                    }, preview: {
+                        CardPreviewImageView(url: card.value.cardInfo.imageUri)
+                    })
                 }
                 .refreshable {
                     await loadCardsInBinder()
