@@ -25,6 +25,24 @@ struct AddCardView: View {
                     Text(card.value.setName)
                         .foregroundColor(.secondary)
                 }
+                .contextMenu(menuItems: {
+                    Button{} label: {
+                        Button {
+                        }label: {
+                            Label("Placeholder", systemImage: "timelapse")
+                        }
+                    }
+                }, preview: {
+                    AsyncImage(url: URL(string: card.value.imageUri)){ phase in
+                        if let image = phase.image {
+                            image.resizable()
+                        } else if phase.error != nil {
+                            Color.red
+                        } else {
+                            ProgressView()
+                        }
+                    }
+                })
             }
             .searchable(text: $searchText, prompt: "Card Name")
             .disableAutocorrection(true)
