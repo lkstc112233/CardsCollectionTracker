@@ -16,7 +16,7 @@ struct AppMainView: View {
                 }
             TradingView(store: $store)
                 .tabItem {Label("Trading", systemImage: "arrow.left.arrow.right")}
-            SettingsView()
+            SettingsView(store: $store)
                 .tabItem{
                     Label("Settings", systemImage: "slider.horizontal.3")
                 }

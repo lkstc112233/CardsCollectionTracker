@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("ServerAddress") var defaults: String = "localhost:33333"
+    @Binding var store: CardCollection_Ios_IosStoreSchema
     
     var body: some View {
         Form {
@@ -29,6 +30,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(store: .constant(CardCollection_Ios_IosStoreSchema()))
     }
 }
