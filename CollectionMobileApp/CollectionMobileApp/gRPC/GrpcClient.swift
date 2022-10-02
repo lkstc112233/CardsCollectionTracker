@@ -49,6 +49,10 @@ class GrpcClientClass {
     }
     
     func listCardsInBinder(id: Int32) async throws -> [CardCollection_Card] {
+        return try await listCardsInBinderResponse(id: id).cards
+    }
+    
+    func listCardsInBinderResponse(id: Int32) async throws -> CardCollection_Service_ListCardInBinderResponse {
         guard channelReadyOrIdle() else {
             throw GrpcError.channelNotReady
         }
@@ -56,7 +60,7 @@ class GrpcClientClass {
         request.binderID = id
         request.nameOnly = false
         let response = try await client.listCardInBinder(request)
-        return response.cards
+        return response
     }
     
     func queryCardInfoByName(name: String) async throws -> [CardCollection_CardInfo] {
