@@ -15,6 +15,11 @@ enum GrpcError: Error {
     case channelNotReady
 }
 
+struct CardToAdd {
+    var id: String
+    var version: String?
+}
+
 class GrpcClientClass {
     private var client: CardCollection_Service_CollectionServiceAsyncClient! = nil
     private var channel: ClientConnection! = nil
@@ -65,6 +70,28 @@ class GrpcClientClass {
         request.resultLimit = 100
         let response = try await client.queryCardInfoByName(request)
         return response.info
+    }
+    
+    func addCardToCollection(cards: [CardToAdd], binderId: Int32) async throws {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        for card in cards {
+            try await addOneCardToCollection(id: card.id, binderId: binderId, version: card.version)
+        }
+    }
+    
+    func addOneCardToCollection(id: String, binderId: Int32, version: String?) async throws {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        var request = CardCollection_Service_AddCardToCollectionRequest()
+        request.cardID = id
+        request.binderID = binderId
+        if let v = version {
+            request.version = v
+        }
+        let response = try await client.addCardToCollection(request)
     }
     
     private func constructChannel() -> ClientConnection {
