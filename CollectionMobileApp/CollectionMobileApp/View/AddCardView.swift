@@ -48,7 +48,21 @@ struct AddCardView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .onSubmit(of: .search, runSearch)
                     List(cardsToAdd, id: \.index) { c in
-                        Text(c.name)
+                        HStack{
+                            Text(c.name)
+                            Spacer()
+                            Text(c.version ?? "")
+                                .foregroundColor(.secondary)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                if let index = cardsToAdd.firstIndex(where: {card in card.index == c.index}) {
+                                    cardsToAdd.remove(at: index)
+                                }
+                            } label: {
+                                Label("Cancel Add", systemImage: "multiply.circle.fill")
+                            }
+                        }
                     }.frame(height: metrics.size.height * 0.2)
                 }
                 .toolbar{
