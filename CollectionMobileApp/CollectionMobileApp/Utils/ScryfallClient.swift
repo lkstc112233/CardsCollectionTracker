@@ -15,10 +15,10 @@ enum ScryfallError: Error {
 }
 
 struct ScryfallCard {
-    var name: String?
-    var scryfallId: String?
-    var imageUrl: String?
-    var setName: String?
+    var name: String = ""
+    var scryfallId: String = ""
+    var imageUrl: String = ""
+    var setName: String = ""
     var collectorId: String?
     var versions: [String] = []
 }
@@ -108,7 +108,7 @@ class ScryfallClientImpl {
             card.scryfallId = info.id
             card.setName = info.set_name
             card.collectorId = info.collector_number
-            card.imageUrl = info.image_uris?["png"]
+            card.imageUrl = info.image_uris?["png"] ?? ""
             card.versions = info.finishes
             return card
         })
