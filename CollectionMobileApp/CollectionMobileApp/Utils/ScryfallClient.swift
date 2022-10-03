@@ -20,11 +20,24 @@ struct ScryfallCard {
     var imageUrl: String?
     var setName: String?
     var collectorId: String?
-    var versions: [String]
+    var versions: [String] = []
 }
 
-fileprivate struct DecodeScryfallCardInfo {
-    
+fileprivate struct DecodeScryfallCardResponse: Decodable {
+    let object: String
+    let total_cards: Int32
+    let has_more: Bool
+    let data: [DecodeScryfallCardInfo]
+}
+
+fileprivate struct DecodeScryfallCardInfo: Decodable {
+    let object: String
+    let id: String
+    let name: String
+    let image_uris: [String: String]?
+    let finishes: [String]
+    let collector_number: String?
+    let set_name: String
 }
 
 class ScryfallClientImpl {
@@ -84,10 +97,21 @@ class ScryfallClientImpl {
             throw ScryfallError.responseError
         }
         
-        print("Data received:")
-        print(String(decoding: data, as: UTF8.self))
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .useDefaultKeys
+
+        let response = try decoder.decode(DecodeScryfallCardResponse.self, from: data)
         
-        return []
+        return response.data.map({info in
+            var card = ScryfallCard()
+            card.name = info.name
+            card.scryfallId = info.id
+            card.setName = info.set_name
+            card.collectorId = info.collector_number
+            card.imageUrl = info.image_uris?["png"]
+            card.versions = info.finishes
+            return card
+        })
     }
 }
 
