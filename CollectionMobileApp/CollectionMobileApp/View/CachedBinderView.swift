@@ -9,55 +9,51 @@ import SwiftUI
 
 struct CachedBinderView: View {
     var name: String
+    var id: Int32
+    var cahcedCards: [CardCollection_Card] = []
+    @State var addingCard: Bool = false
     
     var body: some View {
-        List {
-            Text("Example Card 1")
-                .contextMenu {
-                    Button {
-                    }label: {
-                        Label("Delete from collection", systemImage: "minus.circle")
+        NavigationView {
+            List(cahcedCards, id: \.id) { card in
+                HStack {
+                    if card.cardInfo.printedName != "" {
+                        Text(card.cardInfo.printedName)
+                    } else {
+                        Text(card.cardInfo.name)
                     }
-                }
-            Text("Example Card 2")
-                .contextMenu {
-                    Button {
-                    }label: {
-                        Label("Delete from collection", systemImage: "minus.circle")
+                    if card.version != "" {
+                        Text(" (\(card.version))")
+                            .foregroundColor(.secondary)
                     }
+                    Spacer()
+                    Text(card.cardInfo.setName)
+                        .foregroundColor(.secondary)
                 }
-            Text("Example Card 3")
-                .contextMenu {
-                    Button {
-                    }label: {
-                        Label("Delete from collection", systemImage: "minus.circle")
-                    }
-                }
-            Text("Example Card 4")
-                .contextMenu {
-                    Button {
-                    }label: {
-                        Label("Delete from collection", systemImage: "minus.circle")
-                    }
-                }
-        }
-        .navigationTitle(name)
-        .toolbar{
-            Button{} label: {
-                Label("Sync", systemImage: "arrow.triangle.2.circlepath.circle")
+                .contextMenu(menuItems: {
+                    Text(card.cardInfo.name)
+                }, preview: {
+                    CardPreviewImageView(url: card.cardInfo.imageUri)
+                })
             }
-            Button{} label: {
-                Label("Decache", systemImage: "archivebox")
+            .navigationTitle(name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                Button{
+                    addingCard.toggle()
+                } label: {
+                    Label("Add card", systemImage: "plus.circle")
+                }
             }
-        }
-        .refreshable {
-            // gRPC
+            .sheet(isPresented: $addingCard) {
+//                AddCardView(id:id)
+            }
         }
     }
 }
 
 struct CachedBinderView_Previews: PreviewProvider {
     static var previews: some View {
-        CachedBinderView(name: "Example")
+        CachedBinderView(name: "Example",id: 0, cahcedCards: [])
     }
 }
