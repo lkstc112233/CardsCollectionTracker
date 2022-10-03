@@ -16,7 +16,7 @@ fileprivate struct PendingCard {
 
 struct CacheAddCardView: View {
     var id: Int32
-    @State private var cards = [CardCollection_CardInfo]()
+    @State private var cards = [ScryfallCard]()
     @State private var searchText = ""
     @State private var cardsToAdd = [PendingCard]()
     @State var nextCardId = 0
@@ -27,19 +27,21 @@ struct CacheAddCardView: View {
         NavigationView {
             GeometryReader { metrics in
                 VStack{
-                    List(cards, id:\.id) { card in
+                    List(cards, id:\.scryfallId) { card in
                         HStack{
                             Text(card.name)
-                            if card.collectorsID != "" {
-                                Text(" (\(card.collectorsID))")
-                                    .foregroundColor(.secondary)
+                            if let cid = card.collectorId {
+                                if cid != "" {
+                                    Text(" (\(cid))")
+                                        .foregroundColor(.secondary)
+                                }
                             }
                             Spacer()
                             Text(card.setName)
                                 .foregroundColor(.secondary)
                         }
                         .contextMenu(menuItems: createMenuItem(info: card), preview: {
-                            CardPreviewImageView(url: card.imageUri)
+                            CardPreviewImageView(url: card.imageUrl)
                         })
                     }
                     .searchable(text: $searchText, prompt: "Card Name")
@@ -92,11 +94,11 @@ struct CacheAddCardView: View {
         return PendingCard(index: nextCardId, name: name, id: id, version: version)
     }
     
-    private func createMenuItem(info: CardCollection_CardInfo) -> () -> AnyView {
+    private func createMenuItem(info: ScryfallCard) -> () -> AnyView {
         if info.versions.count == 0 {
             return { AnyView(
                 Button {
-                    cardsToAdd.append(buildCardToAdd(name: info.name, id: info.id))
+                    cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId))
                 }label: {
                     Label("Add Card", systemImage: "plus.circle")
                 }
@@ -107,7 +109,7 @@ struct CacheAddCardView: View {
                 AnyView(
                     ForEach(info.versions, id: \.self) { version in
                         Button {
-                            cardsToAdd.append(buildCardToAdd(name: info.name, id: info.id, version: version))
+                            cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, version: version))
                         }label: {
                             Label(version, systemImage: "plus.circle")
                         }
@@ -123,8 +125,7 @@ struct CacheAddCardView: View {
         }
         Task {
             do {
-                try ScryfallClient.queryCardFromScryfall(name: searchText)
-                cards = []
+                cards = try ScryfallClient.queryCardFromScryfall(name: searchText)
                 print("Found \(cards.count) cards.")
             } catch {
                 cards = []
