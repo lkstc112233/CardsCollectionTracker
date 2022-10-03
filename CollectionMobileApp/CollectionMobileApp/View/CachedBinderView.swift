@@ -48,7 +48,7 @@ struct CachedBinderView: View {
                 }
             }
             .sheet(isPresented: $addingCard) {
-//                AddCardView(id:id)
+                CacheAddCardView(id:id)
             }
         }
     }
