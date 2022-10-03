@@ -25,6 +25,7 @@ struct TradingView: View {
                 }
             }
             .navigationTitle("Cached Binders")
+            .navigationBarTitleDisplayMode(.inline)
             .refreshable {
                 BinderDataStore.load { result in
                     switch result {

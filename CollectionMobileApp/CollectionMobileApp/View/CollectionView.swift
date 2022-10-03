@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CollectionView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
-    @State var binders: [IdentifiableWrapper<CardCollection_Binder, Int32>] = []
+    @State var binders: [CardCollection_Binder] = []
     @State var error: Bool = false
     
     var body: some View {
@@ -24,21 +24,21 @@ struct CollectionView: View {
                     }
                 }
             } else {
-                List(binders) { binder in
+                List(binders, id:\.id) { binder in
                     NavigationLink{
-                        BinderView(name: binder.value.name, id: binder.value.id)
+                        BinderView(name: binder.name, id: binder.id)
                     }label: {
                         HStack{
-                            Text(binder.value.name)
+                            Text(binder.name)
                             Spacer()
-                            Text(String(binder.value.cardCount))
+                            Text(String(binder.cardCount))
                                 .foregroundColor(.secondary)
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button() {
                                 Task {
-                                    if let response = await loadCardsInBinder(id: binder.value.id) {
-                                        BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binder.value, response: response)
+                                    if let response = await loadCardsInBinder(id: binder.id) {
+                                        BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binder, response: response)
                                         BinderDataStore.save(storage: store) { result in
                                             if case .failure(let error) = result {
                                                 fatalError(error.localizedDescription)
@@ -67,9 +67,7 @@ struct CollectionView: View {
     
     func loadBinders() async {
         do {
-            self.binders = try await GrpcClient.listBinders().map({ binder in
-                wrapIdentifiable(value: binder, getId: {b in b.id})
-            })
+            self.binders = try await GrpcClient.listBinders()
             error = false
         } catch {
             self.error = true

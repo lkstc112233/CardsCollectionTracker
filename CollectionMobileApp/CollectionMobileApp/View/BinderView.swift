@@ -10,7 +10,7 @@ import SwiftUI
 struct BinderView: View {
     var name: String
     var id: Int32
-    @State var cards: [IdentifiableWrapper<CardCollection_Card, Int32>] = []
+    @State var cards: [CardCollection_Card] = []
     @State var error: Bool = false
     @State var addingCard: Bool = false
     
@@ -28,25 +28,25 @@ struct BinderView: View {
                 .navigationTitle(name)
                 .navigationBarTitleDisplayMode(.inline)
             } else {
-                List(cards) { card in
+                List(cards, id: \.id) { card in
                     HStack {
-                        if card.value.cardInfo.printedName != "" {
-                            Text(card.value.cardInfo.printedName)
+                        if card.cardInfo.printedName != "" {
+                            Text(card.cardInfo.printedName)
                         } else {
-                            Text(card.value.cardInfo.name)
+                            Text(card.cardInfo.name)
                         }
-                        if card.value.version != "" {
-                            Text(" (\(card.value.version))")
+                        if card.version != "" {
+                            Text(" (\(card.version))")
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
-                        Text(card.value.cardInfo.setName)
+                        Text(card.cardInfo.setName)
                             .foregroundColor(.secondary)
                     }
                     .contextMenu(menuItems: {
-                        Text(card.value.cardInfo.name)
+                        Text(card.cardInfo.name)
                     }, preview: {
-                        CardPreviewImageView(url: card.value.cardInfo.imageUri)
+                        CardPreviewImageView(url: card.cardInfo.imageUri)
                     })
                 }
                 .refreshable {
@@ -77,9 +77,7 @@ struct BinderView: View {
     
     func loadCardsInBinder() async {
         do {
-            self.cards = try await GrpcClient.listCardsInBinder(id: id ).map({ card in
-                wrapIdentifiable(value: card, getId: {c in c.id})
-            })
+            self.cards = try await GrpcClient.listCardsInBinder(id: id)
             error = false
         } catch {
             self.error = true

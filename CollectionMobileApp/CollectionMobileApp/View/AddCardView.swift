@@ -16,7 +16,7 @@ fileprivate struct PendingCard {
 
 struct AddCardView: View {
     var id: Int32
-    @State private var cards = [IdentifiableWrapper<CardCollection_CardInfo, String>]()
+    @State private var cards = [CardCollection_CardInfo]()
     @State private var searchText = ""
     @State private var cardsToAdd = [PendingCard]()
     @State var nextCardId = 0
@@ -27,19 +27,19 @@ struct AddCardView: View {
         NavigationView {
             GeometryReader { metrics in
                 VStack{
-                    List(cards) { card in
+                    List(cards, id:\.id) { card in
                         HStack{
-                            Text(card.value.name)
-                            if card.value.collectorsID != "" {
-                                Text(" (\(card.value.collectorsID))")
+                            Text(card.name)
+                            if card.collectorsID != "" {
+                                Text(" (\(card.collectorsID))")
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Text(card.value.setName)
+                            Text(card.setName)
                                 .foregroundColor(.secondary)
                         }
-                        .contextMenu(menuItems: createMenuItem(info: card.value), preview: {
-                            CardPreviewImageView(url: card.value.imageUri)
+                        .contextMenu(menuItems: createMenuItem(info: card), preview: {
+                            CardPreviewImageView(url: card.imageUri)
                         })
                     }
                     .searchable(text: $searchText, prompt: "Card Name")
@@ -127,7 +127,7 @@ struct AddCardView: View {
         }
         Task {
             do {
-                cards = try await GrpcClient.queryCardInfoByName(name: searchText).map({info in wrapIdentifiable(value: info, getId: {i in i.id})})
+                cards = try await GrpcClient.queryCardInfoByName(name: searchText)
                 print("Found \(cards.count) cards.")
             } catch {
                 cards = []
