@@ -55,10 +55,12 @@ struct BinderView: View {
                 .navigationTitle(name)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
-                    Button{
-                        addingCard.toggle()
-                    } label: {
-                        Label("Add card", systemImage: "plus.circle")
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        Button{
+                            addingCard.toggle()
+                        } label: {
+                            Label("Add card", systemImage: "plus.circle")
+                        }
                     }
                 }
                 .sheet(isPresented: $addingCard, onDismiss: {
