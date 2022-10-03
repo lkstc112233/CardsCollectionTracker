@@ -66,23 +66,25 @@ struct AddCardView: View {
                     }.frame(height: metrics.size.height * 0.2)
                 }
                 .toolbar{
-                    Button{
-                        confirmingAddCards = true
-                    } label: {
-                        Label("Confirm Add", systemImage: "plus.circle")
-                    }
-                    .disabled(cardsToAdd.isEmpty)
-                    .confirmationDialog("Add \(cardsToAdd.count) card(s)?", isPresented: $confirmingAddCards) {
-                        Button("Add \(cardsToAdd.count) card(s)") {
-                            Task {
-                                do {
-                                    try await GrpcClient.addCardToCollection(cards: cardsToAdd.map({card in
-                                        CardToAdd(id: card.id, version: card.version)
-                                    }), binderId: id)
-                                } catch {
-                                    print("Error happened while adding cards: " + error.localizedDescription)
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        Button{
+                            confirmingAddCards = true
+                        } label: {
+                            Label("Confirm Add", systemImage: "plus.circle")
+                        }
+                        .disabled(cardsToAdd.isEmpty)
+                        .confirmationDialog("Add \(cardsToAdd.count) card(s)?", isPresented: $confirmingAddCards) {
+                            Button("Add \(cardsToAdd.count) card(s)") {
+                                Task {
+                                    do {
+                                        try await GrpcClient.addCardToCollection(cards: cardsToAdd.map({card in
+                                            CardToAdd(id: card.id, version: card.version)
+                                        }), binderId: id)
+                                    } catch {
+                                        print("Error happened while adding cards: " + error.localizedDescription)
+                                    }
+                                    dismiss()
                                 }
-                                dismiss()
                             }
                         }
                     }
