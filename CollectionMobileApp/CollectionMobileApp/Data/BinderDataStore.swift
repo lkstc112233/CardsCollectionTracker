@@ -42,9 +42,9 @@ class BinderDataStore: ObservableObject {
     }
     
     static func mergeBinderIntoStorage(storage: inout CardCollection_Ios_IosStoreSchema, binderInfo: CardCollection_Binder, response: CardCollection_Service_ListCardInBinderResponse) {
-        if var cached = storage.cachedBinders.first(where: {binder in binder.binderInfo.id == binderInfo.id}) {
-            cached.binderInfo = binderInfo
-            cached.cardsInBinder = response
+        if let cachedIndex = storage.cachedBinders.firstIndex(where: {binder in binder.binderInfo.id == binderInfo.id}) {
+            storage.cachedBinders[cachedIndex].binderInfo = binderInfo
+            storage.cachedBinders[cachedIndex].cardsInBinder = response
         } else {
             var info = CardCollection_Ios_IosStoreSchema.CachedBinders()
             info.binderInfo = binderInfo
