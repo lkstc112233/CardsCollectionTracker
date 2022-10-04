@@ -84,10 +84,10 @@ struct CacheAddCardView: View {
                         .confirmationDialog("Add \(cardsToAdd.count) card(s)?", isPresented: $confirmingAddCards) {
                             Button("Add \(cardsToAdd.count) card(s)") {
                                 Task {
-                                    guard var binder = store.cachedBinders.first(where: {b in b.binderInfo.id == id}) else {
+                                    guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
                                         throw CacheAddCardViewError.internalStateError
                                     }
-                                    var idNext = binder.nextCacheAddedCardID
+                                    var idNext = store.cachedBinders[binderIndex].nextCacheAddedCardID
                                     let cardsToAdd = cardsToAdd.map({card in
                                         idNext += 1
                                         var pendingCard = CardCollection_Card()
@@ -103,14 +103,14 @@ struct CacheAddCardView: View {
                                         pendingCard.cardInfo = pendingCardInfo
                                         return pendingCard
                                     })
-                                    binder.nextCacheAddedCardID = idNext
-                                    binder.cacheAddedCards.append(contentsOf: cardsToAdd)
+                                    store.cachedBinders[binderIndex].nextCacheAddedCardID = idNext
+                                    store.cachedBinders[binderIndex].cacheAddedCards.append(contentsOf: cardsToAdd)
                                     BinderDataStore.save(storage: store) { result in
                                         if case .failure(let error) = result {
                                             fatalError(error.localizedDescription)
                                         }
+                                        dismiss()
                                     }
-                                    dismiss()
                                 }
                             }
                         }
