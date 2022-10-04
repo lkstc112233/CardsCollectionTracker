@@ -21,6 +21,8 @@ struct TradingView: View {
                         Spacer()
                         Text(String(binder.binderInfo.cardCount))
                             .foregroundColor(.secondary)
+                        Text("(\(calculateCacheCardDelta(binder)))")
+                            .foregroundColor(getColorForDelta(calculateCacheCardDelta(binder)))
                     }
                 }
             }
@@ -30,6 +32,19 @@ struct TradingView: View {
         .onAppear {
             refreshStorage()
         }
+    }
+    
+    private func calculateCacheCardDelta(_ binder: CardCollection_Ios_IosStoreSchema.CachedBinders) -> Int {
+        return binder.cacheAddedCards.count - binder.deletedCachedCards.count
+    }
+    
+    private func getColorForDelta(_ delta: Int) -> Color {
+        if delta > 0 {
+            return .green
+        } else if delta < 0 {
+            return .red
+        }
+        return .secondary
     }
     
     private func refreshStorage() {
