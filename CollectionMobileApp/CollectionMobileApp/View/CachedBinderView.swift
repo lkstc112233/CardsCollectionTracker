@@ -11,6 +11,7 @@ struct CachedBinderView: View {
     var name: String
     var id: Int32
     var cahcedCards: [CardCollection_Card] = []
+    @State var cacheAddedCards: [CardCollection_Card] = []
     @Binding var store: CardCollection_Ios_IosStoreSchema
     @State var addingCard: Bool = false
     
@@ -49,14 +50,31 @@ struct CachedBinderView: View {
                         }
                     }
                 }
-                .sheet(isPresented: $addingCard) {
+                .sheet(isPresented: $addingCard, onDismiss: setCacheAddedCards) {
                     CacheAddCardView(id:id, store: $store)
                 }
-                List {
-                    
+                List(cacheAddedCards, id:\.id) { card in
+                    HStack {
+                        Text(card.cardInfo.name)
+                        if card.version != "" {
+                            Text(" (\(card.version))")
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                        Text(card.cardInfo.setName)
+                            .foregroundColor(.secondary)
+                    }
                 }.frame(height: metrics.size.height * 0.2)
             }
         }
+    }
+    
+    private func setCacheAddedCards() {
+        guard let binder = store.cachedBinders.first(where: {b in b.binderInfo.id == id}) else {
+            cacheAddedCards = []
+            return
+        }
+        cacheAddedCards = binder.cacheAddedCards
     }
 }
 

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-fileprivate struct PendingCard {
 fileprivate struct PendingCachedCard {
     var index: Int
     var name: String
@@ -89,7 +88,7 @@ struct CacheAddCardView: View {
                                         throw CacheAddCardViewError.internalStateError
                                     }
                                     var idNext = binder.nextCacheAddedCardID
-                                    var cardsToAdd = cardsToAdd.map({card in
+                                    let cardsToAdd = cardsToAdd.map({card in
                                         idNext += 1
                                         var pendingCard = CardCollection_Card()
                                         pendingCard.id = idNext
@@ -101,10 +100,16 @@ struct CacheAddCardView: View {
                                         pendingCardInfo.name = card.name
                                         pendingCardInfo.setName = card.setName
                                         pendingCardInfo.id = card.id
+                                        pendingCard.cardInfo = pendingCardInfo
+                                        return pendingCard
                                     })
                                     binder.nextCacheAddedCardID = idNext
-                                    binder.cacheAddedCards
-                                    store
+                                    binder.cacheAddedCards.append(contentsOf: cardsToAdd)
+                                    BinderDataStore.save(storage: store) { result in
+                                        if case .failure(let error) = result {
+                                            fatalError(error.localizedDescription)
+                                        }
+                                    }
                                     dismiss()
                                 }
                             }
