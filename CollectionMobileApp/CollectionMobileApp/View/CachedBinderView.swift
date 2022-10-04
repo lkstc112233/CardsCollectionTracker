@@ -15,41 +15,46 @@ struct CachedBinderView: View {
     @State var addingCard: Bool = false
     
     var body: some View {
-        NavigationView {
-            List(cahcedCards, id: \.id) { card in
-                HStack {
-                    if card.cardInfo.printedName != "" {
-                        Text(card.cardInfo.printedName)
-                    } else {
-                        Text(card.cardInfo.name)
-                    }
-                    if card.version != "" {
-                        Text(" (\(card.version))")
+        GeometryReader { metrics in
+            VStack {
+                List(cahcedCards, id: \.id) { card in
+                    HStack {
+                        if card.cardInfo.printedName != "" {
+                            Text(card.cardInfo.printedName)
+                        } else {
+                            Text(card.cardInfo.name)
+                        }
+                        if card.version != "" {
+                            Text(" (\(card.version))")
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                        Text(card.cardInfo.setName)
                             .foregroundColor(.secondary)
                     }
-                    Spacer()
-                    Text(card.cardInfo.setName)
-                        .foregroundColor(.secondary)
+                    .contextMenu(menuItems: {
+                        Text(card.cardInfo.name)
+                    }, preview: {
+                        CardPreviewImageView(url: card.cardInfo.imageUri)
+                    })
                 }
-                .contextMenu(menuItems: {
-                    Text(card.cardInfo.name)
-                }, preview: {
-                    CardPreviewImageView(url: card.cardInfo.imageUri)
-                })
-            }
-            .navigationTitle(name)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button{
-                        addingCard.toggle()
-                    } label: {
-                        Label("Add card", systemImage: "plus.circle")
+                .navigationTitle(name)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        Button{
+                            addingCard.toggle()
+                        } label: {
+                            Label("Add card", systemImage: "plus.circle")
+                        }
                     }
                 }
-            }
-            .sheet(isPresented: $addingCard) {
-                CacheAddCardView(id:id, store: $store)
+                .sheet(isPresented: $addingCard) {
+                    CacheAddCardView(id:id, store: $store)
+                }
+                List {
+                    
+                }.frame(height: metrics.size.height * 0.2)
             }
         }
     }
