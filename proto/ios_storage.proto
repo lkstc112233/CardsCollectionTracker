@@ -15,7 +15,8 @@ message IosStoreSchema {
         card_collection.Binder binder_info = 1;
         card_collection.service.ListCardInBinderResponse cards_in_binder = 2;
         int32 next_cache_added_card_id = 3;
-        card_collection.Card cache_added_cards = 4;
+        // Reusing card object. Only a few fields are used and respected.
+        repeated card_collection.Card cache_added_cards = 4;
         repeated int32 deleted_cached_cards = 5;
     }
     

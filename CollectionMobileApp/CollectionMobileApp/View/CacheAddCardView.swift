@@ -8,17 +8,23 @@
 import SwiftUI
 
 fileprivate struct PendingCard {
+fileprivate struct PendingCachedCard {
     var index: Int
     var name: String
     var id: String
+    var setName: String
     var version: String?
+}
+
+enum CacheAddCardViewError: Error {
+    case internalStateError
 }
 
 struct CacheAddCardView: View {
     var id: Int32
     @State private var cards = [ScryfallCard]()
     @State private var searchText = ""
-    @State private var cardsToAdd = [PendingCard]()
+    @State private var cardsToAdd = [PendingCachedCard]()
     @State var nextCardId = 0
     @State private var confirmingAddCards: Bool = false
     @Binding var store: CardCollection_Ios_IosStoreSchema
@@ -79,7 +85,26 @@ struct CacheAddCardView: View {
                         .confirmationDialog("Add \(cardsToAdd.count) card(s)?", isPresented: $confirmingAddCards) {
                             Button("Add \(cardsToAdd.count) card(s)") {
                                 Task {
-                                    // TODO: Add card
+                                    guard var binder = store.cachedBinders.first(where: {b in b.binderInfo.id == id}) else {
+                                        throw CacheAddCardViewError.internalStateError
+                                    }
+                                    var idNext = binder.nextCacheAddedCardID
+                                    var cardsToAdd = cardsToAdd.map({card in
+                                        idNext += 1
+                                        var pendingCard = CardCollection_Card()
+                                        pendingCard.id = idNext
+                                        pendingCard.binderID = id
+                                        if let v = card.version {
+                                            pendingCard.version = v
+                                        }
+                                        var pendingCardInfo = CardCollection_CardInfo()
+                                        pendingCardInfo.name = card.name
+                                        pendingCardInfo.setName = card.setName
+                                        pendingCardInfo.id = card.id
+                                    })
+                                    binder.nextCacheAddedCardID = idNext
+                                    binder.cacheAddedCards
+                                    store
                                     dismiss()
                                 }
                             }
@@ -90,16 +115,16 @@ struct CacheAddCardView: View {
         }
     }
     
-    private func buildCardToAdd(name: String, id: String, version: String? = nil) -> PendingCard {
+    private func buildCardToAdd(name: String, id: String, setName: String, version: String? = nil) -> PendingCachedCard {
         nextCardId += 1
-        return PendingCard(index: nextCardId, name: name, id: id, version: version.flatMap { $0 != "nonfoil" ? $0 : nil })
+        return PendingCachedCard(index: nextCardId, name: name, id: id, setName: setName, version: version.flatMap { $0 != "nonfoil" ? $0 : nil })
     }
     
     private func createMenuItem(info: ScryfallCard) -> () -> AnyView {
         if info.versions.count == 0 {
             return { AnyView(
                 Button {
-                    cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId))
+                    cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, setName: info.setName))
                 }label: {
                     Label("Add Card", systemImage: "plus.circle")
                 }
@@ -110,7 +135,7 @@ struct CacheAddCardView: View {
                 AnyView(
                     ForEach(info.versions, id: \.self) { version in
                         Button {
-                            cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, version: version))
+                            cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, setName: info.setName, version: version))
                         }label: {
                             Label(version, systemImage: "plus.circle")
                         }
