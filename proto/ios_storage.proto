@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "binder.proto";
+import "card.proto";
 import "collection_service.proto";
 
 package card_collection.ios;
@@ -14,13 +15,8 @@ message IosStoreSchema {
         card_collection.Binder binder_info = 1;
         card_collection.service.ListCardInBinderResponse cards_in_binder = 2;
         int32 next_cache_added_card_id = 3;
-        CacheAddedCard cache_added_cards = 4;
+        card_collection.Card cache_added_cards = 4;
         repeated int32 deleted_cached_cards = 5;
-    }
-    
-    message CacheAddedCard {
-        string id = 1;
-        string version = 2;
     }
     
     // A list of stored binders.
