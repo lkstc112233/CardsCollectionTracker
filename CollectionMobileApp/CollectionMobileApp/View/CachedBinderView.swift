@@ -32,6 +32,7 @@ struct CachedBinderView: View {
                         Text(card.cardInfo.setName)
                             .foregroundColor(.secondary)
                     }
+                    .strikethrough(isCacheDeleted(card.id))
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
                             Task {
@@ -89,6 +90,13 @@ struct CachedBinderView: View {
                 }.frame(height: metrics.size.height * 0.2)
             }
         }
+    }
+    
+    func isCacheDeleted(_ cardId: Int32) -> Bool {
+        guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
+            return false
+        }
+        return store.cachedBinders[binderIndex].deletedCachedCards.contains(cardId)
     }
 }
 
