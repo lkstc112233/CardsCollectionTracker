@@ -91,7 +91,7 @@ struct CacheAddCardView: View {
     
     private func buildCardToAdd(name: String, id: String, version: String? = nil) -> PendingCard {
         nextCardId += 1
-        return PendingCard(index: nextCardId, name: name, id: id, version: version)
+        return PendingCard(index: nextCardId, name: name, id: id, version: version.flatMap { $0 != "nonfoil" ? $0 : nil })
     }
     
     private func createMenuItem(info: ScryfallCard) -> () -> AnyView {
