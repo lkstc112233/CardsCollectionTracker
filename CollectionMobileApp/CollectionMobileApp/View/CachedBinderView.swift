@@ -11,6 +11,7 @@ struct CachedBinderView: View {
     var name: String
     var id: Int32
     var cahcedCards: [CardCollection_Card] = []
+    @Binding var store: CardCollection_Ios_IosStoreSchema
     @State var addingCard: Bool = false
     
     var body: some View {
@@ -48,7 +49,7 @@ struct CachedBinderView: View {
                 }
             }
             .sheet(isPresented: $addingCard) {
-                CacheAddCardView(id:id)
+                CacheAddCardView(id:id, store: $store)
             }
         }
     }
@@ -56,6 +57,6 @@ struct CachedBinderView: View {
 
 struct CachedBinderView_Previews: PreviewProvider {
     static var previews: some View {
-        CachedBinderView(name: "Example",id: 0, cahcedCards: [])
+        CachedBinderView(name: "Example",id: 0, store: .constant(CardCollection_Ios_IosStoreSchema()))
     }
 }

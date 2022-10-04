@@ -21,6 +21,7 @@ struct CacheAddCardView: View {
     @State private var cardsToAdd = [PendingCard]()
     @State var nextCardId = 0
     @State private var confirmingAddCards: Bool = false
+    @Binding var store: CardCollection_Ios_IosStoreSchema
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -138,6 +139,6 @@ struct CacheAddCardView: View {
 
 struct CacheAddCardView_Previews: PreviewProvider {
     static var previews: some View {
-        CacheAddCardView(id:0)
+        CacheAddCardView(id:0, store: .constant(CardCollection_Ios_IosStoreSchema()))
     }
 }

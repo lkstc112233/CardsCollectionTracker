@@ -14,7 +14,7 @@ struct TradingView: View {
         NavigationView {
             List(store.cachedBinders, id:\.binderInfo.id) { binder in
                 NavigationLink{
-                    CachedBinderView(name: binder.binderInfo.name, id: binder.binderInfo.id, cahcedCards: binder.cardsInBinder.cards)
+                    CachedBinderView(name: binder.binderInfo.name, id: binder.binderInfo.id, cahcedCards: binder.cardsInBinder.cards, store: $store)
                 }label: {
                     HStack{
                         Text(binder.binderInfo.name)
