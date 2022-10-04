@@ -26,25 +26,19 @@ struct TradingView: View {
             }
             .navigationTitle("Cached Binders")
             .navigationBarTitleDisplayMode(.inline)
-            .refreshable {
-                BinderDataStore.load { result in
-                    switch result {
-                    case .failure(let error):
-                        fatalError(error.localizedDescription)
-                    case .success(let storage):
-                        store = storage
-                    }
-                }
-            }
         }
         .onAppear {
-            BinderDataStore.load { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let storage):
-                    store = storage
-                }
+            refreshStorage()
+        }
+    }
+    
+    private func refreshStorage() {
+        BinderDataStore.load { result in
+            switch result {
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            case .success(let storage):
+                store = storage
             }
         }
     }
