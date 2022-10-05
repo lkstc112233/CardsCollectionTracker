@@ -79,6 +79,7 @@ struct CachedBinderView: View {
                 .sheet(isPresented: $addingCard) {
                     CacheAddCardView(id:id, store: $store)
                 }
+                Text("Pending adds")
                 List(
                     store.cachedBinders.first(where: {b in b.binderInfo.id == id})?.cacheAddedCards ?? [CardCollection_Card](),
                     id:\.id) { card in
@@ -121,7 +122,7 @@ struct CachedBinderView: View {
                     }, preview: {
                         CardPreviewImageView(url: card.cardInfo.imageUri)
                     })
-                }.frame(height: metrics.size.height * 0.2)
+                }.frame(height: metrics.size.height * 0.4)
             }
         }
     }
