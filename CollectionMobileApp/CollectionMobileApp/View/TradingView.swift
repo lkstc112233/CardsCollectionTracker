@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TradingView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
+    @State private var confirmSyncing: Bool = false
 
     var body: some View {
         NavigationView {
@@ -23,6 +24,53 @@ struct TradingView: View {
                             .foregroundColor(.secondary)
                         Text("(\(calculateCacheCardDelta(binder)))")
                             .foregroundColor(getColorForDelta(calculateCacheCardDelta(binder)))
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button() {
+                            confirmSyncing = true
+                        } label: {
+                            Label("Cache to local", systemImage: "arrow.triangle.2.circlepath.circle.fill")
+                        }
+                        .tint(.blue)
+                    }
+                    .confirmationDialog("Sync card changes with collection server?", isPresented: $confirmSyncing) {
+                        Button("Sync card changes") {
+                            Task {
+                                guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == binder.binderInfo.id}) else {
+                                    throw CacheAddCardViewError.internalStateError
+                                }
+                                var anySyncAction = false
+                                do {
+                                    if store.cachedBinders[binderIndex].cacheAddedCards.count > 0 {
+                                        try await GrpcClient.addCardToCollection(cards: store.cachedBinders[binderIndex]
+                                            .cacheAddedCards.map({cache in
+                                                var card = CardToAdd(id: cache.cardInfo.id)
+                                                if cache.version != "" {
+                                                    card.version = cache.version
+                                                }
+                                                return card
+                                            }), binderId: binder.binderInfo.id)
+                                        store.cachedBinders[binderIndex].cacheAddedCards.removeAll()
+                                        anySyncAction = true
+                                    }
+                                    if store.cachedBinders[binderIndex].deletedCachedCards.count > 0 {
+                                        try await GrpcClient.deleteCardInCollection(ids: store.cachedBinders[binderIndex].deletedCachedCards)
+                                        store.cachedBinders[binderIndex].deletedCachedCards.removeAll()
+                                        anySyncAction = true
+                                    }
+                                } catch {
+                                    print("error happened while syncing cached changes.")
+                                    print(error)
+                                }
+                                if anySyncAction {
+                                    BinderDataStore.save(storage: store) { result in
+                                        if case .failure(let error) = result {
+                                            fatalError(error.localizedDescription)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
