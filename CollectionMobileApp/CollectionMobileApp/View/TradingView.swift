@@ -40,8 +40,10 @@ struct TradingView: View {
                                     throw CacheAddCardViewError.internalStateError
                                 }
                                 var anySyncAction = false
+                                var delta = 0
                                 do {
-                                    if store.cachedBinders[binderIndex].cacheAddedCards.count > 0 {
+                                    let added = store.cachedBinders[binderIndex].cacheAddedCards.count
+                                    if added > 0 {
                                         try await GrpcClient.addCardToCollection(cards: store.cachedBinders[binderIndex]
                                             .cacheAddedCards.map({cache in
                                                 var card = CardToAdd(id: cache.cardInfo.id)
@@ -52,11 +54,14 @@ struct TradingView: View {
                                             }), binderId: binder.binderInfo.id)
                                         store.cachedBinders[binderIndex].cacheAddedCards.removeAll()
                                         anySyncAction = true
+                                        delta += added
                                     }
-                                    if store.cachedBinders[binderIndex].deletedCachedCards.count > 0 {
+                                    let deleted = store.cachedBinders[binderIndex].deletedCachedCards.count
+                                    if deleted > 0 {
                                         try await GrpcClient.deleteCardInCollection(ids: store.cachedBinders[binderIndex].deletedCachedCards)
                                         store.cachedBinders[binderIndex].deletedCachedCards.removeAll()
                                         anySyncAction = true
+                                        delta -= deleted
                                     }
                                 } catch {
                                     print("error happened while syncing cached changes.")
@@ -64,7 +69,9 @@ struct TradingView: View {
                                 }
                                 if anySyncAction {
                                     let response = try await GrpcClient.listCardsInBinderResponse(id: binder.binderInfo.id)
-                                    BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binder.binderInfo, response: response)
+                                    var binderInfo = binder.binderInfo
+                                    binderInfo.cardCount += Int32(delta)
+                                    BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binderInfo, response: response)
                                     BinderDataStore.save(storage: store) { result in
                                         if case .failure(let error) = result {
                                             fatalError(error.localizedDescription)
