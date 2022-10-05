@@ -63,6 +63,8 @@ struct TradingView: View {
                                     print(error)
                                 }
                                 if anySyncAction {
+                                    let response = try await GrpcClient.listCardsInBinderResponse(id: binder.binderInfo.id)
+                                    BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binder.binderInfo, response: response)
                                     BinderDataStore.save(storage: store) { result in
                                         if case .failure(let error) = result {
                                             fatalError(error.localizedDescription)
