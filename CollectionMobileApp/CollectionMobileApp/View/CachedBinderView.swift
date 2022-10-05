@@ -116,6 +116,11 @@ struct CachedBinderView: View {
                         }
                         .tint(colorOfRemoval(card.id))
                     }
+                    .contextMenu(menuItems: {
+                        Text(card.cardInfo.name)
+                    }, preview: {
+                        CardPreviewImageView(url: card.cardInfo.imageUri)
+                    })
                 }.frame(height: metrics.size.height * 0.2)
             }
         }
