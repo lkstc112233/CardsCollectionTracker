@@ -34,7 +34,7 @@ struct CachedBinderView: View {
                     }
                     .strikethrough(isCacheDeleted(card.id))
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button(role: .destructive) {
+                        Button {
                             Task {
                                 guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
                                     throw CacheAddCardViewError.internalStateError
@@ -53,6 +53,7 @@ struct CachedBinderView: View {
                         } label: {
                             Label("Cache remove", systemImage: "multiply.circle.fill")
                         }
+                        .tint(.red)
                     }
                     .contextMenu(menuItems: {
                         Text(card.cardInfo.name)
