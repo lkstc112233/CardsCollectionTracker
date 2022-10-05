@@ -12,6 +12,7 @@ fileprivate struct PendingCachedCard {
     var name: String
     var id: String
     var setName: String
+    var imageUrl: String
     var version: String?
 }
 
@@ -100,6 +101,7 @@ struct CacheAddCardView: View {
                                         pendingCardInfo.name = card.name
                                         pendingCardInfo.setName = card.setName
                                         pendingCardInfo.id = card.id
+                                        pendingCardInfo.imageUri = card.imageUrl
                                         pendingCard.cardInfo = pendingCardInfo
                                         return pendingCard
                                     })
@@ -120,16 +122,16 @@ struct CacheAddCardView: View {
         }
     }
     
-    private func buildCardToAdd(name: String, id: String, setName: String, version: String? = nil) -> PendingCachedCard {
+    private func buildCardToAdd(name: String, id: String, imageUrl: String, setName: String, version: String? = nil) -> PendingCachedCard {
         nextCardId += 1
-        return PendingCachedCard(index: nextCardId, name: name, id: id, setName: setName, version: version.flatMap { $0 != "nonfoil" ? $0 : nil })
+        return PendingCachedCard(index: nextCardId, name: name, id: id, setName: setName, imageUrl: imageUrl, version: version.flatMap { $0 != "nonfoil" ? $0 : nil })
     }
     
     private func createMenuItem(info: ScryfallCard) -> () -> AnyView {
         if info.versions.count == 0 {
             return { AnyView(
                 Button {
-                    cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, setName: info.setName))
+                    cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, imageUrl: info.imageUrl, setName: info.setName))
                 }label: {
                     Label("Add Card", systemImage: "plus.circle")
                 }
@@ -140,7 +142,7 @@ struct CacheAddCardView: View {
                 AnyView(
                     ForEach(info.versions, id: \.self) { version in
                         Button {
-                            cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, setName: info.setName, version: version))
+                            cardsToAdd.append(buildCardToAdd(name: info.name, id: info.scryfallId, imageUrl: info.imageUrl, setName: info.setName, version: version))
                         }label: {
                             Label(version, systemImage: "plus.circle")
                         }
