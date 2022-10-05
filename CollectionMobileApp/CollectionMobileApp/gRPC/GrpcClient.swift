@@ -98,6 +98,24 @@ class GrpcClientClass {
         let response = try await client.addCardToCollection(request)
     }
     
+    func deleteCardInCollection(ids: [Int32]) async throws {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        for id in ids {
+            try await deleteOneCardInCollection(id: id)
+        }
+    }
+    
+    func deleteOneCardInCollection(id: Int32) async throws {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        var request = CardCollection_Service_DeleteCardInCollectionRequest()
+        request.id = id
+        let response = try await client.deleteCardInCollection(request)
+    }
+    
     private func constructChannel() -> ClientConnection {
         let serverAddress = (UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333").components(separatedBy: ":")
         
