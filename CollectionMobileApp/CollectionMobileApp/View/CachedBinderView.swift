@@ -92,6 +92,30 @@ struct CachedBinderView: View {
                         Text(card.cardInfo.setName)
                             .foregroundColor(.secondary)
                     }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button {
+                            Task {
+                                guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
+                                    throw CacheAddCardViewError.internalStateError
+                                }
+                                if let idx = store.cachedBinders[binderIndex].cacheAddedCards.firstIndex(where: {c in c.id == card.id}) {
+                                    store.cachedBinders[binderIndex].cacheAddedCards.remove(at: idx)
+                                }
+                                BinderDataStore.save(storage: store) { result in
+                                    if case .failure(let error) = result {
+                                        fatalError(error.localizedDescription)
+                                    }
+                                }
+                            }
+                        } label: {
+                            if isCacheDeleted(card.id) {
+                                Label("Cache restore", systemImage: "arrow.uturn.backward.circle.fill")
+                            } else {
+                                Label("Cache remove", systemImage: "multiply.circle.fill")
+                            }
+                        }
+                        .tint(colorOfRemoval(card.id))
+                    }
                 }.frame(height: metrics.size.height * 0.2)
             }
         }
