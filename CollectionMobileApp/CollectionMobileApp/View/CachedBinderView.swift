@@ -51,9 +51,13 @@ struct CachedBinderView: View {
                                 }
                             }
                         } label: {
-                            Label("Cache remove", systemImage: "multiply.circle.fill")
+                            if isCacheDeleted(card.id) {
+                                Label("Cache restore", systemImage: "arrow.uturn.backward.circle.fill")
+                            } else {
+                                Label("Cache remove", systemImage: "multiply.circle.fill")
+                            }
                         }
-                        .tint(.red)
+                        .tint(colorOfRemoval(card.id))
                     }
                     .contextMenu(menuItems: {
                         Text(card.cardInfo.name)
@@ -98,6 +102,13 @@ struct CachedBinderView: View {
             return false
         }
         return store.cachedBinders[binderIndex].deletedCachedCards.contains(cardId)
+    }
+    
+    func colorOfRemoval(_ cardId: Int32) -> Color {
+        if isCacheDeleted(cardId) {
+            return .blue
+        }
+        return .red
     }
 }
 
