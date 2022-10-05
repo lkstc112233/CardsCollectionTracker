@@ -26,7 +26,6 @@ struct CacheAddCardView: View {
     @State private var searchText = ""
     @State private var cardsToAdd = [PendingCachedCard]()
     @State var nextCardId = 0
-    @State private var confirmingAddCards: Bool = false
     @Binding var store: CardCollection_Ios_IosStoreSchema
     @Environment(\.dismiss) var dismiss
     
@@ -77,45 +76,40 @@ struct CacheAddCardView: View {
                 .toolbar{
                     ToolbarItem(placement: .navigationBarTrailing){
                         Button{
-                            confirmingAddCards = true
+                            Task {
+                                guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
+                                    throw CacheAddCardViewError.internalStateError
+                                }
+                                var idNext = store.cachedBinders[binderIndex].nextCacheAddedCardID
+                                let cardsToAdd = cardsToAdd.map({card in
+                                    idNext += 1
+                                    var pendingCard = CardCollection_Card()
+                                    pendingCard.id = idNext
+                                    pendingCard.binderID = id
+                                    if let v = card.version {
+                                        pendingCard.version = v
+                                    }
+                                    var pendingCardInfo = CardCollection_CardInfo()
+                                    pendingCardInfo.name = card.name
+                                    pendingCardInfo.setName = card.setName
+                                    pendingCardInfo.id = card.id
+                                    pendingCardInfo.imageUri = card.imageUrl
+                                    pendingCard.cardInfo = pendingCardInfo
+                                    return pendingCard
+                                })
+                                store.cachedBinders[binderIndex].nextCacheAddedCardID = idNext
+                                store.cachedBinders[binderIndex].cacheAddedCards.append(contentsOf: cardsToAdd)
+                                BinderDataStore.save(storage: store) { result in
+                                    if case .failure(let error) = result {
+                                        fatalError(error.localizedDescription)
+                                    }
+                                    dismiss()
+                                }
+                            }
                         } label: {
                             Label("Confirm Add", systemImage: "plus.circle")
                         }
                         .disabled(cardsToAdd.isEmpty)
-                        .confirmationDialog("Add \(cardsToAdd.count) card(s)?", isPresented: $confirmingAddCards) {
-                            Button("Add \(cardsToAdd.count) card(s)") {
-                                Task {
-                                    guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
-                                        throw CacheAddCardViewError.internalStateError
-                                    }
-                                    var idNext = store.cachedBinders[binderIndex].nextCacheAddedCardID
-                                    let cardsToAdd = cardsToAdd.map({card in
-                                        idNext += 1
-                                        var pendingCard = CardCollection_Card()
-                                        pendingCard.id = idNext
-                                        pendingCard.binderID = id
-                                        if let v = card.version {
-                                            pendingCard.version = v
-                                        }
-                                        var pendingCardInfo = CardCollection_CardInfo()
-                                        pendingCardInfo.name = card.name
-                                        pendingCardInfo.setName = card.setName
-                                        pendingCardInfo.id = card.id
-                                        pendingCardInfo.imageUri = card.imageUrl
-                                        pendingCard.cardInfo = pendingCardInfo
-                                        return pendingCard
-                                    })
-                                    store.cachedBinders[binderIndex].nextCacheAddedCardID = idNext
-                                    store.cachedBinders[binderIndex].cacheAddedCards.append(contentsOf: cardsToAdd)
-                                    BinderDataStore.save(storage: store) { result in
-                                        if case .failure(let error) = result {
-                                            fatalError(error.localizedDescription)
-                                        }
-                                        dismiss()
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
