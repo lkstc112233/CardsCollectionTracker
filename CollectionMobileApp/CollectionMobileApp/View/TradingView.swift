@@ -38,6 +38,7 @@ struct TradingView: View {
                             Label("Cache to local", systemImage: "arrow.triangle.2.circlepath.circle.fill")
                         }
                         .tint(.blue)
+                        .disabled(calculateAbsoluteCacheCardDelta(binder) == 0)
                     }
                     .confirmationDialog("Sync card changes with collection server?", isPresented: $confirmSyncing) {
                         Button("Sync card changes") {
@@ -95,6 +96,10 @@ struct TradingView: View {
         .onAppear {
             refreshStorage()
         }
+    }
+    
+    private func calculateAbsoluteCacheCardDelta(_ binder: CardCollection_Ios_IosStoreSchema.CachedBinders) -> Int {
+        return binder.cacheAddedCards.count + binder.deletedCachedCards.count
     }
     
     private func refreshStorage() {
