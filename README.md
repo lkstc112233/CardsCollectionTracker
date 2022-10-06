@@ -13,6 +13,12 @@ $ docker build -f .\CollectionServer\Dockerfile .
 $ docker build -f .\CollectionWebApp\Dockerfile .
 ```
 
+### Mobile App Codegen
+
+```
+$ docker build -f .\CollectionMobileApp\Dockerfile --output .\CollectionMobileApp\CollectionMobileApp\genfiles .
+```
+
 ### Pack Extension
 
 ```
