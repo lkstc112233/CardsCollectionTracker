@@ -166,6 +166,22 @@ function addToWishlist(call, callback) {
     });
 }
 
+function listWishlist(call, callback) {
+    db.listCardsInGenericWishlist().then(cards => {
+        callback(null, {wishlist: cards.map(card => {return {
+            count: card.wish_count,
+            wished_card: {
+                card_info: {
+                    name: card.card_oracle_name,
+                },
+            },
+        };
+    })});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -178,6 +194,7 @@ grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
 grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
 grpc.bindRpcHandler('checkCardCountInCollection', checkCardCountInCollection);
 grpc.bindRpcHandler('addToWishlist', addToWishlist);
+grpc.bindRpcHandler('listWishlist', listWishlist);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
