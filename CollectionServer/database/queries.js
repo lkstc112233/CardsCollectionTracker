@@ -161,6 +161,12 @@ SET wish_count = GREATEST(IFNULL(wish_count, 0), ?)
 WHERE card_oracle_infos.scryfall_id = temp.id
 `;
 
+const LIST_CARDS_IN_GENERIC_WISHLIST_QUERY = `
+SELECT card_oracle_name, wish_count 
+FROM card_oracle_infos
+WHERE IFNULL(wish_count, 0) > 0
+`;
+
 function buildListCardsInBinderQuery(all_binders) {
     return `
     SELECT
@@ -338,6 +344,7 @@ module.exports = {
     DELETE_CARD_IN_COLLECTION_QUERY,
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
     ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
+    LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
     buildAddColumnQuery,
     buildQueryCardInfoByName,
