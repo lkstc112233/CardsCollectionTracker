@@ -162,9 +162,15 @@ WHERE card_oracle_infos.scryfall_id = temp.id
 `;
 
 const LIST_CARDS_IN_GENERIC_WISHLIST_QUERY = `
-SELECT card_oracle_name, wish_count 
-FROM card_oracle_infos
-WHERE IFNULL(wish_count, 0) > 0
+SELECT
+    card_oracle_infos.card_oracle_name AS name,
+    card_oracle_infos.wish_count,
+    IFNULL(COUNT(cards_collection.card_id), 0) AS collection_count
+FROM cards_collection
+RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+WHERE card_oracle_infos.wish_count > 0
+GROUP BY card_infos.oracle_id
 `;
 
 function buildListCardsInBinderQuery(all_binders) {

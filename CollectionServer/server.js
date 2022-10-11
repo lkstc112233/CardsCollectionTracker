@@ -166,15 +166,32 @@ function addToWishlist(call, callback) {
     });
 }
 
+function getWishlistStatus(wishListCount, collectionCount) {
+    if (wishListCount === null || wishListCount === 0) {
+        return 0;
+    }
+    if (collectionCount === 0) {
+        return 1;
+    }
+    if (collectionCount < wishListCount) {
+        return 2;
+    }
+    if (collectionCount >= wishListCount) {
+        return 3;
+    }
+    return 0;
+}
+
 function listWishlist(call, callback) {
     db.listCardsInGenericWishlist().then(cards => {
         callback(null, {wishlist: cards.map(card => {return {
             count: card.wish_count,
             wished_card: {
                 card_info: {
-                    name: card.card_oracle_name,
+                    name: card.name,
                 },
             },
+            status: getWishlistStatus(card.wish_count, card.collection_count),
         };
     })});
     }).catch(err => {
