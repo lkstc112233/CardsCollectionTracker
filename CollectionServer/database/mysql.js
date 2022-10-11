@@ -282,6 +282,18 @@ async function addAllCardsToGenericWishlist(card_list) {
         addCardToGenericWishlist(card.wished_card.card_info.name, card.count)));
 }
 
+async function listCardsInGenericWishlist() {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
 async function countCardsInCollection(names) {
     return new Promise((acc, rej) => {
         pool.query(
@@ -313,5 +325,6 @@ module.exports = {
     moveCardToAnotherBinder,
     addCardToGenericWishlist,
     addAllCardsToGenericWishlist,
+    listCardsInGenericWishlist,
     countCardsInCollection,
 };
