@@ -276,6 +276,12 @@ async function addCardToGenericWishlist(card_name, count) {
     });
 }
 
+// Only increase the count.
+async function addAllCardsToGenericWishlist(card_list) {
+    return Promise.all(card_list.map(card => 
+        addCardToGenericWishlist(card.wished_card.card_info.name, card.count)));
+}
+
 async function countCardsInCollection(names) {
     return new Promise((acc, rej) => {
         pool.query(
@@ -306,5 +312,6 @@ module.exports = {
     deleteCardInCollection,
     moveCardToAnotherBinder,
     addCardToGenericWishlist,
+    addAllCardsToGenericWishlist,
     countCardsInCollection,
 };
