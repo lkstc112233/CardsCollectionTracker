@@ -20,6 +20,8 @@ service CollectionService {
     rpc ListCardInBinder (ListCardInBinderRequest) returns (ListCardInBinderResponse) {}
     rpc CheckCardCountInCollection (CheckCardCountInCollectionRequest) 
         returns (CheckCardCountInCollectionResponse) {}
+    rpc AddToWishlist (AddToWishlistRequest) returns (AddToWishlistResponse) {}
+    rpc ListWishlist (ListWishlistRequest) returns (ListWishlistResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -149,4 +151,16 @@ message CheckCardCountInCollectionResponse {
     //   2. If id was provided with request, id is returned in key.
     //      This is also the case if both is provided.
     map<string, CardInCollectionCount> cards_status = 1;
+}
+
+message AddToWishlistRequest {
+    repeated card_collection.WishedCard wishlist = 1;
+}
+
+message AddToWishlistResponse {}
+
+message ListWishlistRequest {}
+
+message ListWishlistResponse {
+    repeated card_collection.WishedCard wishlist = 1;
 }

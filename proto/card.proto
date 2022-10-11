@@ -32,3 +32,23 @@ message Card {
     // binder id
     int32 binder_id = 4;
 }
+
+// Wished card used for wishlist
+message WishedCard {
+    // Wish status. Used in response for wishlist related features.
+    enum WishStatus {
+        WISH_UNKNOWN = 0;
+        // No such card exists in collection.
+        WISH_NOT_EXIST = 1;
+        // Such card exists in collection, but is below the wished count.
+        WISH_NOT_ENOUGH = 2;
+        // Such card exists in collection and count above the wished count.
+        WISH_ENOUGH = 3;
+    }
+    // Card info. For specific wished card, card info is populated.
+    // For general wished card, only card name is populated.
+    Card wished_card = 1;
+    // Count for the card.
+    int32 count = 2;
+    WishStatus status = 3;
+}
