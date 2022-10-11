@@ -107,14 +107,6 @@ function moveCardToAnotherBinder(call, callback) {
     });
 }
 
-function addToWishlist(call, callback) {
-    db.addAllCardsToGenericWishlist(call.request.wishlist).then(() => {
-        callback(null, {});
-    }).catch(err => {
-        callback({code: 2, message: err}, null);
-    });
-}
-
 async function listOrCountCardInBinder(binder_id, name_only) {
     if (name_only) {
         return db.countCardsInBinder(binder_id).then(res => {
@@ -166,6 +158,14 @@ function checkCardCountInCollection(call, callback) {
     });
 }
 
+function addToWishlist(call, callback) {
+    db.addAllCardsToGenericWishlist(call.request.wishlist).then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -175,9 +175,9 @@ grpc.bindRpcHandler('queryCardInfoByName', queryCardInfoByName);
 grpc.bindRpcHandler('addCardToCollection', addCardToCollection);
 grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
 grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
-grpc.bindRpcHandler('addToWishlist', addToWishlist);
 grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
 grpc.bindRpcHandler('checkCardCountInCollection', checkCardCountInCollection);
+grpc.bindRpcHandler('addToWishlist', addToWishlist);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
