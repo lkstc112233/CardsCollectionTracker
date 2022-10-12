@@ -1,5 +1,5 @@
 const { clearAllPlaceholders } = require('./clear_placeholders');
-const { loadBinderDom } = require('./load_card_list');
+const { loadBinderDom, loadWishlistDom } = require('./load_card_list');
 const grpc = require('../grpc');
 const { createSearchCardElements } = require('./search_card');
 const selected_binder = require('./selected_binder');
@@ -138,6 +138,7 @@ async function loadBinderSidebar() {
         clearAllPlaceholders();
         selected_binder.selectWishlist();
         loadBinderSidebar();
+        loadWishlistDom();
     };
     const deleteBinderButton = document.createElement('a');
     deleteBinderButton.className = 'menu-button';
