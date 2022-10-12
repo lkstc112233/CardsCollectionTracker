@@ -127,6 +127,18 @@ async function loadBinderSidebar() {
         }
         createSearchCardElements();
     };
+    const wishlistButton = document.createElement('a');
+    wishlistButton.className = `menu-button ${selected_binder.isWishlistSelected()
+        ?' selected-menu-item'
+        :''
+    }`;
+    wishlistButton.innerHTML = '✪<span class="menu-text ${}">Wishlist</span>';
+    wishlistButton.onclick = function() {
+        bottom_bar.collapseBottomBar();
+        clearAllPlaceholders();
+        selected_binder.selectWishlist();
+        loadBinderSidebar();
+    };
     const deleteBinderButton = document.createElement('a');
     deleteBinderButton.className = 'menu-button';
     deleteBinderButton.innerHTML = '☠<span class="menu-text">Remove Binder</span>';
@@ -137,6 +149,7 @@ async function loadBinderSidebar() {
             refreshButton,
             addBinderButton,
             addCardsButton,
+            wishlistButton,
             ...listOfBindersDom,
             deleteBinderButton);
 }
