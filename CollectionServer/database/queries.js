@@ -173,6 +173,25 @@ WHERE card_oracle_infos.wish_count > 0
 GROUP BY card_infos.oracle_id
 `;
 
+const CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY = `
+UPDATE card_oracle_infos, (
+	SELECT id FROM (
+		SELECT
+			card_oracle_infos.scryfall_id AS id,
+			card_oracle_infos.wish_count,
+			IFNULL(COUNT(cards_collection.card_id), 0) AS collection_count
+		FROM cards_collection
+		RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+		JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+		WHERE card_oracle_infos.wish_count > 0
+		GROUP BY card_infos.oracle_id
+	) AS temp
+	WHERE temp.wish_count <= temp.collection_count
+) AS fulfilled
+SET card_oracle_infos.wish_count = 0
+WHERE card_oracle_infos.scryfall_id = fulfilled.id
+`;
+
 function buildListCardsInBinderQuery(all_binders) {
     return `
     SELECT
@@ -351,6 +370,7 @@ module.exports = {
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
     ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
     LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
+    CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
     buildAddColumnQuery,
     buildQueryCardInfoByName,
