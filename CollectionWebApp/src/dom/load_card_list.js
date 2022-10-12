@@ -1,4 +1,4 @@
-const { createCardDom, createCardInfoDom } = require('./create_card');
+const { createCardDom, createWishCardDom, createCardInfoDom, createWishCardInfoDom } = require('./create_card');
 const grpc = require('../grpc');
 const DragSelect = require('dragselect');
 const { getSelectedBinderName, increaseSelectedBinderCountBy } = require('./selected_binder');
@@ -80,6 +80,17 @@ async function loadBinderDom(binder = 0) {
     ds.setSelectables(cardsList);
 }
 
+async function loadWishlistDom() {
+    listResponse = await grpc.listWishlist();
+    cardsList = listResponse.getWishlistList()
+        .map(wish => {
+            var wishDom = createWishCardDom(wish);
+            return wishDom;
+        });
+    document.getElementById('cards-collection').replaceChildren(...cardsList);
+    ds.clearSelection();
+}
+
 async function loadSearchAddListDom(query = '', allLang = false) {
     // Search is not performed for empty query.
     if (query === '') {
@@ -102,5 +113,6 @@ async function loadSearchAddListDom(query = '', allLang = false) {
 
 module.exports = {
     loadBinderDom,
+    loadWishlistDom,
     loadSearchAddListDom,
 }
