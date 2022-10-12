@@ -107,6 +107,36 @@ function createButtonRowDom(card, version) {
     return buttonRowDiv;
 }
 
+function createWishButtonRowDom(name) {
+    var buttonElem = document.createElement('button');
+    buttonElem.className = 'circle-button plus';
+    buttonElem.onclick = async function() {
+        let countInput = prompt(`Type in the count of card "${name}" to update to wishlist.`, '1');
+        if (countInput === null) {
+            return;
+        }
+        let count = parseInt(countInput);
+        if (count === NaN) {
+            return;
+        }
+        await grpc.addToWishlist(name, count);
+    }
+    buttonElem.addEventListener('keydown', (e) => {
+        if (e.code == 'Escape') {
+            var input = document.getElementById('search-add-box-input');
+            input.focus();
+            input.select();
+        }
+    });
+    var buttonRowText = document.createElement('span');
+    buttonRowText.innerText = 'Add to Wishlist';
+    var buttonRowDiv = document.createElement('div');
+    buttonRowDiv.className = 'add-card-button';
+    buttonRowDiv.appendChild(buttonRowText);
+    buttonRowDiv.appendChild(buttonElem);
+    return buttonRowDiv;
+}
+
 function createCardInfoDom(card) {
     var imageElem = document.createElement('img');
     imageElem.loading = 'lazy';
