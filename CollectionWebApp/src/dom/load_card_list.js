@@ -111,8 +111,23 @@ async function loadSearchAddListDom(query = '', allLang = false) {
     listParent.appendChild(searchAllElem);
 }
 
+async function loadWishSearchAddListDom(query = '') {
+    // Search is not performed for empty query.
+    if (query === '') {
+        return;
+    }
+    var listStub = document.getElementById('search-add-list');
+    var listParent = document.createElement('div');
+    listStub.innerHTML = '';
+    listStub.appendChild(listParent);
+    listResponse = await grpc.queryCardInfoByName(query, false);
+    var cardNameUnique = [...new Set(listResponse.getInfoList().map(card => card.getName()))];
+    listParent.replaceChildren(...cardNameUnique.map(card => createWishCardInfoDom(card)));
+}
+
 module.exports = {
     loadBinderDom,
     loadWishlistDom,
     loadSearchAddListDom,
+    loadWishSearchAddListDom,
 }
