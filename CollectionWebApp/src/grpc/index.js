@@ -1,3 +1,4 @@
+const card_proto = require('../card_pb');
 const collection_service_proto = require('../collection_service_pb');
 const {CollectionServicePromiseClient} = require('../collection_service_grpc_web_pb');
 const enableDevTools = window.__GRPCWEB_DEVTOOLS__ || (() => {});
@@ -71,6 +72,19 @@ async function deleteCardInCollection(cardId) {
     return client.deleteCardInCollection(request);
 }
 
+async function addToWishlist(name, count = 1) {
+    var cardInfo = new card_proto.CardInfo();
+    cardInfo.setName(name);
+    var wishedCard = new card_proto.Card();
+    wishedCard.setCardInfo(cardInfo);
+    var wishlist = new card_proto.WishedCard();
+    wishlist.setCount(count);
+    wishlist.setWishedCard(wishedCard);
+    var request = new collection_service_proto.AddToWishlistRequest();
+    request.addWishlist(wishlist);
+    return client.addToWishlist(request);
+}
+
 async function listWishlist() {
     var request = new collection_service_proto.ListWishlistRequest();
     return client.listWishlist(request);
@@ -91,6 +105,7 @@ module.exports = {
     deleteBinder,
     moveCardToAnotherBinder,
     deleteCardInCollection,
+    addToWishlist,
     listWishlist,
     cleanupFulfilledWishes,
 };
