@@ -189,8 +189,25 @@ function createCardInfoDom(card) {
     return cardInfoElem;
 }
 
+function createWishCardInfoDom(name) {
+    var buttonDiv = document.createElement('div');
+    buttonDiv.className = 'add-card-button-div';
+    buttonDiv.appendChild(createWishButtonRowDom(name));
+    var nameElem = document.createElement('div');
+    nameElem.innerText = name;
+    nameElem.id = `card-${name}-name`;
+    nameElem.className = 'card-name';
+    var cardInfoElem = document.createElement('div');
+    cardInfoElem.className = 'card-box';
+    cardInfoElem.id = `card-${name}-div`;
+    cardInfoElem.appendChild(nameElem);
+    cardInfoElem.appendChild(buttonDiv);
+    return cardInfoElem;
+}
+
 module.exports = {
     createCardDom,
     createWishCardDom,
     createCardInfoDom,
+    createWishCardInfoDom,
 };
