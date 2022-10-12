@@ -294,6 +294,18 @@ async function listCardsInGenericWishlist() {
     });
 }
 
+async function cleanupCardsInGenericWishlist() {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 async function countCardsInCollection(names) {
     return new Promise((acc, rej) => {
         pool.query(
@@ -326,5 +338,6 @@ module.exports = {
     addCardToGenericWishlist,
     addAllCardsToGenericWishlist,
     listCardsInGenericWishlist,
+    cleanupCardsInGenericWishlist,
     countCardsInCollection,
 };
