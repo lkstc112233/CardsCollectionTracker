@@ -199,6 +199,14 @@ function listWishlist(call, callback) {
     });
 }
 
+function cleanupFulfilledWishes(call, callback) {
+    db.cleanupCardsInGenericWishlist().then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -212,6 +220,7 @@ grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
 grpc.bindRpcHandler('checkCardCountInCollection', checkCardCountInCollection);
 grpc.bindRpcHandler('addToWishlist', addToWishlist);
 grpc.bindRpcHandler('listWishlist', listWishlist);
+grpc.bindRpcHandler('cleanupFulfilledWishes', cleanupFulfilledWishes);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
