@@ -17,6 +17,7 @@ const TABLE_DEFINITIONS = [
             ['scryfall_id', 'VARCHAR(36)'],
             ['card_oracle_name', 'VARCHAR(255)'],
             ['constructed', 'TINYINT(1)'],
+            ['wish_count', 'INT'],
         ],
         'PRIMARY_KEY': 'scryfall_id',
         'UNIQUE_INDEX': 'scryfall_id',
@@ -148,6 +149,48 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
 const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
+
+const ADD_CARD_TO_GENERIC_WISHLIST_QUERY = `
+UPDATE card_oracle_infos,
+(
+	SELECT scryfall_id AS id
+    FROM card_oracle_infos
+	WHERE card_oracle_name = ?
+) AS temp
+SET wish_count = GREATEST(IFNULL(wish_count, 0), ?)
+WHERE card_oracle_infos.scryfall_id = temp.id
+`;
+
+const LIST_CARDS_IN_GENERIC_WISHLIST_QUERY = `
+SELECT
+    card_oracle_infos.card_oracle_name AS name,
+    card_oracle_infos.wish_count,
+    IFNULL(COUNT(cards_collection.card_id), 0) AS collection_count
+FROM cards_collection
+RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+WHERE card_oracle_infos.wish_count > 0
+GROUP BY card_infos.oracle_id
+`;
+
+const CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY = `
+UPDATE card_oracle_infos, (
+	SELECT id FROM (
+		SELECT
+			card_oracle_infos.scryfall_id AS id,
+			card_oracle_infos.wish_count,
+			IFNULL(COUNT(cards_collection.card_id), 0) AS collection_count
+		FROM cards_collection
+		RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+		JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
+		WHERE card_oracle_infos.wish_count > 0
+		GROUP BY card_infos.oracle_id
+	) AS temp
+	WHERE temp.wish_count <= temp.collection_count
+) AS fulfilled
+SET card_oracle_infos.wish_count = 0
+WHERE card_oracle_infos.scryfall_id = fulfilled.id
+`;
 
 function buildListCardsInBinderQuery(all_binders) {
     return `
@@ -325,6 +368,9 @@ module.exports = {
     ADD_CARD_TO_COLLECTION_QUERY,
     DELETE_CARD_IN_COLLECTION_QUERY,
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+    ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
+    LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
+    CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
     buildAddColumnQuery,
     buildQueryCardInfoByName,

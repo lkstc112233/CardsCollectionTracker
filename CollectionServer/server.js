@@ -158,6 +158,55 @@ function checkCardCountInCollection(call, callback) {
     });
 }
 
+function addToWishlist(call, callback) {
+    db.addAllCardsToGenericWishlist(call.request.wishlist).then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
+function getWishlistStatus(wishListCount, collectionCount) {
+    if (wishListCount === null || wishListCount === 0) {
+        return 0;
+    }
+    if (collectionCount === 0) {
+        return 1;
+    }
+    if (collectionCount < wishListCount) {
+        return 2;
+    }
+    if (collectionCount >= wishListCount) {
+        return 3;
+    }
+    return 0;
+}
+
+function listWishlist(call, callback) {
+    db.listCardsInGenericWishlist().then(cards => {
+        callback(null, {wishlist: cards.map(card => {return {
+            count: card.wish_count,
+            wished_card: {
+                card_info: {
+                    name: card.name,
+                },
+            },
+            status: getWishlistStatus(card.wish_count, card.collection_count),
+        };
+    })});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
+function cleanupFulfilledWishes(call, callback) {
+    db.cleanupCardsInGenericWishlist().then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -169,6 +218,9 @@ grpc.bindRpcHandler('deleteCardInCollection', deleteCardInCollection);
 grpc.bindRpcHandler('moveCardToAnotherBinder', moveCardToAnotherBinder);
 grpc.bindRpcHandler('listCardInBinder', listCardInBinder);
 grpc.bindRpcHandler('checkCardCountInCollection', checkCardCountInCollection);
+grpc.bindRpcHandler('addToWishlist', addToWishlist);
+grpc.bindRpcHandler('listWishlist', listWishlist);
+grpc.bindRpcHandler('cleanupFulfilledWishes', cleanupFulfilledWishes);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {

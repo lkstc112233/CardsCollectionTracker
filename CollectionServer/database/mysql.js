@@ -262,6 +262,50 @@ async function moveCardToAnotherBinder(id, new_binder) {
     });
 }
 
+// Only increase the count.
+async function addCardToGenericWishlist(card_name, count) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
+            [card_name, count],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+// Only increase the count.
+async function addAllCardsToGenericWishlist(card_list) {
+    return Promise.all(card_list.map(card => 
+        addCardToGenericWishlist(card.wished_card.card_info.name, card.count)));
+}
+
+async function listCardsInGenericWishlist() {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    });
+}
+
+async function cleanupCardsInGenericWishlist() {
+    return new Promise((acc, rej) => {
+        pool.query(
+            queries.CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
 async function countCardsInCollection(names) {
     return new Promise((acc, rej) => {
         pool.query(
@@ -291,5 +335,9 @@ module.exports = {
     addCardToCollection,
     deleteCardInCollection,
     moveCardToAnotherBinder,
+    addCardToGenericWishlist,
+    addAllCardsToGenericWishlist,
+    listCardsInGenericWishlist,
+    cleanupCardsInGenericWishlist,
     countCardsInCollection,
 };
