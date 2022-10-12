@@ -76,6 +76,11 @@ async function listWishlist() {
     return client.listWishlist(request);
 }
 
+async function cleanupFulfilledWishes() {
+    var request = new collection_service_proto.CleanupFulfilledWishesRequest();
+    return client.cleanupFulfilledWishes(request);
+}
+
 module.exports = {
     addCardToCollection,
     listAllBinderCards,
@@ -87,4 +92,5 @@ module.exports = {
     moveCardToAnotherBinder,
     deleteCardInCollection,
     listWishlist,
+    cleanupFulfilledWishes,
 };
