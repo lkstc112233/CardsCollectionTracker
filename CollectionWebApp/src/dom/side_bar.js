@@ -143,6 +143,18 @@ async function loadBinderSidebar() {
         loadBinderSidebar();
         loadWishlistDom();
     };
+    wishlistButton.oncontextmenu = function() {
+        if (!confirm('Clear fulfilled cards in the wishlist?')) {
+            return false;
+        }
+        grpc.cleanupFulfilledWishes().then(() => {
+            if (selected_binder.isWishlistSelected()) {
+                clearAllPlaceholders();
+                loadWishlistDom();
+            }
+        });
+        return false;
+    }
     const deleteBinderButton = document.createElement('a');
     deleteBinderButton.className = 'menu-button';
     deleteBinderButton.innerHTML = '☠<span class="menu-text">Remove Binder</span>';
