@@ -71,6 +71,11 @@ async function deleteCardInCollection(cardId) {
     return client.deleteCardInCollection(request);
 }
 
+async function listWishlist() {
+    var request = new collection_service_proto.ListWishlistRequest();
+    return client.listWishlist(request);
+}
+
 module.exports = {
     addCardToCollection,
     listAllBinderCards,
@@ -81,4 +86,5 @@ module.exports = {
     deleteBinder,
     moveCardToAnotherBinder,
     deleteCardInCollection,
+    listWishlist,
 };
