@@ -50,6 +50,37 @@ function createCardDom(card) {
     return cardInfoElem;
 }
 
+function createWishCardDom(wishCard) {
+    var nameElem = document.createElement('div');
+    nameElem.innerText = wishCard.getWishedCard().getCardInfo().getName();
+    nameElem.id = `card-${wishCard.getWishedCard().getCardInfo().getName()}-name`;
+    nameElem.className = 'card-name';
+    var countElem = document.createElement('div');
+    countElem.innerText = wishCard.getCount();
+    countElem.id = `card-${wishCard.getWishedCard().getCardInfo().getName()}-set-name`;
+    countElem.className = 'wish-count';
+    var cardInfoElem = document.createElement('div');
+    var typeClass = '';
+    switch (wishCard.getStatus()) {
+        case 1:
+            typeClass = ' wish-not-exist';
+            break;
+        case 2:
+            typeClass = ' wish-not-enough';
+            break;
+        case 3:
+            typeClass = ' wish-enough';
+            break;
+        default:
+            break;
+    }
+    cardInfoElem.className = `card-box${typeClass}`;
+    cardInfoElem.id = `card-${wishCard.getWishedCard().getCardInfo().getName()}-div`;
+    cardInfoElem.appendChild(nameElem);
+    cardInfoElem.appendChild(countElem);
+    return cardInfoElem;
+}
+
 function createButtonRowDom(card, version) {
     var buttonElem = document.createElement('button');
     buttonElem.className = 'circle-button plus';
@@ -130,5 +161,6 @@ function createCardInfoDom(card) {
 
 module.exports = {
     createCardDom,
+    createWishCardDom,
     createCardInfoDom,
 };
