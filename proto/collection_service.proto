@@ -22,6 +22,7 @@ service CollectionService {
         returns (CheckCardCountInCollectionResponse) {}
     rpc AddToWishlist (AddToWishlistRequest) returns (AddToWishlistResponse) {}
     rpc ListWishlist (ListWishlistRequest) returns (ListWishlistResponse) {}
+    rpc CleanupFulfilledWishes (CleanupFulfilledWishesRequest) returns (CleanupFulfilledWishesResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -164,3 +165,7 @@ message ListWishlistRequest {}
 message ListWishlistResponse {
     repeated card_collection.WishedCard wishlist = 1;
 }
+
+message CleanupFulfilledWishesRequest {}
+
+message CleanupFulfilledWishesResponse {}
