@@ -65,10 +65,21 @@ async function updatePlugin() {
                     }
                 ));
             };
+            var addToWishlistButton = document.createElement('button');
+            addToWishlistButton.innerHTML = 'Add to Wishlist';
+            addToWishlistButton.onclick = async function() {
+                await grpc.addToWishlist(deck.cards.map(card => {
+                    return {
+                        'name': card.name,
+                        'count': card.count,
+                    };
+                }));
+            };
             var holderDom = document.createElement('div');
             holderDom.appendChild(titleDom);
             holderDom.appendChild(deckDom);
             holderDom.appendChild(showdiffButton);
+            holderDom.appendChild(addToWishlistButton);
             return holderDom;
         }
     ));
