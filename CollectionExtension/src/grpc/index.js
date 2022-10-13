@@ -37,6 +37,26 @@ async function checkCardCountInCollection(names) {
     return client.checkCardCountInCollection(request);
 }
 
+function buildWishcard(name, count) {
+    var cardInfo = new card_proto.CardInfo();
+    cardInfo.setName(name);
+    var wishedCard = new card_proto.Card();
+    wishedCard.setCardInfo(cardInfo);
+    var wishcard = new card_proto.WishedCard();
+    wishcard.setCount(count);
+    wishcard.setWishedCard(wishedCard);
+    return wishcard;
+}
+
+async function addToWishlist(cardList) {
+    await ensureClientInitialized();
+    var request = new collection_service_proto.AddToWishlistRequest();
+    cardList.map(card => buildWishcard(card.name, card.count))
+        .forEach(wish => request.addWishlist(wish));
+    return client.addToWishlist(request);
+}
+
 module.exports = {
     checkCardCountInCollection,
+    addToWishlist,
 };
