@@ -267,7 +267,7 @@ async function addCardToGenericWishlist(card_name, count) {
     return new Promise((acc, rej) => {
         pool.query(
             queries.ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
-            [card_name, count],
+            [card_name, card_name, count],
             err => {
                 if (err) return rej(err);
                 acc();
@@ -310,7 +310,7 @@ async function countCardsInCollection(names) {
     return new Promise((acc, rej) => {
         pool.query(
             queries.COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
-            [names],
+            [names, names],
             (err, rows) => {
                 if (err) return rej(err);
                 acc(rows);

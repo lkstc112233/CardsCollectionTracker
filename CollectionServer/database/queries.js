@@ -158,6 +158,7 @@ UPDATE card_oracle_infos,
 	SELECT scryfall_id AS id
     FROM card_oracle_infos
 	WHERE card_oracle_name = ?
+        OR card_oracle_main_name = ?
 ) AS temp
 SET wish_count = GREATEST(IFNULL(wish_count, 0), ?)
 WHERE card_oracle_infos.scryfall_id = temp.id
@@ -358,7 +359,8 @@ SELECT
 FROM cards_collection
 RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
 JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
-WHERE card_infos.card_name IN (?)
+WHERE card_oracle_infos.card_oracle_name IN (?)
+    OR card_oracle_infos.card_oracle_main_name IN (?)
 GROUP BY card_infos.oracle_id
 `;
 
