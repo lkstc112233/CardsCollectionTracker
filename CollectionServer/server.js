@@ -144,7 +144,14 @@ function listCardInBinder(call, callback) {
 function checkCardCountInCollection(call, callback) {
     var names = call.request.cards_to_check.map(info => info.name).filter(name => name);
     db.countCardsInCollection(names).then(res => {
-        var result = res.reduce((a, v) => ({...a, [v.name]: {
+        var result = res.map(
+            v => {
+                if (!names.includes(v.name)) {
+                    v.name = v.main_name;
+                }
+                return v;
+            }
+        ).reduce((a, v) => ({...a, [v.name]: {
             count: v.count,
             status: v.count === 0? 3: 2,
         }}), {});
