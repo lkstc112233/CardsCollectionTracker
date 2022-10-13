@@ -64,7 +64,7 @@ async function updatePlugin() {
                         return cardEntityDom;
                     }
                 ));
-            }
+            };
             var holderDom = document.createElement('div');
             holderDom.appendChild(titleDom);
             holderDom.appendChild(deckDom);
