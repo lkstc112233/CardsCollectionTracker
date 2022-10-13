@@ -182,7 +182,7 @@ async function queryCardsInfoByName(card_name, en_only, front_match, limit) {
     return new Promise((acc, rej) => {
         pool.query(
             queries.buildQueryCardInfoByName(en_only, front_match, limit),
-            [card_name],
+            [card_name, card_name],
             (err, rows) => {
                 if (err) return rej(err);
                 acc(rows);

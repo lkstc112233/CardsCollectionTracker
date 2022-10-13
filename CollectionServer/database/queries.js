@@ -142,7 +142,8 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
     JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
     WHERE card_oracle_infos.constructed = 1
         ${en_only?"AND card_infos.lang = 'en'":''}
-        AND UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')
+        AND (UPPER(card_oracle_infos.card_oracle_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%')
+            OR UPPER(card_oracle_infos.card_oracle_main_name) LIKE concat(${front_match? "'%', ": ''}UPPER(?), '%'))
     ${limit? 'LIMIT ' + limit: ''}
     `;
 }
