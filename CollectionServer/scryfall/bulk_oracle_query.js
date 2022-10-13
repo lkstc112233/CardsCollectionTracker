@@ -46,10 +46,15 @@ function buildOracleObject(cardData) {
     if ('legalities' in cardData) {
         constructed = Object.values(cardData.legalities).some((leg) => (leg !== 'not_legal'))? 1: 0;
     }
+    var main_name = null;
+    if ('card_faces' in cardData) {
+        main_name = cardData.card_faces[0].name;
+    }
     return {
         'id': cardData.oracle_id,
         'name': cardData.name,
         'is_constructed': constructed,
+        'main_name': main_name,
     };
 }
 

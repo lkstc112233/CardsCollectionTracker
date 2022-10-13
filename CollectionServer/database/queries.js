@@ -18,6 +18,7 @@ const TABLE_DEFINITIONS = [
             ['card_oracle_name', 'VARCHAR(255)'],
             ['constructed', 'TINYINT(1)'],
             ['wish_count', 'INT'],
+            ['card_oracle_main_name', 'VARCHAR(255)'],
         ],
         'PRIMARY_KEY': 'scryfall_id',
         'UNIQUE_INDEX': 'scryfall_id',
@@ -339,12 +340,14 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
     card_oracle_infos(
         scryfall_id, 
         card_oracle_name,
-        constructed
+        constructed,
+        card_oracle_main_name,
     )
-    VALUES${new Array(count).fill('(?, ?, ?)').join(', ')}
+    VALUES${new Array(count).fill('(?, ?, ?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
     card_oracle_name=VALUES(card_oracle_name),
-    constructed=VALUES(constructed)`;
+    constructed=VALUES(constructed),
+    card_oracle_main_name=VALUES(card_oracle_main_name)`;
 }
 
 COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY = `
