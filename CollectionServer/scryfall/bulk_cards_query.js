@@ -39,9 +39,16 @@ function buildCardObject(cardData) {
     optionalArgs = {}
     if ('printed_name' in cardData) {
         optionalArgs.card_printed_name = cardData.printed_name;
+    } else if ('card_faces' in cardData) {
+        optionalArgs.card_printed_name = cardData.card_faces.map(face => face.printed_name).join(' // ');
     }
     if ('image_uris' in cardData && 'png' in cardData.image_uris && cardData.image_uris.png) {
         optionalArgs.scryfall_image_uri = cardData.image_uris.png;
+    } else if ('card_faces' in cardData 
+            && 'image_uris' in cardData.card_faces[0]
+            && 'png' in cardData.card_faces[0].image_uris 
+            && cardData.card_faces[0].image_uris.png) {
+        optionalArgs.card_printed_name = cardData.card_faces[0].image_uris.png;
     }
     if ('finishes' in cardData && cardData.finishes.length > 1) {
         optionalArgs.version_string = cardData.finishes.join('|');
