@@ -343,7 +343,7 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
         scryfall_id, 
         card_oracle_name,
         constructed,
-        card_oracle_main_name,
+        card_oracle_main_name
     )
     VALUES${new Array(count).fill('(?, ?, ?, ?)').join(', ')}
     ON DUPLICATE KEY UPDATE
