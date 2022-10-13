@@ -13,11 +13,23 @@ img.card-img {
     align-items: center;
 }
 
+.wish-not-exist {
+    background-color: #DD5353;
+}
+
+.wish-not-enough {
+    background-color: #F7A76C;
+}
+
+.wish-enough {
+    background-color: #A8E890;
+}
+
 .card-name {
     font-weight: bold;
 }
 
-.card-name, .set-name {
+.card-name, .set-name, .wish-count {
     flex: 1;
 }
 

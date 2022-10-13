@@ -1,5 +1,5 @@
 const { clearAllPlaceholders } = require('./clear_placeholders');
-const { loadBinderDom } = require('./load_card_list');
+const { loadBinderDom, loadWishlistDom } = require('./load_card_list');
 const grpc = require('../grpc');
 const { createSearchCardElements } = require('./search_card');
 const selected_binder = require('./selected_binder');
@@ -121,12 +121,40 @@ async function loadBinderSidebar() {
     addCardsButton.innerHTML = '+<span class="menu-text">Add Cards</span>';
     addCardsButton.onclick = function() {
         bottom_bar.collapseBottomBar();
-        if (selected_binder.getSelectedBinder() === 0) {
+        if (selected_binder.isWishlistSelected()) {
+            createSearchCardElements(true);
+            return;
+        } else if (selected_binder.getSelectedBinder() === 0) {
             alert('Please select a binder first.');
             return;
         }
         createSearchCardElements();
     };
+    const wishlistButton = document.createElement('a');
+    wishlistButton.className = `menu-button ${selected_binder.isWishlistSelected()
+        ?' selected-menu-item'
+        :''
+    }`;
+    wishlistButton.innerHTML = '✪<span class="menu-text ${}">Wishlist</span>';
+    wishlistButton.onclick = function() {
+        bottom_bar.collapseBottomBar();
+        clearAllPlaceholders();
+        selected_binder.selectWishlist();
+        loadBinderSidebar();
+        loadWishlistDom();
+    };
+    wishlistButton.oncontextmenu = function() {
+        if (!confirm('Clear fulfilled cards in the wishlist?')) {
+            return false;
+        }
+        grpc.cleanupFulfilledWishes().then(() => {
+            if (selected_binder.isWishlistSelected()) {
+                clearAllPlaceholders();
+                loadWishlistDom();
+            }
+        });
+        return false;
+    }
     const deleteBinderButton = document.createElement('a');
     deleteBinderButton.className = 'menu-button';
     deleteBinderButton.innerHTML = '☠<span class="menu-text">Remove Binder</span>';
@@ -137,6 +165,7 @@ async function loadBinderSidebar() {
             refreshButton,
             addBinderButton,
             addCardsButton,
+            wishlistButton,
             ...listOfBindersDom,
             deleteBinderButton);
 }
