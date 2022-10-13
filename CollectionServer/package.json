@@ -1,6 +1,6 @@
 {
     "name": "collection_server",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "dependencies": {
       "express": "^4.18.1",
       "mysql": "^2.17.1",
