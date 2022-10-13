@@ -355,6 +355,7 @@ function buildInsertOrUpdateOracleMetadataTableQuery(count) {
 COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY = `
 SELECT
     card_oracle_infos.card_oracle_name AS name,
+    card_oracle_infos.card_oracle_main_name AS main_name,
     IFNULL(COUNT(cards_collection.card_id), 0) AS count
 FROM cards_collection
 RIGHT JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
