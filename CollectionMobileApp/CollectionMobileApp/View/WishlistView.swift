@@ -11,7 +11,22 @@ struct WishlistView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
     
     var body: some View {
-        Text("Wishlist goes here")
+        List(store.cachedWishlist.indices, id:\.self) { wishId in
+            HStack{
+                Text(store.cachedWishlist[wishId].wishedCard.cardInfo.name)
+                Spacer()
+                Text(String(store.cachedWishlist[wishId].count))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .refreshable {
+            await loadWishlist()
+        }
+        .task{
+            refreshStorage()
+            await loadWishlist()
+        }
+    }
     
     func loadWishlist() async {
         do {
