@@ -15,12 +15,19 @@ struct WishlistView: View {
     
     func loadWishlist() async {
         do {
-            self.wishlist = try await GrpcClient.listWishlist()
-            error = false
+            let loadedWishlist = try await GrpcClient.listWishlist()
+            DispatchQueue.main.async {
+                store.cachedWishlist = loadedWishlist
+                BinderDataStore.save(storage: store) { result in
+                    if case .failure(let error) = result {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
         } catch {
-            self.error = true
-            self.wishlist = []
-            print("Error happened loading binders: " + error.localizedDescription)
+            print("Error happened loading wishlist: " + error.localizedDescription)
+        }
+    }
     
     private func refreshStorage() {
         BinderDataStore.load { result in
