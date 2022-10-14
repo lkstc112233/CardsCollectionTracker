@@ -14,46 +14,50 @@ struct SettingsView: View {
     @State var deleteAllDataConfirm2 = false
     
     var body: some View {
-        VStack{
-            Form {
-                HStack {
-                    Text("Collection Server")
-                    TextField(text: $defaults, prompt: Text("localhost:33333")) {
+        NavigationView {
+            VStack{
+                Form {
+                    HStack {
                         Text("Collection Server")
+                        TextField(text: $defaults, prompt: Text("localhost:33333")) {
+                            Text("Collection Server")
+                        }
+                        .onSubmit {
+                            GrpcClient.updateAddress()
+                        }
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
                     }
-                    .onSubmit {
-                        GrpcClient.updateAddress()
+                }
+                Spacer()
+                Button(role:.destructive) {
+                    deleteAllDataConfirm1 = true
+                }label: {
+                    Text("Delete Cached Data")
+                }.confirmationDialog("Delete Cached Data?", isPresented: $deleteAllDataConfirm1) {
+                    Button("Delete", role: .destructive) {
+                        deleteAllDataConfirm2 = true
                     }
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                }
-            }
-            Spacer()
-            Button(role:.destructive) {
-                deleteAllDataConfirm1 = true
-            }label: {
-                Text("Delete Cached Data")
-            }.confirmationDialog("Delete Cached Data?", isPresented: $deleteAllDataConfirm1) {
-                Button("Delete", role: .destructive) {
-                    deleteAllDataConfirm2 = true
-                }
-            } message: {
-                Text("Delete Cached Data?")
-            }.confirmationDialog("You cannot undo this operation. Are you sure to delete all cached data?", isPresented: $deleteAllDataConfirm2) {
-                Button("Delete all cached date") {
-                    Task {
-                        store = CardCollection_Ios_IosStoreSchema()
-                        BinderDataStore.save(storage: store) { result in
-                            if case .failure(let error) = result {
-                                fatalError(error.localizedDescription)
+                } message: {
+                    Text("Delete Cached Data?")
+                }.confirmationDialog("You cannot undo this operation. Are you sure to delete all cached data?", isPresented: $deleteAllDataConfirm2) {
+                    Button("Delete all cached date") {
+                        Task {
+                            store = CardCollection_Ios_IosStoreSchema()
+                            BinderDataStore.save(storage: store) { result in
+                                if case .failure(let error) = result {
+                                    fatalError(error.localizedDescription)
+                                }
                             }
                         }
                     }
+                    Button("Cancel", role: .destructive) {}
+                } message: {
+                    Text("You cannot undo this operation. Are you sure to delete all cached data?")
                 }
-                Button("Cancel", role: .destructive) {}
-            } message: {
-                Text("You cannot undo this operation. Are you sure to delete all cached data?")
             }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

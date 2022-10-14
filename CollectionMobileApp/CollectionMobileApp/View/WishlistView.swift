@@ -23,6 +23,8 @@ struct WishlistView: View {
             }
             .searchable(text: $filterText, prompt: "Filter...")
             .disableAutocorrection(true)
+            .navigationTitle("Wishlist")
+            .navigationBarTitleDisplayMode(.inline)
             .refreshable {
                 await loadWishlist()
             }
