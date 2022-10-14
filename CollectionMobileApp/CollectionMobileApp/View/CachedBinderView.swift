@@ -130,7 +130,7 @@ struct CachedBinderView: View {
         }
     }
     
-    func filterCard(_ input: [CardCollection_Card]) -> [CardCollection_Card] {
+    private func filterCard(_ input: [CardCollection_Card]) -> [CardCollection_Card] {
         if filterText.isEmpty {
             return input
         } else {
@@ -140,7 +140,7 @@ struct CachedBinderView: View {
         }
     }
     
-    func isCacheDeleted(_ cardId: Int32) -> Bool {
+    private func isCacheDeleted(_ cardId: Int32) -> Bool {
         guard let binderIndex = store.cachedBinders.firstIndex(where: {b in b.binderInfo.id == id}) else {
             return false
         }
