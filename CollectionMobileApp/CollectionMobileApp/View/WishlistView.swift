@@ -21,6 +21,15 @@ struct WishlistView: View {
             self.error = true
             self.wishlist = []
             print("Error happened loading binders: " + error.localizedDescription)
+    
+    private func refreshStorage() {
+        BinderDataStore.load { result in
+            switch result {
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            case .success(let storage):
+                store = storage
+            }
         }
     }
 }
