@@ -20,5 +20,8 @@ message IosStoreSchema {
     // A list of stored binders.
     repeated CachedBinders cached_binders = 2;
     
+    // The stored wishlist.
+    repeated card_collection.WishedCard cached_wishlist = 3;
+    
     reserved 1;
 }
