@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WishlistView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
-    @State var searchText = ""
+    @State var filterText = ""
     
     var body: some View {
         NavigationView {
@@ -21,7 +21,7 @@ struct WishlistView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .searchable(text: $searchText, prompt: "Filter...")
+            .searchable(text: $filterText, prompt: "Filter...")
             .disableAutocorrection(true)
             .refreshable {
                 await loadWishlist()
@@ -34,11 +34,11 @@ struct WishlistView: View {
     }
 
     var cachedWishlist: [CardCollection_WishedCard] {
-        if searchText.isEmpty {
+        if filterText.isEmpty {
             return store.cachedWishlist
         } else {
             return store.cachedWishlist.filter {
-                $0.wishedCard.cardInfo.name.uppercased().contains(searchText.uppercased())
+                $0.wishedCard.cardInfo.name.uppercased().contains(filterText.uppercased())
             }
         }
     }
