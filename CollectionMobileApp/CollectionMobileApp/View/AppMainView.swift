@@ -12,10 +12,17 @@ struct AppMainView: View {
     var body: some View {
         TabView {
             CollectionView(store: $store)
-                .tabItem{Label("Collections", systemImage: "tray.fill")
+                .tabItem{
+                    Label("Collections", systemImage: "tray.fill")
                 }
             TradingView(store: $store)
-                .tabItem {Label("Trading", systemImage: "arrow.left.arrow.right")}
+                .tabItem {
+                    Label("Trading", systemImage: "arrow.left.arrow.right")
+                }
+            WishlistView(store: $store)
+                .tabItem {
+                    Label("Wishlist", systemImage: "wand.and.stars")
+                }
             SettingsView(store: $store)
                 .tabItem{
                     Label("Settings", systemImage: "slider.horizontal.3")
