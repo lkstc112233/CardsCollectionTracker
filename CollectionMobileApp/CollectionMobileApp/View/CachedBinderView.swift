@@ -18,7 +18,7 @@ struct CachedBinderView: View {
     var body: some View {
         GeometryReader { metrics in
             VStack {
-                List(filterCard(cahcedCards), id: \.id) { card in
+                List(filterList(cahcedCards, filter: filterText, id: \.cardInfo.name), id: \.id) { card in
                     HStack {
                         if card.cardInfo.printedName != "" {
                             Text(card.cardInfo.printedName)
@@ -84,7 +84,7 @@ struct CachedBinderView: View {
                 }
                 Text("Pending adds")
                 List(
-                    filterCard(store.cachedBinders.first(where: {b in b.binderInfo.id == id})?.cacheAddedCards ?? [CardCollection_Card]()),
+                    filterList(store.cachedBinders.first(where: {b in b.binderInfo.id == id})?.cacheAddedCards ?? [CardCollection_Card](), filter: filterText, id: \.cardInfo.name),
                     id:\.id) { card in
                     HStack {
                         Text(card.cardInfo.name)
@@ -126,16 +126,6 @@ struct CachedBinderView: View {
                         CardPreviewImageView(url: card.cardInfo.imageUri)
                     })
                 }.frame(height: metrics.size.height * 0.4)
-            }
-        }
-    }
-    
-    private func filterCard(_ input: [CardCollection_Card]) -> [CardCollection_Card] {
-        if filterText.isEmpty {
-            return input
-        } else {
-            return input.filter {
-                $0.cardInfo.name.uppercased().contains(filterText.uppercased())
             }
         }
     }

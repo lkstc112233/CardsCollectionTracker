@@ -14,7 +14,7 @@ struct TradingView: View {
 
     var body: some View {
         NavigationView {
-            List(filterBinder(store.cachedBinders), id:\.binderInfo.id) { binder in
+            List(filterList(store.cachedBinders, filter: filterText, id: \.binderInfo.name), id:\.binderInfo.id) { binder in
                 NavigationLink{
                     CachedBinderView(name: binder.binderInfo.name, id: binder.binderInfo.id, cahcedCards: binder.cardsInBinder.cards, store: $store)
                 }label: {
@@ -98,16 +98,6 @@ struct TradingView: View {
         }
         .onAppear {
             refreshStorage()
-        }
-    }
-    
-    private func filterBinder(_ input: [CardCollection_Ios_IosStoreSchema.CachedBinders]) -> [CardCollection_Ios_IosStoreSchema.CachedBinders] {
-        if filterText.isEmpty {
-            return input
-        } else {
-            return input.filter {
-                $0.binderInfo.name.uppercased().contains(filterText.uppercased())
-            }
         }
     }
     

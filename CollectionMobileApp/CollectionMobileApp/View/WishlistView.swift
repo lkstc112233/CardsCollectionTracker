@@ -33,13 +33,7 @@ struct WishlistView: View {
     }
 
     var cachedWishlist: [CardCollection_WishedCard] {
-        if filterText.isEmpty {
-            return store.cachedWishlist
-        } else {
-            return store.cachedWishlist.filter {
-                $0.wishedCard.cardInfo.name.uppercased().contains(filterText.uppercased())
-            }
-        }
+        return filterList(store.cachedWishlist, filter: filterText, id: \.wishedCard.cardInfo.name)
     }
     
     func loadWishlist() async {
