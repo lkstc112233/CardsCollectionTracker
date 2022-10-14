@@ -10,10 +10,11 @@ import SwiftUI
 struct TradingView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
     @State private var confirmSyncing: Bool = false
+    @State var filterText = ""
 
     var body: some View {
         NavigationView {
-            List(store.cachedBinders, id:\.binderInfo.id) { binder in
+            List(filterBinder(store.cachedBinders), id:\.binderInfo.id) { binder in
                 NavigationLink{
                     CachedBinderView(name: binder.binderInfo.name, id: binder.binderInfo.id, cahcedCards: binder.cardsInBinder.cards, store: $store)
                 }label: {
@@ -90,11 +91,23 @@ struct TradingView: View {
                     }
                 }
             }
+            .searchable(text: $filterText, prompt: "Filter...")
+            .disableAutocorrection(true)
             .navigationTitle("Cached Binders")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
             refreshStorage()
+        }
+    }
+    
+    private func filterBinder(_ input: [CardCollection_Ios_IosStoreSchema.CachedBinders]) -> [CardCollection_Ios_IosStoreSchema.CachedBinders] {
+        if filterText.isEmpty {
+            return input
+        } else {
+            return input.filter {
+                $0.binderInfo.name.uppercased().contains(filterText.uppercased())
+            }
         }
     }
     
