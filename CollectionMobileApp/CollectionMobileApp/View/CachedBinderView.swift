@@ -13,11 +13,12 @@ struct CachedBinderView: View {
     var cahcedCards: [CardCollection_Card] = []
     @Binding var store: CardCollection_Ios_IosStoreSchema
     @State var addingCard: Bool = false
+    @State var filterText = ""
     
     var body: some View {
         GeometryReader { metrics in
             VStack {
-                List(cahcedCards, id: \.id) { card in
+                List(filterCard(cahcedCards), id: \.id) { card in
                     HStack {
                         if card.cardInfo.printedName != "" {
                             Text(card.cardInfo.printedName)
@@ -65,6 +66,8 @@ struct CachedBinderView: View {
                         CardPreviewImageView(url: card.cardInfo.imageUri)
                     })
                 }
+                .searchable(text: $filterText, prompt: "Filter...")
+                .disableAutocorrection(true)
                 .navigationTitle(name)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
@@ -81,7 +84,7 @@ struct CachedBinderView: View {
                 }
                 Text("Pending adds")
                 List(
-                    store.cachedBinders.first(where: {b in b.binderInfo.id == id})?.cacheAddedCards ?? [CardCollection_Card](),
+                    filterCard(store.cachedBinders.first(where: {b in b.binderInfo.id == id})?.cacheAddedCards ?? [CardCollection_Card]()),
                     id:\.id) { card in
                     HStack {
                         Text(card.cardInfo.name)
@@ -123,6 +126,16 @@ struct CachedBinderView: View {
                         CardPreviewImageView(url: card.cardInfo.imageUri)
                     })
                 }.frame(height: metrics.size.height * 0.4)
+            }
+        }
+    }
+    
+    func filterCard(_ input: [CardCollection_Card]) -> [CardCollection_Card] {
+        if filterText.isEmpty {
+            return input
+        } else {
+            return input.filter {
+                $0.cardInfo.name.uppercased().contains(filterText.uppercased())
             }
         }
     }
