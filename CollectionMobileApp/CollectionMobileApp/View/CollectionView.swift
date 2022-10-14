@@ -11,6 +11,7 @@ struct CollectionView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
     @State var binders: [CardCollection_Binder] = []
     @State var error: Bool = false
+    @State var filterText = ""
     
     var body: some View {
         NavigationView {
@@ -24,7 +25,7 @@ struct CollectionView: View {
                     }
                 }
             } else {
-                List(binders, id:\.id) { binder in
+                List(filterList(binders, filter: filterText, id: \.name), id:\.id) { binder in
                     NavigationLink{
                         BinderView(name: binder.name, id: binder.id)
                     }label: {
@@ -56,6 +57,8 @@ struct CollectionView: View {
                 .refreshable {
                     await loadBinders()
                 }
+                .searchable(text: $filterText, prompt: "Filter...")
+                .disableAutocorrection(true)
                 .navigationTitle("Collections")
                 .navigationBarTitleDisplayMode(.inline)
             }
