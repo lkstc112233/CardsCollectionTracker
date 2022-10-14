@@ -26,9 +26,8 @@ struct WishlistView: View {
             .refreshable {
                 await loadWishlist()
             }
-            .task{
+            .onAppear() {
                 refreshStorage()
-                await loadWishlist()
             }
         }
     }
