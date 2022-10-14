@@ -9,22 +9,37 @@ import SwiftUI
 
 struct WishlistView: View {
     @Binding var store: CardCollection_Ios_IosStoreSchema
+    @State var searchText = ""
     
     var body: some View {
-        List(store.cachedWishlist.indices, id:\.self) { wishId in
-            HStack{
-                Text(store.cachedWishlist[wishId].wishedCard.cardInfo.name)
-                Spacer()
-                Text(String(store.cachedWishlist[wishId].count))
-                    .foregroundColor(.secondary)
+        NavigationView {
+            List(cachedWishlist.indices, id:\.self) { wishId in
+                HStack{
+                    Text(cachedWishlist[wishId].wishedCard.cardInfo.name)
+                    Spacer()
+                    Text(String(cachedWishlist[wishId].count))
+                        .foregroundColor(.secondary)
+                }
+            }
+            .searchable(text: $searchText, prompt: "Filter...")
+            .disableAutocorrection(true)
+            .refreshable {
+                await loadWishlist()
+            }
+            .task{
+                refreshStorage()
+                await loadWishlist()
             }
         }
-        .refreshable {
-            await loadWishlist()
-        }
-        .task{
-            refreshStorage()
-            await loadWishlist()
+    }
+
+    var cachedWishlist: [CardCollection_WishedCard] {
+        if searchText.isEmpty {
+            return store.cachedWishlist
+        } else {
+            return store.cachedWishlist.filter {
+                $0.wishedCard.cardInfo.name.uppercased().contains(searchText.uppercased())
+            }
         }
     }
     
