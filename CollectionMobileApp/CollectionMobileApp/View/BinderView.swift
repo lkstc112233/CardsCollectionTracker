@@ -13,6 +13,7 @@ struct BinderView: View {
     @State var cards: [CardCollection_Card] = []
     @State var error: Bool = false
     @State var addingCard: Bool = false
+    @State var filterText = ""
     
     var body: some View {
         NavigationView {
@@ -28,7 +29,7 @@ struct BinderView: View {
                 .navigationTitle(name)
                 .navigationBarTitleDisplayMode(.inline)
             } else {
-                List(cards, id: \.id) { card in
+                List(filterList(cards, filter: filterText, id: \.cardInfo.name), id: \.id) { card in
                     HStack {
                         if card.cardInfo.printedName != "" {
                             Text(card.cardInfo.printedName)
@@ -52,6 +53,8 @@ struct BinderView: View {
                 .refreshable {
                     await loadCardsInBinder()
                 }
+                .searchable(text: $filterText, prompt: "Filter...")
+                .disableAutocorrection(true)
                 .navigationTitle(name)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{

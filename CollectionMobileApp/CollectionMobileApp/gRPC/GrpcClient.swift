@@ -116,6 +116,15 @@ class GrpcClientClass {
         let response = try await client.deleteCardInCollection(request)
     }
     
+    func listWishlist() async throws -> [CardCollection_WishedCard] {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        let request = CardCollection_Service_ListWishlistRequest()
+        let response = try await client.listWishlist(request)
+        return response.wishlist
+    }
+    
     private func constructChannel() -> ClientConnection {
         let serverAddress = (UserDefaults.standard.object(forKey: "ServerAddress") as? String ?? "localhost:33333").components(separatedBy: ":")
         
