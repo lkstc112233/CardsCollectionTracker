@@ -19,7 +19,10 @@ bindFakeHandler('updateMetadata', {
     oracle_downloaded: 0
 }, 2000);
 bindFakeHandler('addBinder', {});
-bindFakeHandler('listBinders', { binders: [{name: 'Unbinded', id: 1}, {name: 'binder 1', id: 10}, ] });
+bindFakeHandler('listBinders', { binders: [
+    {name: 'Unbinded', id: 1, card_count: 10}, 
+    {name: 'binder 1', id: 10, card_count: 5}, 
+] });
 bindFakeHandler('updateBinder', {});
 bindFakeHandler('deleteBinder', {});
 bindFakeHandler('queryCardInfoByName', {
@@ -30,12 +33,16 @@ bindFakeHandler('queryCardInfoByName', {
         printed_name: 'print test',
         language: 'en',
         versions: ['nonfoil', 'foil'],
+        set_name: 'Test Set',
+        collectors_id: '123',
     }, {
         id: '00000000-0000-0000-0000-000000000001',
         name: 'test 2',
         image_uri: 'https://via.placeholder.com/300.png',
         printed_name: 'print test 2',
         language: 'en',
+        set_name: 'Test Set 2',
+        collectors_id: '42',
     }]
 });
 bindFakeHandler('addCardToCollection', {});
@@ -54,6 +61,8 @@ bindFakeHandler('listCardInBinder', {
                 image_uri: 'https://via.placeholder.com/300.png',
                 printed_name: 'print test',
                 language: 'en',
+                set_name: 'Test Set',
+                collectors_id: '123',
             },
         }, {
             id: 2,
@@ -64,6 +73,8 @@ bindFakeHandler('listCardInBinder', {
                 image_uri: 'https://via.placeholder.com/300.png',
                 printed_name: '汉字test',
                 language: 'en',
+                set_name: 'Test Set 2',
+                collectors_id: '321',
             },
         }, {
             id: 3,
@@ -74,6 +85,8 @@ bindFakeHandler('listCardInBinder', {
                 name: 'test 3',
                 image_uri: 'https://via.placeholder.com/300.png',
                 language: 'en',
+                set_name: 'Test Set',
+                collectors_id: '531⭐',
             },
         }, {
             id: 4,
@@ -85,9 +98,36 @@ bindFakeHandler('listCardInBinder', {
                 image_uri: 'https://via.placeholder.com/300.png',
                 printed_name: '🎯test',
                 language: 'en',
+                set_name: 'Test Set with a really long loooong name',
+                collectors_id: '1',
             },
         }],
 });
+bindFakeHandler('checkCardCountInCollection', {});
+bindFakeHandler('addToWishlist', {});
+bindFakeHandler('listWishlist', {
+    wishlist: [
+        {
+            wished_card: {
+                card_info: {
+                    name: 'Test wish 1',
+                },
+            },
+            count: 3,
+            status: 2,
+        },
+        {
+            wished_card: {
+                card_info: {
+                    name: 'Test wish 2',
+                },
+            },
+            count: 2,
+            status: 3,
+        },
+    ],
+});
+bindFakeHandler('cleanupFulfilledWishes', {});
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
