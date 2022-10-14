@@ -12,6 +12,16 @@ struct WishlistView: View {
     
     var body: some View {
         Text("Wishlist goes here")
+    
+    func loadWishlist() async {
+        do {
+            self.wishlist = try await GrpcClient.listWishlist()
+            error = false
+        } catch {
+            self.error = true
+            self.wishlist = []
+            print("Error happened loading binders: " + error.localizedDescription)
+        }
     }
 }
 
