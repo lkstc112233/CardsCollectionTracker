@@ -157,8 +157,9 @@ UPDATE card_oracle_infos,
 (
 	SELECT scryfall_id AS id
     FROM card_oracle_infos
-	WHERE card_oracle_name = ?
-        OR card_oracle_main_name = ?
+	WHERE (card_oracle_name = ?
+        OR card_oracle_main_name = ?)
+        AND constructed = 1
 ) AS temp
 SET wish_count = GREATEST(IFNULL(wish_count, 0), ?)
 WHERE card_oracle_infos.scryfall_id = temp.id
