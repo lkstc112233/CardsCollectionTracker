@@ -12,6 +12,31 @@ const {
 
 let pool;
 
+async function makeQuery(query, parameters) {
+    if (!pool) {
+        return Promise.reject('Called before connection is made.');
+    }
+    return new Promise((acc, rej) => {
+        pool.query(
+            query,
+            parameters,
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    })
+}
+
+async function teardown() {
+    return new Promise((acc, rej) => {
+        pool.end(err => {
+            if (err) rej(err);
+            else acc();
+        });
+    });
+}
+
 async function init() {
     const host = HOST;
     const user = USER ? USER : 'root';
@@ -30,200 +55,83 @@ async function init() {
         multipleStatements: true,
     });
 
-    await new Promise((acc, rej) => {
-        pool.query(
-            queries.CREATE_TABLES,
-            err => {
-                if (err) return rej(err);
-
-                acc();
-            },
-        );
-    });
-    const [tableColumnRows, tableForeignKeyRows]
-     = await Promise.all([new Promise((acc, rej) => {
-        pool.query(
-            queries.QUERY_TABLE_COLUMNS,
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    }), new Promise((acc, rej) => {
-        pool.query(
-            queries.QUERY_FOREIGN_KEY_COLUMNS,
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    })]);
+    await makeQuery(queries.CREATE_TABLES);
+    const [tableColumnRows, tableForeignKeyRows] = await Promise.all([
+        makeQuery(queries.QUERY_TABLE_COLUMNS),
+        makeQuery(queries.QUERY_FOREIGN_KEY_COLUMNS),
+    ]);
     var query = queries.buildAlterTableQuery(tableColumnRows, tableForeignKeyRows);
-    return new Promise((acc, rej) => {
-        if (query.trim().length === 0) {
-            console.log(`Connected to mysql db at host ${HOST}`);
-            acc();
-        }
-        pool.query(
-            query,
-            err => {
-                if (err) return rej(err);
-
-                console.log(`Connected to mysql db at host ${HOST}`);
-                acc();
-            },
-        );
-    });
+    if (query.trim().length === 0) {
+        console.log(`Connected to mysql db at host ${HOST}`);
+        return Promise.resolve();
+    }
+    await makeQuery(query);
+    console.log(`Connected to mysql db at host ${HOST}`);
 }
 
 async function updateCardObjectsMetadata(cardList) {
-    return new Promise((acc, rej) => {
-        if (!Array.isArray(cardList) || cardList.length < 1) {
-            rej('Input is not list.');
-        }
-        pool.query(
-            queries.buildInsertOrUpdateCardMetadataTableQuery(cardList.length),
-            cardList.flatMap(obj => queries.formCardMetadataQueryValuesFromCardObject(obj)),
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    if (!Array.isArray(cardList) || cardList.length < 1) {
+        return Promise.reject('Input is not list.');
+    }
+
+    return makeQuery(
+        queries.buildInsertOrUpdateCardMetadataTableQuery(cardList.length),
+        cardList.flatMap(obj => queries.formCardMetadataQueryValuesFromCardObject(obj)));
 }
 
 async function updateSetObjectsMetadata(setList) {
-    return new Promise((acc, rej) => {
-        if (!Array.isArray(setList) || setList.length < 1) {
-            rej('Input is not list.');
-        }
-        pool.query(
-            queries.buildInsertOrUpdateSetMetadataTableQuery(setList.length),
-            setList.flatMap(obj => [obj.id, obj.name, obj.code, obj.uri, obj.icon_svg_uri]),
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    if (!Array.isArray(setList) || setList.length < 1) {
+        return Promise.reject('Input is not list.');
+    }
+    return makeQuery(
+        queries.buildInsertOrUpdateSetMetadataTableQuery(setList.length),
+        setList.flatMap(obj => [obj.id, obj.name, obj.code, obj.uri, obj.icon_svg_uri]));
 }
 
 async function updateOracleObjectsMetadata(oracleList) {
-    return new Promise((acc, rej) => {
-        if (!Array.isArray(oracleList) || oracleList.length < 1) {
-            rej('Input is not list.');
-        }
-        pool.query(
-            queries.buildInsertOrUpdateOracleMetadataTableQuery(oracleList.length),
-            oracleList.flatMap(obj => [obj.id, obj.name, obj.is_constructed, obj.main_name]),
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    if (!Array.isArray(oracleList) || oracleList.length < 1) {
+        return Promise.reject('Input is not list.');
+    }
+    return makeQuery(
+        queries.buildInsertOrUpdateOracleMetadataTableQuery(oracleList.length),
+        oracleList.flatMap(obj => [obj.id, obj.name, obj.is_constructed, obj.main_name]));
 }
 
 async function addBinder(name) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.INSERT_INTO_BINDERS_QUERY,
-            [name],
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    return makeQuery(queries.INSERT_INTO_BINDERS_QUERY, [name]);
 }
 
 async function renameBinder(id, newName) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.RENAME_BINDER_QUERY,
-            [newName, id],
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    return makeQuery(queries.RENAME_BINDER_QUERY, [newName, id]);
 }
 
 async function deleteBinder(id) {
-    return new Promise((acc, rej) => {
-        if (id === 1) {
-            rej('Unbinded binder cannot be deleted.');
-        }
-        pool.query(
-            queries.DELETE_BINDERS_QUERY,
-            [id, id],
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    if (id === 1) {
+        return Promise.reject('Unbinded binder cannot be deleted.');
+    }
+    return makeQuery(queries.DELETE_BINDERS_QUERY, [id, id]);
 }
 
 async function queryBinders() {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.GET_BINDERS_QUERY,
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
-}
-
-async function teardown() {
-    return new Promise((acc, rej) => {
-        pool.end(err => {
-            if (err) rej(err);
-            else acc();
-        });
-    });
+    return makeQuery(queries.GET_BINDERS_QUERY);
 }
 
 async function queryCardsInfoByName(card_name, en_only, front_match, limit) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.buildQueryCardInfoByName(en_only, front_match, limit),
-            [card_name, card_name],
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
+    return makeQuery(
+        queries.buildQueryCardInfoByName(en_only, front_match, limit),
+        [card_name, card_name]);
 }
 
 async function listCardInBinder(binder_id) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.buildListCardsInBinderQuery(binder_id === 0),
-            binder_id === 0? []: [binder_id],
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
+    return makeQuery(
+        queries.buildListCardsInBinderQuery(binder_id === 0),
+        binder_id === 0? []: [binder_id]);
 }
 
 async function countCardsInBinder(binder_id) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.buildCountCardsInBinderQuery(binder_id === 0),
-            binder_id === 0? []: [binder_id],
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
+    return makeQuery(
+        queries.buildCountCardsInBinderQuery(binder_id === 0),
+        binder_id === 0? []: [binder_id]);
 }
 
 async function addCardToCollection(card_id, version, binder_id = 1) {
@@ -233,56 +141,20 @@ async function addCardToCollection(card_id, version, binder_id = 1) {
     if (binder_id == 0) {
         binder_id = 1;
     }
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.ADD_CARD_TO_COLLECTION_QUERY,
-            [card_id, version, binder_id],
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
+    return makeQuery(queries.ADD_CARD_TO_COLLECTION_QUERY, [card_id, version, binder_id]);
 }
 
 async function deleteCardInCollection(id) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.DELETE_CARD_IN_COLLECTION_QUERY,
-            [id],
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    return makeQuery(queries.DELETE_CARD_IN_COLLECTION_QUERY, [id]);
 }
 
 async function moveCardToAnotherBinder(id, new_binder) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
-            [new_binder, id],
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    return makeQuery(queries.MOVE_CARD_TO_ANOTHER_BINDER_QUERY, [new_binder, id]);
 }
 
 // Only increase the count.
 async function addCardToGenericWishlist(card_name, count) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
-            [card_name, card_name, count],
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    return makeQuery(queries.ADD_CARD_TO_GENERIC_WISHLIST_QUERY, [card_name, card_name, count]);
 }
 
 // Only increase the count.
@@ -292,40 +164,15 @@ async function addAllCardsToGenericWishlist(card_list) {
 }
 
 async function listCardsInGenericWishlist() {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
+    return makeQuery(queries.LIST_CARDS_IN_GENERIC_WISHLIST_QUERY);
 }
 
 async function cleanupCardsInGenericWishlist() {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
-            err => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+    return makeQuery(queries.CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY);
 }
 
 async function countCardsInCollection(names) {
-    return new Promise((acc, rej) => {
-        pool.query(
-            queries.COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
-            [names, names],
-            (err, rows) => {
-                if (err) return rej(err);
-                acc(rows);
-            },
-        );
-    });
+    return makeQuery(queries.COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY, [names, names]);
 }
 
 module.exports = {
