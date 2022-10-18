@@ -41,7 +41,8 @@ async function init() {
             },
         );
     });
-    tableColumnRows = await new Promise((acc, rej) => {
+    const [tableColumnRows, tableForeignKeyRows]
+     = await Promise.all([new Promise((acc, rej) => {
         pool.query(
             queries.QUERY_TABLE_COLUMNS,
             (err, rows) => {
@@ -49,14 +50,22 @@ async function init() {
                 acc(rows);
             },
         );
-    });
+    }), new Promise((acc, rej) => {
+        pool.query(
+            queries.QUERY_FOREIGN_KEY_COLUMNS,
+            (err, rows) => {
+                if (err) return rej(err);
+                acc(rows);
+            },
+        );
+    })]);
+    var query = queries.buildAlterTableQuery(tableColumnRows, tableForeignKeyRows);
     return new Promise((acc, rej) => {
-        var query = queries.buildAddColumnQuery(tableColumnRows);
         if (query.trim().length === 0) {
             acc();
         }
         pool.query(
-            queries.buildAddColumnQuery(tableColumnRows),
+            query,
             err => {
                 if (err) return rej(err);
 

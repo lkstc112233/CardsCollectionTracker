@@ -97,7 +97,6 @@ const QUERY_TABLE_COLUMNS = `
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA="card_collection"`;
 
-// No user input allowed!
 function buildAddColumnQuery(existing) {
     return TABLE_DEFINITIONS
         .map(table => {return {
@@ -111,6 +110,32 @@ function buildAddColumnQuery(existing) {
             ALTER TABLE ${table.table}
             ${table.columns.map(col => `ADD COLUMN ${col.join(' ')}`).join(',')};`)
         .join('');
+}
+
+const QUERY_FOREIGN_KEY_COLUMNS = `
+    SELECT TABLE_NAME AS t, COLUMN_NAME AS c
+    FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+    WHERE TABLE_SCHEMA="card_collection"`;
+
+function buildAddForeignKeyQuery(existing) {
+    return TABLE_DEFINITIONS
+        .filter(table => 'FOREIGN_KEY' in table)
+        .map(table => {return {
+            "table": table.NAME,
+            "foreign_keys": table.FOREIGN_KEY.filter(
+                col => !existing.some(row => row.t === table.NAME && row.c === col[0])
+            ),
+        }})
+        .filter(table => table.foreign_keys.length !== 0)
+        .map(table => `
+            ALTER TABLE ${table.table}
+            ${table.foreign_keys.map(col => `ADD FOREIGN KEY (${col[0]}) REFERENCES ${col[1]}`).join(',')};`)
+        .join('');
+}
+
+// No user input allowed!
+function buildAlterTableQuery(existingColumns, existingKeys) {
+    return buildAddColumnQuery(existingColumns) + buildAddForeignKeyQuery(existingKeys);
 }
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
@@ -369,6 +394,7 @@ GROUP BY card_infos.oracle_id
 module.exports = {
     CREATE_TABLES,
     QUERY_TABLE_COLUMNS,
+    QUERY_FOREIGN_KEY_COLUMNS,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
@@ -380,7 +406,7 @@ module.exports = {
     LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
     CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
-    buildAddColumnQuery,
+    buildAlterTableQuery,
     buildQueryCardInfoByName,
     buildListCardsInBinderQuery,
     buildCountCardsInBinderQuery,
