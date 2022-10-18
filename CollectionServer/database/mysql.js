@@ -36,7 +36,6 @@ async function init() {
             err => {
                 if (err) return rej(err);
 
-                console.log(`Connected to mysql db at host ${HOST}`);
                 acc();
             },
         );
@@ -62,6 +61,7 @@ async function init() {
     var query = queries.buildAlterTableQuery(tableColumnRows, tableForeignKeyRows);
     return new Promise((acc, rej) => {
         if (query.trim().length === 0) {
+            console.log(`Connected to mysql db at host ${HOST}`);
             acc();
         }
         pool.query(
