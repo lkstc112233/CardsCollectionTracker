@@ -61,11 +61,13 @@ const TABLE_DEFINITIONS = [
             ['card_id', 'VARCHAR(36)'],
             ['version', 'VARCHAR(10)'],
             ['binder_id', 'INT'],
+            ['binder_rent', 'INT'],
         ],
         'PRIMARY_KEY': 'id',
         'FOREIGN_KEY': [
             ['card_id', 'card_infos(scryfall_id)'],
             ['binder_id', 'binder_infos(id)'],
+            ['binder_rent', 'binder_infos(id)'],
         ],
     },
 ]
@@ -142,13 +144,14 @@ const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(
 const GET_BINDERS_QUERY = `
     SELECT binder_infos.*, count(cards_collection.id) AS card_count 
     FROM binder_infos
-    LEFT JOIN cards_collection ON binder_infos.id = cards_collection.binder_id
+    LEFT JOIN cards_collection ON binder_infos.id = 
+        IFNULL(cards_collection.binder_rent, cards_collection.binder_id)
     GROUP BY binder_infos.id
 `;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 
 const DELETE_BINDERS_QUERY = `
-UPDATE cards_collection SET binder_id = 1 WHERE binder_id = ?;
+UPDATE cards_collection SET binder_id = 1, binder_rent = NULL WHERE binder_id = ?;
 DELETE FROM binder_infos WHERE id = ?;
 `;
 
@@ -226,7 +229,7 @@ function buildListCardsInBinderQuery(all_binders) {
     SELECT
         cards_collection.id AS id,
         cards_collection.version AS version,
-        cards_collection.binder_id AS binder_id,
+        IFNULL(cards_collection.binder_rent, cards_collection.binder_id) AS binder_id,
         card_infos.scryfall_id AS card_id,
         card_infos.card_name AS name,
         card_infos.scryfall_image_uri AS image,
@@ -237,7 +240,7 @@ function buildListCardsInBinderQuery(all_binders) {
     FROM cards_collection
     JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
     JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
-    ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
+    ${all_binders? '': 'WHERE IFNULL(cards_collection.binder_rent, cards_collection.binder_id) = ?'}
     `;
 }
 
@@ -249,7 +252,7 @@ function buildCountCardsInBinderQuery(all_binders) {
     FROM cards_collection
     JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
     JOIN card_oracle_infos ON card_infos.oracle_id = card_oracle_infos.scryfall_id
-    ${all_binders? '': 'WHERE cards_collection.binder_id = ?'}
+    ${all_binders? '': 'WHERE IFNULL(cards_collection.binder_rent, cards_collection.binder_id) = ?'}
     GROUP BY card_infos.oracle_id
     `;
 }
