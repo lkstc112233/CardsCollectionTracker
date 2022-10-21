@@ -242,7 +242,7 @@ function buildListCardsInBinderQuery(all_binders) {
     FROM cards_collection
     JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
     JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
-    ${all_binders? '': 'WHERE IFNULL(cards_collection.binder_rent, cards_collection.binder_id) = ?'}
+    ${all_binders? '': 'WHERE ? IN (cards_collection.binder_rent, cards_collection.binder_id)'}
     `;
 }
 
