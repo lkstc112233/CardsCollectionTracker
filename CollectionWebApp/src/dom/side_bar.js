@@ -41,7 +41,8 @@ async function loadBinderListDoms() {
             additionalClassName = ' bottomed-menu-item';
         }
         binderButton.className = `menu-button${additionalClassName}`;
-        binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()} (${binder.getCardCount()})</span>`;
+        binderButton.innerHTML = `&gt;<span class="menu-text">${binder.getName()}
+                (${binder.getCardCount()}${binder.getRentOutCount() === 0?'': ' - ' + binder.getRentOutCount()})</span>`;
         binderButton.onclick = function() {
             selected_binder.setSelectedBinder(binder.getId());
             selected_binder.setSelectedBinderName(binder.getName());
