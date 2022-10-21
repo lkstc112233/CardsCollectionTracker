@@ -179,6 +179,8 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
 const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
+const RENT_CARD_TO_BINDER_QUERY = `UPDATE cards_collection SET binder_rent = ? WHERE binder_id <> ? AND id = ?`;
+const RETURN_CARD_TO_ORIGIN_BINDER_QUERY = `UPDATE cards_collection SET binder_rent = NULL WHERE id = ?`;
 
 const ADD_CARD_TO_GENERIC_WISHLIST_QUERY = `
 UPDATE card_oracle_infos,
@@ -405,6 +407,8 @@ module.exports = {
     ADD_CARD_TO_COLLECTION_QUERY,
     DELETE_CARD_IN_COLLECTION_QUERY,
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
+    RENT_CARD_TO_BINDER_QUERY,
+    RETURN_CARD_TO_ORIGIN_BINDER_QUERY,
     ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
     LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
     CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,

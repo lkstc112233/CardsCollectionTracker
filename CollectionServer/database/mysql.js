@@ -152,6 +152,14 @@ async function moveCardToAnotherBinder(id, new_binder) {
     return makeQuery(queries.MOVE_CARD_TO_ANOTHER_BINDER_QUERY, [new_binder, id]);
 }
 
+async function rentCardToBinder(id, dest_binder) {
+    return makeQuery(queries.RENT_CARD_TO_BINDER_QUERY, [dest_binder, dest_binder, id]);
+}
+
+async function returnCardToOriginBinder(id) {
+    return makeQuery(queries.RETURN_CARD_TO_ORIGIN_BINDER_QUERY, [id]);
+}
+
 // Only increase the count.
 async function addCardToGenericWishlist(card_name, count) {
     return makeQuery(queries.ADD_CARD_TO_GENERIC_WISHLIST_QUERY, [card_name, card_name, count]);
@@ -191,6 +199,8 @@ module.exports = {
     addCardToCollection,
     deleteCardInCollection,
     moveCardToAnotherBinder,
+    rentCardToBinder,
+    returnCardToOriginBinder,
     addCardToGenericWishlist,
     addAllCardsToGenericWishlist,
     listCardsInGenericWishlist,
