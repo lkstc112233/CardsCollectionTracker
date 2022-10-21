@@ -35,6 +35,7 @@ function listBinders(call, callback) {
             name: b.binder_name,
             id: b.id,
             card_count: b.card_count,
+            rent_out_count: b.rent_count,
             };
         })});
     }).catch(err => {

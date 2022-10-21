@@ -142,10 +142,12 @@ function buildAlterTableQuery(existingColumns, existingKeys) {
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
 const GET_BINDERS_QUERY = `
-    SELECT binder_infos.*, count(cards_collection.id) AS card_count 
+    SELECT binder_infos.*,
+        COUNT(cards_collection.id) AS card_count,
+        SUM(CASE WHEN cards_collection.binder_rent <> binder_infos.id THEN 1 ELSE 0 END) AS rent_count
     FROM binder_infos
-    LEFT JOIN cards_collection ON binder_infos.id = 
-        IFNULL(cards_collection.binder_rent, cards_collection.binder_id)
+    LEFT JOIN cards_collection 
+    ON binder_infos.id IN (cards_collection.binder_rent, cards_collection.binder_id)
     GROUP BY binder_infos.id
 `;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;

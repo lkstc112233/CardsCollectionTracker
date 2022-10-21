@@ -9,4 +9,6 @@ message Binder {
     int32 id = 2;
     // Cards in this binder.
     int32 card_count = 3;
+    // Cards rented out in this binder.
+    int32 rent_out_count = 5;
 }
