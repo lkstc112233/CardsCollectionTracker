@@ -100,11 +100,23 @@ function deleteCardInCollection(call, callback) {
 }
 
 function moveCardToAnotherBinder(call, callback) {
-    db.moveCardToAnotherBinder(call.request.card_id, call.request.new_binder_id).then(() => {
+    moveCardToAnotherBinderInternal(call).then(() => {
         callback(null, {});
     }).catch(err => {
         callback({code: 2, message: err}, null);
     });
+}
+
+async function moveCardToAnotherBinderInternal(call) {
+    switch (call.request.type) {
+        case 2:
+            return db.rentCardToBinder(call.request.card_id, call.request.new_binder_id);
+        case 3:
+            return db.returnCardToOriginBinder(call.request.card_id);
+        case 1:
+        default:
+            return db.moveCardToAnotherBinder(call.request.card_id, call.request.new_binder_id);
+    }
 }
 
 async function listOrCountCardInBinder(binder_id, name_only) {
