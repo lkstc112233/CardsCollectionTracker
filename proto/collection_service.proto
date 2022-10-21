@@ -110,9 +110,12 @@ message MoveCardToAnotherBinderRequest {
         MOVE_TYPE_MOVE = 1;
         // Rent the card to another binder.
         MOVE_TYPE_RENT = 2;
+        // Return the card to origin binder. New binder id is ignored in this case.
+        MOVE_TYPE_RETURN = 3;
     }
     
     int32 card_id = 1;
+    // Destination binder.
     int32 new_binder_id = 2;
     MoveType type = 3;
 }
