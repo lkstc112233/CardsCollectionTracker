@@ -1,7 +1,14 @@
 const grpc = require('../grpc');
 const { getSelectedBinder, getSelectedBinderName, increaseSelectedBinderCountBy } = require('./selected_binder');
 
-function createCardDom(card) {
+function isRentedOut(binderListing, binderOfCard) {
+    if (binderListing === 0) {
+        return false;
+    }
+    return binderListing !== binderOfCard;
+}
+
+function createCardDom(card, binder = 0) {
     var imageElem = document.createElement('img');
     imageElem.loading = 'lazy';
     imageElem.id = `card-${card.getId()}-image`;
@@ -26,7 +33,7 @@ function createCardDom(card) {
         setElem.innerText += ` (${collectorsId})`;
     }
     var cardInfoElem = document.createElement('div');
-    cardInfoElem.className = 'card-box';
+    cardInfoElem.className = `card-box${isRentedOut(binder, card.getBinderId())?' rented-out':''}`;
     cardInfoElem.id = `card-${card.getId()}-div`;
     cardInfoElem.appendChild(nameElem);
     cardInfoElem.appendChild(setElem);

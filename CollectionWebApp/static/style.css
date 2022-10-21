@@ -25,6 +25,10 @@ img.card-img {
     background-color: #A8E890;
 }
 
+.rented-out {
+    background-color: #BEBEBE;
+}
+
 .card-name {
     font-weight: bold;
 }
