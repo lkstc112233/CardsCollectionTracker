@@ -58,6 +58,23 @@ async function loadBinderListDoms() {
         };
         binderButton.oncontextmenu = function() {
             if (binder.getId() === selected_binder.getSelectedBinder()) {
+                if (binder.getId() === 1) {
+                    // Unbinded binder do not change.
+                    return false;
+                }
+                let newName = prompt(`Rename "${selected_binder.getSelectedBinderName()}"? Left blank to leave unchanged.`, '');
+                if (newName === null) {
+                    return false;
+                }
+                var hint = 'Change binder to deck?';
+                var newType = 3;
+                if (binder.getType() === 3) {
+                    hint = 'Change deck to binder?';
+                    newType = 1;
+                }
+                let shouldChange = confirm(hint);
+                grpc.updateBinder(binder.getId(), newName, shouldChange? newType: 0)
+                    .then(() => loadBinderSidebar());
                 return false;
             }
             bottom_bar.popBottomBar(binder.getId(), binder.getName(), binder.getCardCount());
