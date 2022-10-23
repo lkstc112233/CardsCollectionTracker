@@ -46,11 +46,11 @@ function listBinders(call, callback) {
 
 async function updateBinderInternal(call) {
     var promises = [];
-    if (call.request.new_name != '') {
+    if (call.request.new_name !== '') {
         promises.push(db.renameBinder(call.request.id, call.request.new_name));
     }
-    if (call.request.new_binder_id != 0) {
-        promises.push(db.changeBinderType(call.request.id, call.request.new_binder_id));
+    if (call.request.new_type !== 0) {
+        promises.push(db.changeBinderType(call.request.id, call.request.new_type));
     }
     return Promise.all(promises);
 }
