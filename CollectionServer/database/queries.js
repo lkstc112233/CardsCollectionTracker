@@ -152,6 +152,7 @@ const GET_BINDERS_QUERY = `
     GROUP BY binder_infos.id
 `;
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
+const CHANGE_BINDER_TYPE_QUERY = `UPDATE binder_infos SET binder_type = ? WHERE id = ?`;
 
 const DELETE_BINDERS_QUERY = `
 UPDATE cards_collection SET binder_id = 1, binder_rent = NULL WHERE binder_id = ?;
@@ -406,6 +407,7 @@ module.exports = {
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
     RENAME_BINDER_QUERY,
+    CHANGE_BINDER_TYPE_QUERY,
     DELETE_BINDERS_QUERY,
     ADD_CARD_TO_COLLECTION_QUERY,
     DELETE_CARD_IN_COLLECTION_QUERY,

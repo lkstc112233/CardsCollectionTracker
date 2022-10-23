@@ -105,6 +105,10 @@ async function renameBinder(id, newName) {
     return makeQuery(queries.RENAME_BINDER_QUERY, [newName, id]);
 }
 
+async function changeBinderType(id, newType) {
+    return makeQuery(queries.CHANGE_BINDER_TYPE_QUERY, [newType, id]);
+}
+
 async function deleteBinder(id) {
     if (id === 1) {
         return Promise.reject('Unbinded binder cannot be deleted.');
@@ -191,6 +195,7 @@ module.exports = {
     updateOracleObjectsMetadata,
     addBinder,
     renameBinder,
+    changeBinderType,
     deleteBinder,
     queryBinders,
     queryCardsInfoByName,
