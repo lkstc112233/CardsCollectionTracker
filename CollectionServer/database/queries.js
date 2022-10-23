@@ -143,7 +143,10 @@ function buildAlterTableQuery(existingColumns, existingKeys) {
 
 const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name, binder_type) VALUES(?, IFNULL(?, 1))`;
 const GET_BINDERS_QUERY = `
-    SELECT binder_infos.*,
+    SELECT
+        binder_infos.id,
+        binder_infos.binder_name,
+        IFNULL(binder_infos.binder_type, 1) AS binder_type,
         COUNT(cards_collection.id) AS card_count,
         SUM(CASE WHEN cards_collection.binder_rent <> binder_infos.id THEN 1 ELSE 0 END) AS rent_count
     FROM binder_infos
