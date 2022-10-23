@@ -4,11 +4,24 @@ package card_collection;
 
 // Info for binder.
 message Binder {
+    // The type of the binder.
+    enum BinderType {
+        BINDER_TYPE_UNKNOWN = 0;
+        // Binder used to store a card out of a deck.
+        BINDER_TYPE_STORAGE = 1;
+        // Binder used for collection card. Does not count towards deck building.
+        BINDER_TYPE_COLLECTORS = 2;
+        // Binder type for a deck box.
+        BINDER_TYPE_DECK = 3;
+    }
+
     string name = 1;
     // A handler for the binder used in other APIs.
     int32 id = 2;
     // Cards in this binder.
     int32 card_count = 3;
+    // The type of the binder.
+    BinderType type = 4;
     // Cards rented out in this binder.
     int32 rent_out_count = 5;
 }
