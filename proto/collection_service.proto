@@ -54,6 +54,7 @@ message ListBindersResponse {
 message UpdateBinderRequest{
     int32 id = 1;
     string new_name = 2;
+    card_collection.Binder.BinderType new_type = 3;
 }
 
 message UpdateBinderResponse {
