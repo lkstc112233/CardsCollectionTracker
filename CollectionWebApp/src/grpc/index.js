@@ -47,6 +47,14 @@ async function addBinder(name) {
     return client.addBinder(request);
 }
 
+async function updateBinder(id, newName, newType) {
+    var request = new collection_service_proto.UpdateBinderRequest();
+    request.setId(id);
+    request.setNewName(newName);
+    request.setNewType(newType);
+    return client.updateBinder(request);
+}
+
 async function updateMetadata() {
     var request = new collection_service_proto.UpdateMetadataRequest();
     var deadline = new Date(Date.now() + 1200 * 1000); // 20 minutes
@@ -101,6 +109,7 @@ module.exports = {
     queryCardInfoByName,
     listBinders,
     addBinder,
+    updateBinder,
     updateMetadata,
     deleteBinder,
     moveCardToAnotherBinder,
