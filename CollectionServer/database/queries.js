@@ -51,6 +51,7 @@ const TABLE_DEFINITIONS = [
         'COLUMNS': [
             ['id', 'INT AUTO_INCREMENT'],
             ['binder_name', 'VARCHAR(255)'],
+            ['binder_type', 'TINYINT'],
         ],
         'PRIMARY_KEY': 'id',
     },
@@ -140,7 +141,7 @@ function buildAlterTableQuery(existingColumns, existingKeys) {
     return buildAddColumnQuery(existingColumns) + buildAddForeignKeyQuery(existingKeys);
 }
 
-const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name) VALUES(?)`;
+const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name, binder_type) VALUES(?, IFNULL(?, 1))`;
 const GET_BINDERS_QUERY = `
     SELECT binder_infos.*,
         COUNT(cards_collection.id) AS card_count,

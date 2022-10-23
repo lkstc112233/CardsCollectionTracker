@@ -97,8 +97,8 @@ async function updateOracleObjectsMetadata(oracleList) {
         oracleList.flatMap(obj => [obj.id, obj.name, obj.is_constructed, obj.main_name]));
 }
 
-async function addBinder(name) {
-    return makeQuery(queries.INSERT_INTO_BINDERS_QUERY, [name]);
+async function addBinder(name, type) {
+    return makeQuery(queries.INSERT_INTO_BINDERS_QUERY, [name, type]);
 }
 
 async function renameBinder(id, newName) {
