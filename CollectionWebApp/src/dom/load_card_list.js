@@ -23,7 +23,7 @@ ds.subscribe('callback', (callbackObj) => {
             .filter(element => document.body.contains(element))
             .filter(element => element.childElementCount > 0)
             .map(element => element.firstChild)
-            .filter(element => element.className === 'card-box')
+            .filter(element => element.classList.contains('card-box'))
             .map(element => {
                 id = element.id.match(cardIdFromElemId)[1];
                 return grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder())
