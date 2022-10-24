@@ -1,6 +1,7 @@
 let bottomBinder = 0;
 let bottomBinderName = '';
 let bottomBinderCount = 0;
+let bottomBinderIsDeck = false;
 
 function getCurrentBottomBinder() {
     if (bottomBinder === 0) {
@@ -23,14 +24,22 @@ function getBottomBinderCount() {
     return bottomBinderCount;
 }
 
+function getIsBottomBinderADeck() {
+    if (bottomBinder === 0) {
+        return null;
+    }
+    return bottomBinderIsDeck;
+}
+
 function increaseBottomBinderCountBy(count = 1) {
     return bottomBinderCount += count;
 }
 
-function popBottomBar(binder, name, count) {
+function popBottomBar(binder, name, count, isDeck) {
     bottomBinder = binder;
     bottomBinderName = name;
     bottomBinderCount = count;
+    bottomBinderIsDeck = isDeck;
     document.getElementById("binder-droparea").style.height = "100px";
     document.getElementById("binder-droparea").style.top = "calc(100% - 100px)";
     document.getElementById("main-panel").style.marginBottom = "100px";
@@ -49,6 +58,7 @@ module.exports = {
     getCurrentBottomBinder,
     getBottomBinderName,
     getBottomBinderCount,
+    getIsBottomBinderADeck,
     increaseBottomBinderCountBy,
     popBottomBar,
     collapseBottomBar,
