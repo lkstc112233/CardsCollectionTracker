@@ -26,11 +26,16 @@ ds.subscribe('callback', (callbackObj) => {
             .filter(element => element.classList.contains('card-box'))
             .map(element => {
                 id = element.id.match(cardIdFromElemId)[1];
-                return grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder())
+                var isRent = bottomBar.getIsBottomBinderADeck();
+                return grpc.moveCardToAnotherBinder(id, bottomBar.getCurrentBottomBinder(), isRent)
                     .then(() => element.parentElement);
             })).then((arr) => {
                 var size = arr.length;
-                arr.forEach(element => element.remove());
+                if (bottomBar.getIsBottomBinderADeck()) {
+                    arr.forEach(element.firstChild.className = 'card-box rented-out');
+                } else {                    
+                    arr.forEach(element => element.remove());
+                }
                 var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
                 if (sidebarButton.length === 1) {
                     sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(-size)})</span>`;
