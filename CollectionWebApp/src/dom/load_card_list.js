@@ -35,14 +35,14 @@ ds.subscribe('callback', (callbackObj) => {
                     arr.forEach(element => element.firstChild.className = 'card-box rented-out');
                 } else {                    
                     arr.forEach(element => element.remove());
-                }
-                var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
-                if (sidebarButton.length === 1) {
-                    sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(-size)})</span>`;
-                }
-                var sidebarButton = document.getElementsByClassName('menu-button bottomed-menu-item');
-                if (sidebarButton.length === 1) {
-                    sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${bottomBar.getBottomBinderName()} (${bottomBar.increaseBottomBinderCountBy(size)})</span>`;
+                    var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
+                    if (sidebarButton.length === 1) {
+                        sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(-size)})</span>`;
+                    }
+                    var sidebarButton = document.getElementsByClassName('menu-button bottomed-menu-item');
+                    if (sidebarButton.length === 1) {
+                        sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${bottomBar.getBottomBinderName()} (${bottomBar.increaseBottomBinderCountBy(size)})</span>`;
+                    }
                 }
             });
     }
