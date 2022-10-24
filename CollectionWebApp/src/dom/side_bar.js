@@ -36,9 +36,12 @@ async function loadBinderListDoms() {
         binderButton = document.createElement('a');
         additionalClassName = '';
         if (binder.getId() === selected_binder.getSelectedBinder()) {
-            additionalClassName = ' selected-menu-item';
+            additionalClassName += ' selected-menu-item';
         } else if (binder.getId() === bottom_bar.getCurrentBottomBinder()) {
-            additionalClassName = ' bottomed-menu-item';
+            additionalClassName += ' bottomed-menu-item';
+            if (binder.getType() === 3) {
+                additionalClassName += ' deck-type';
+            }
         }
         binderButton.className = `menu-button${additionalClassName}`;
         binderButton.innerHTML = `${binder.getType() === 1? '&gt;' : '&lt;'}<span class="menu-text">${binder.getName()}
@@ -77,7 +80,8 @@ async function loadBinderListDoms() {
                     .then(() => loadBinderSidebar());
                 return false;
             }
-            bottom_bar.popBottomBar(binder.getId(), binder.getName(), binder.getCardCount());
+            bottom_bar.popBottomBar(binder.getId(), binder.getName(), binder.getCardCount(),
+                binder.getType() === 3? true: false);
             loadBinderSidebar();
             return false;
         }
