@@ -67,10 +67,15 @@ async function deleteBinder(id) {
     return client.deleteBinder(request);
 }
 
-async function moveCardToAnotherBinder(cardId, newBinderId) {
+async function moveCardToAnotherBinder(cardId, newBinderId, isRenting) {
     var request = new collection_service_proto.MoveCardToAnotherBinderRequest();
     request.setCardId(cardId);
     request.setNewBinderId(newBinderId);
+    if (isRenting) {
+        request.setType(2);
+    } else {
+        request.setType(1);
+    }
     return client.moveCardToAnotherBinder(request);
 }
 
