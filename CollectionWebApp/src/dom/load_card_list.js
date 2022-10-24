@@ -32,7 +32,7 @@ ds.subscribe('callback', (callbackObj) => {
             })).then((arr) => {
                 var size = arr.length;
                 if (bottomBar.getIsBottomBinderADeck()) {
-                    arr.forEach(element.firstChild.className = 'card-box rented-out');
+                    arr.forEach(element => element.firstChild.className = 'card-box rented-out');
                 } else {                    
                     arr.forEach(element => element.remove());
                 }
