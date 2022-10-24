@@ -43,6 +43,11 @@ function popBottomBar(binder, name, count, isDeck) {
     document.getElementById("binder-droparea").style.height = "100px";
     document.getElementById("binder-droparea").style.top = "calc(100% - 100px)";
     document.getElementById("main-panel").style.marginBottom = "100px";
+    if (isDeck) {
+        document.getElementById("binder-droparea").className = 'main-panel-bottombar deck-type';
+    } else {
+        document.getElementById("binder-droparea").className = 'main-panel-bottombar';
+    }
 }
 
 function collapseBottomBar() {
