@@ -157,6 +157,10 @@ img.card-img {
     font-size: 16px;
 }
 
+.main-panel-bottombar.deck-type {
+    background-color: #c0c;
+}
+
 .main-panel-bottombar {
     height: 0;
     width: 100%;
@@ -181,8 +185,16 @@ img.card-img {
     color: #cc0;
 }
 
+.menu-button.bottomed-menu-item.deck-type {
+    color: #c0c;
+}
+
 .menu-button.bottomed-menu-item:hover {
     color: #770;
+}
+
+.menu-button.bottomed-menu-item.deck-type {
+    color: #707;
 }
 
 #main-panel {
