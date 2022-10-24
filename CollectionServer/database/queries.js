@@ -185,7 +185,12 @@ function buildQueryCardInfoByName(en_only, front_match, limit) {
 
 const ADD_CARD_TO_COLLECTION_QUERY = `INSERT INTO cards_collection(card_id, version, binder_id) VALUES(?, ?, ?)`;
 const DELETE_CARD_IN_COLLECTION_QUERY = `DELETE FROM cards_collection WHERE id = ?`;
-const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `UPDATE cards_collection SET binder_id = ? WHERE id = ?`;
+const MOVE_CARD_TO_ANOTHER_BINDER_QUERY = `
+UPDATE cards_collection
+SET 
+    binder_id = ?,
+    binder_rent = NULL
+WHERE id = ?`;
 const RENT_CARD_TO_BINDER_QUERY = `UPDATE cards_collection SET binder_rent = ? WHERE binder_id <> ? AND id = ?`;
 const RETURN_CARD_TO_ORIGIN_BINDER_QUERY = `UPDATE cards_collection SET binder_rent = NULL WHERE id = ?`;
 
