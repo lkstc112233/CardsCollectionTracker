@@ -64,11 +64,21 @@ function updateBinder(call, callback) {
 }
 
 function deleteBinder(call, callback) {
-    db.deleteBinder(call.request.id).then(() => {
+    deleteBinderInternal(call).then(() => {
         callback(null, {});
     }).catch(err => {
         callback({code: 2, message: err}, null);
     });
+}
+
+async function deleteBinderInternal(call) {
+    if (call.request.id !== 0) {
+        return db.deleteBinder(call.request.id);
+    }
+    if (call.request.return_from_binder_id !== 0) {
+        return db.returnAllCardsToOriginBinder(call.request.return_from_binder_id);
+    }
+    return Promise.resolve();
 }
 
 function queryCardInfoByName(call, callback) {
