@@ -113,7 +113,7 @@ async function deleteBinder(id) {
     if (id === 1) {
         return Promise.reject('Unbinded binder cannot be deleted.');
     }
-    return makeQuery(queries.DELETE_BINDERS_QUERY, [id, id]);
+    return makeQuery(queries.DELETE_BINDERS_QUERY, [id, id, id]);
 }
 
 async function queryBinders() {
