@@ -61,7 +61,10 @@ message UpdateBinderResponse {
 }
 
 message DeleteBinderRequest {
+    // The binder to delete.
     int32 id = 1;
+    // The binder to clear all returned cards.
+    int32 return_from_binder_id = 2;
 }
 
 message DeleteBinderResponse {
