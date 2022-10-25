@@ -47,6 +47,18 @@ async function loadBinderListDoms() {
         binderButton.innerHTML = `${binder.getType() === 1? '&gt;' : '&lt;'}<span class="menu-text">${binder.getName()}
                 (${binder.getCardCount()}${binder.getRentOutCount() === 0?'': ' - ' + binder.getRentOutCount()})</span>`;
         binderButton.onclick = function() {
+            if (selected_binder.getSelectedBinder() === binder.getId() &&
+                binder.getType() === 3) {
+                if (confirm('Return all cards in deck back to binder?')) {
+                    grpc.returnCardsInBinder(binder.getId()).then(() => {
+                        bottom_bar.collapseBottomBar();
+                        clearAllPlaceholders();
+                        loadBinderSidebar();
+                        loadBinderDom(binder.getId());
+                    });
+                }
+                return;
+            }
             selected_binder.setSelectedBinder(binder.getId());
             selected_binder.setSelectedBinderName(binder.getName());
             if (binder.getId() === bottom_bar.getCurrentBottomBinder()) {
