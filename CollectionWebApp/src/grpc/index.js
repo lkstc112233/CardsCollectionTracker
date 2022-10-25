@@ -67,6 +67,12 @@ async function deleteBinder(id) {
     return client.deleteBinder(request);
 }
 
+async function returnCardsInBinder(id) {
+    var request = new collection_service_proto.DeleteBinderRequest();
+    request.setReturnFromBinderId(id);
+    return client.deleteBinder(request);
+}
+
 async function moveCardToAnotherBinder(cardId, newBinderId, isRenting) {
     var request = new collection_service_proto.MoveCardToAnotherBinderRequest();
     request.setCardId(cardId);
@@ -117,6 +123,7 @@ module.exports = {
     updateBinder,
     updateMetadata,
     deleteBinder,
+    returnCardsInBinder,
     moveCardToAnotherBinder,
     deleteCardInCollection,
     addToWishlist,
