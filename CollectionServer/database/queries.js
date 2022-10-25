@@ -195,6 +195,16 @@ WHERE id = ?`;
 const RENT_CARD_TO_BINDER_QUERY = `UPDATE cards_collection SET binder_rent = ? WHERE binder_id <> ? AND id = ?`;
 const RETURN_CARD_TO_ORIGIN_BINDER_QUERY = `UPDATE cards_collection SET binder_rent = NULL WHERE id = ?`;
 
+const RETURN_ALL_CARD_TO_ORIGIN_BINDER_QUERY = `
+UPDATE cards_collection, (
+	SELECT id 
+    FROM cards_collection 
+    WHERE binder_rent = ?
+) AS temp
+SET cards_collection.binder_rent = NULL
+WHERE cards_collection.id = temp.id
+`;
+
 const ADD_CARD_TO_GENERIC_WISHLIST_QUERY = `
 UPDATE card_oracle_infos,
 (
@@ -423,6 +433,7 @@ module.exports = {
     MOVE_CARD_TO_ANOTHER_BINDER_QUERY,
     RENT_CARD_TO_BINDER_QUERY,
     RETURN_CARD_TO_ORIGIN_BINDER_QUERY,
+    RETURN_ALL_CARD_TO_ORIGIN_BINDER_QUERY,
     ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
     LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
     CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
