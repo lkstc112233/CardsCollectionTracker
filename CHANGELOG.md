@@ -2,6 +2,13 @@
 
 Let's have a change log!
 
+## Planned Features
+
+* Deck planning
+    * Given a deck, plans what card needs to be fetched from which binder.
+    * Commit the change with one click!
+    * Adds missing cards to the wishlist.
+
 ## Collection Server
 
 ### Changelog 0.8
