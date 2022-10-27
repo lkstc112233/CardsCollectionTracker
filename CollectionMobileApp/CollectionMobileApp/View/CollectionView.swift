@@ -53,6 +53,7 @@ struct CollectionView: View {
                             .tint(.orange)
                         }
                     }
+                    .listRowBackground(Color(uiColor: getBackgroundColorForBinder(binder.type)))
                 }
                 .refreshable {
                     await loadBinders()
@@ -66,6 +67,13 @@ struct CollectionView: View {
         .task{
             await loadBinders()
         }
+    }
+    
+    private func getBackgroundColorForBinder(_ binderType: CardCollection_Binder.BinderType) -> UIColor {
+        if (binderType == .deck) {
+            return .tertiarySystemBackground
+        }
+        return .secondarySystemBackground
     }
     
     func loadBinders() async {
