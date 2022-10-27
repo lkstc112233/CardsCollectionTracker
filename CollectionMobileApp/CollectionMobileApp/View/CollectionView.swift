@@ -12,6 +12,8 @@ struct CollectionView: View {
     @State var binders: [CardCollection_Binder] = []
     @State var error: Bool = false
     @State var filterText = ""
+    @State private var confirmingReturningCards: Bool = false
+    @State private var deckToReturn: CardCollection_Binder? = nil
     
     var body: some View {
         NavigationView {
@@ -38,19 +40,29 @@ struct CollectionView: View {
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button() {
                                 Task {
-                                    if let response = await loadCardsInBinder(id: binder.id) {
-                                        BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binder, response: response)
-                                        BinderDataStore.save(storage: store) { result in
-                                            if case .failure(let error) = result {
-                                                fatalError(error.localizedDescription)
+                                    if binder.type == .deck {
+                                        deckToReturn = binder
+                                        confirmingReturningCards = true
+                                    } else {
+                                        if let response = await loadCardsInBinder(id: binder.id) {
+                                            BinderDataStore.mergeBinderIntoStorage(storage: &store, binderInfo: binder, response: response)
+                                            BinderDataStore.save(storage: store) { result in
+                                                if case .failure(let error) = result {
+                                                    fatalError(error.localizedDescription)
+                                                }
                                             }
                                         }
                                     }
                                 }
                             } label: {
-                                Label("Cache to local", systemImage: "archivebox.fill")
+                                if binder.type == .deck {
+                                    Label("Return all cards", systemImage: "arrow.counterclockwise.circle")
+                                } else {
+                                    Label("Cache to local", systemImage: "archivebox.fill")
+                                }
                             }
-                            .tint(.orange)
+                            .tint(getBinderSwipeButtonColor(binder.type))
+                            .disabled(shouldDisableSwipeAction(binder))
                         }
                     }
                     .listRowBackground(Color(uiColor: getBackgroundColorForBinder(binder.type)))
@@ -62,6 +74,18 @@ struct CollectionView: View {
                 .disableAutocorrection(true)
                 .navigationTitle("Collections")
                 .navigationBarTitleDisplayMode(.inline)
+                .confirmationDialog("Return all cards in binder?", isPresented: $confirmingReturningCards) {
+                    Button("Return all cards in binder") {
+                        Task {
+                            do {
+                                try await GrpcClient.returnAllCardsInDeck(id: deckToReturn!.id)
+                            } catch {
+                                print("Error happened while returning cards: " + error.localizedDescription)
+                            }
+                            deckToReturn = nil
+                        }
+                    }
+                }
             }
         }
         .task{
@@ -69,6 +93,19 @@ struct CollectionView: View {
         }
     }
     
+    private func shouldDisableSwipeAction(_ binder: CardCollection_Binder) -> Bool {
+        if binder.type != .deck {
+            return false
+        }
+        return binder.cardCount == 0
+    }
+    
+    private func getBinderSwipeButtonColor(_ binderType: CardCollection_Binder.BinderType) -> Color {
+        if binderType == .deck {
+            return .red
+        }
+        return .orange
+    }
     private func getBackgroundColorForBinder(_ binderType: CardCollection_Binder.BinderType) -> UIColor {
         if (binderType == .deck) {
             return .tertiarySystemBackground
@@ -84,6 +121,14 @@ struct CollectionView: View {
             self.error = true
             self.binders = []
             print("Error happened loading binders: " + error.localizedDescription)
+        }
+    }
+    
+    func returnAllCardsInDeck(id: Int32) async {
+        do {
+            try await GrpcClient.returnAllCardsInDeck(id: id)
+        } catch {
+            return
         }
     }
     

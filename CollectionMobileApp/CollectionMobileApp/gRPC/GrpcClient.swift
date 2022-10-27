@@ -63,6 +63,15 @@ class GrpcClientClass {
         return response
     }
     
+    func returnAllCardsInDeck(id: Int32) async throws {
+        guard channelReadyOrIdle() else {
+            throw GrpcError.channelNotReady
+        }
+        var request = CardCollection_Service_DeleteBinderRequest()
+        request.returnFromBinderID = id
+        let response = try await client.deleteBinder(request)
+    }
+    
     func queryCardInfoByName(name: String) async throws -> [CardCollection_CardInfo] {
         guard channelReadyOrIdle() else {
             throw GrpcError.channelNotReady
