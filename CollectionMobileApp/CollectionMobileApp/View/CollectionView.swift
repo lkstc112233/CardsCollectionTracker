@@ -36,6 +36,10 @@ struct CollectionView: View {
                             Spacer()
                             Text(String(binder.cardCount))
                                 .foregroundColor(.secondary)
+                            if binder.rentOutCount != 0 {
+                                Text("(-\(binder.rentOutCount))")
+                                    .foregroundColor(.secondary)
+                            }
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button() {
