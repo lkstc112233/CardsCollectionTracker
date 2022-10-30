@@ -49,6 +49,7 @@ struct BinderView: View {
                     }, preview: {
                         CardPreviewImageView(url: card.cardInfo.imageUri)
                     })
+                    .listRowBackground(Color(uiColor: getBackgroundColorForCard(card)))
                 }
                 .refreshable {
                     await loadCardsInBinder()
@@ -78,6 +79,13 @@ struct BinderView: View {
         .task{
             await loadCardsInBinder()
         }
+    }
+    
+    private func getBackgroundColorForCard(_ card: CardCollection_Card) -> UIColor {
+        if (card.binderID != id) {
+            return .tertiarySystemBackground
+        }
+        return .secondarySystemBackground
     }
     
     func loadCardsInBinder() async {
