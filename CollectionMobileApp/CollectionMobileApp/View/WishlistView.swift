@@ -20,6 +20,7 @@ struct WishlistView: View {
                     Text(String(cachedWishlist[wishId].count))
                         .foregroundColor(.secondary)
                 }
+                .listRowBackground(Color(uiColor: getBackgroundColorForWish(cachedWishlist[wishId].status)))
             }
             .searchable(text: $filterText, prompt: "Filter...")
             .disableAutocorrection(true)
@@ -51,6 +52,19 @@ struct WishlistView: View {
             }
         } catch {
             print("Error happened loading wishlist: " + error.localizedDescription)
+        }
+    }
+    
+    private func getBackgroundColorForWish(_ wishStatus: CardCollection_WishedCard.WishStatus) -> UIColor {
+        switch wishStatus {
+        case .wishNotExist:
+            return .systemRed
+        case .wishNotEnough:
+            return .systemOrange
+        case .wishEnough:
+            return .systemGreen
+        default:
+            return .secondarySystemBackground
         }
     }
     
