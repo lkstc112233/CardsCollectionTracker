@@ -33,7 +33,9 @@ Let's have a change log!
 
 ## Collection iOS App
 
-### Current version 0.7
+### Changelog 0.8
+
+* Added color indicator for deck, rent card, and wishlist.
 
 ## Collection plugin
 
