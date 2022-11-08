@@ -26,7 +26,13 @@ function addBinder(call, callback) {
     if (type === 0) {
         type = 1;
     }
-    db.addBinder(call.request.name, type).then(() => {
+    db.addBinder(call.request.name, type).then(queryResult => {
+        var id = queryResult[1][0].id;
+        if (type === 4) {
+            return Promise.all(call.request.ghost_card.map(wish_card => 
+                db.addCardToGhostDeck(id, wish_card.wished_card.card_info.name, wish_card.count)));
+        }
+    }).then(() => {
         callback(null, {});
     }).catch(err => {
         callback({code: 2, message: err}, null);
