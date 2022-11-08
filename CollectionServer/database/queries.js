@@ -71,6 +71,20 @@ const TABLE_DEFINITIONS = [
             ['binder_rent', 'binder_infos(id)'],
         ],
     },
+    {
+        'NAME': 'ghost_cards',
+        'COLUMNS': [
+            ['id', 'INT AUTO_INCREMENT'],
+            ['count', 'INT'],
+            ['card_oracle_id', 'VARCHAR(36)'],
+            ['ghost_binder_id', 'INT'],
+        ],
+        'PRIMARY_KEY': 'id',
+        'FOREIGN_KEY': [
+            ['card_oracle_id', 'card_oracle_infos(scryfall_id)'],
+            ['ghost_binder_id', 'binder_infos(id)'],
+        ],
+    },
 ]
 
 // No user input, it's safe to construct the query.
