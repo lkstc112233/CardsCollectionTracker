@@ -172,6 +172,7 @@ const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = 
 const CHANGE_BINDER_TYPE_QUERY = `UPDATE binder_infos SET binder_type = ? WHERE id = ?`;
 
 const DELETE_BINDERS_QUERY = `
+DELETE FROM ghost_cards WHERE ghost_binder_id = ?;
 UPDATE cards_collection SET binder_rent = NULL WHERE binder_rent = ?;
 UPDATE cards_collection SET binder_id = 1, binder_rent = NULL WHERE binder_id = ?;
 DELETE FROM binder_infos WHERE id = ?;
