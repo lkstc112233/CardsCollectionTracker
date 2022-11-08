@@ -155,7 +155,11 @@ function buildAlterTableQuery(existingColumns, existingKeys) {
     return buildAddColumnQuery(existingColumns) + buildAddForeignKeyQuery(existingKeys);
 }
 
-const INSERT_INTO_BINDERS_QUERY = `INSERT INTO binder_infos(binder_name, binder_type) VALUES(?, IFNULL(?, 1))`;
+const INSERT_INTO_BINDERS_QUERY = `
+INSERT INTO binder_infos(binder_name, binder_type) VALUES(?, IFNULL(?, 1));
+SELECT LAST_INSERT_ID() AS id;
+`;
+
 const GET_BINDERS_QUERY = `
     SELECT
         binder_infos.id,
