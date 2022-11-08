@@ -13,6 +13,8 @@ message Binder {
         BINDER_TYPE_COLLECTORS = 2;
         // Binder type for a deck box.
         BINDER_TYPE_DECK = 3;
+        // Ghost binder.
+        BINDER_TYPE_GHOST = 4;
     }
 
     string name = 1;

@@ -23,6 +23,7 @@ service CollectionService {
     rpc AddToWishlist (AddToWishlistRequest) returns (AddToWishlistResponse) {}
     rpc ListWishlist (ListWishlistRequest) returns (ListWishlistResponse) {}
     rpc CleanupFulfilledWishes (CleanupFulfilledWishesRequest) returns (CleanupFulfilledWishesResponse) {}
+    rpc SolidifyGhostDeck (SolidifyGhostDeckRequest) returns (SolidifyGhostDeckResponse) {}
 }
 
 message UpdateMetadataRequest {
@@ -39,6 +40,9 @@ message UpdateMetadataResponse {
 
 message AddBinderRequest {
     string name = 1;
+    card_collection.Binder.BinderType type = 2;
+    // Only used if type == BINDER_TYPE_GHOST.
+    repeated card_collection.WishedCard ghost_card = 3;
 }
 
 message AddBinderResponse {
@@ -186,3 +190,12 @@ message ListWishlistResponse {
 message CleanupFulfilledWishesRequest {}
 
 message CleanupFulfilledWishesResponse {}
+
+message SolidifyGhostDeckRequest {
+    // The ghost deck id.
+    int32 binder_id = 1;
+    // The ghost-card id. 
+    repeated int32 card_id = 2;
+}
+
+message SolidifyGhostDeckResponse {}
