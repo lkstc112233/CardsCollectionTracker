@@ -22,7 +22,11 @@ function updateMetadata(call, callback) {
 }
 
 function addBinder(call, callback) {
-    db.addBinder(call.request.name).then(() => {
+    var type = call.request.type;
+    if (type === 0) {
+        type = 1;
+    }
+    db.addBinder(call.request.name, type).then(() => {
         callback(null, {});
     }).catch(err => {
         callback({code: 2, message: err}, null);
