@@ -220,6 +220,15 @@ SET cards_collection.binder_rent = NULL
 WHERE cards_collection.id = temp.id
 `;
 
+const ADD_CARD_TO_GHOST_DECK_QUERY = `
+INSERT INTO ghost_cards(count, card_oracle_id, ghost_binder_id)
+SELECT ?, scryfall_id, ?
+FROM card_oracle_infos
+WHERE (card_oracle_name = ?
+    OR card_oracle_main_name = ?)
+    AND constructed = 1
+`;
+
 const ADD_CARD_TO_GENERIC_WISHLIST_QUERY = `
 UPDATE card_oracle_infos,
 (
@@ -449,6 +458,7 @@ module.exports = {
     RENT_CARD_TO_BINDER_QUERY,
     RETURN_CARD_TO_ORIGIN_BINDER_QUERY,
     RETURN_ALL_CARD_TO_ORIGIN_BINDER_QUERY,
+    ADD_CARD_TO_GHOST_DECK_QUERY,
     ADD_CARD_TO_GENERIC_WISHLIST_QUERY,
     LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
     CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
