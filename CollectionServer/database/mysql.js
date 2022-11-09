@@ -120,6 +120,12 @@ async function deleteBinder(id) {
     return makeQuery(queries.DELETE_BINDERS_QUERY, [id, id, id, id]);
 }
 
+async function getBinderType(binder_id) {
+    return makeQuery(
+        queries.GET_BINDER_TYPE_QUERY,
+        [binder_id]);
+}
+
 async function queryBinders() {
     return makeQuery(queries.GET_BINDERS_QUERY);
 }
@@ -216,6 +222,7 @@ module.exports = {
     renameBinder,
     changeBinderType,
     deleteBinder,
+    getBinderType,
     queryBinders,
     queryCardsInfoByName,
     listCardInBinder,
