@@ -172,6 +172,13 @@ const GET_BINDERS_QUERY = `
     ON binder_infos.id IN (cards_collection.binder_rent, cards_collection.binder_id)
     GROUP BY binder_infos.id
 `;
+
+const GET_BINDER_TYPE_QUERY = `
+SELECT binder_type AS type
+FROM binder_infos
+WHERE id = ?
+`;
+
 const RENAME_BINDER_QUERY = `UPDATE binder_infos SET binder_name = ? WHERE id = ?`;
 const CHANGE_BINDER_TYPE_QUERY = `UPDATE binder_infos SET binder_type = ? WHERE id = ?`;
 
@@ -522,6 +529,7 @@ module.exports = {
     QUERY_FOREIGN_KEY_COLUMNS,
     INSERT_INTO_BINDERS_QUERY,
     GET_BINDERS_QUERY,
+    GET_BINDER_TYPE_QUERY,
     RENAME_BINDER_QUERY,
     CHANGE_BINDER_TYPE_QUERY,
     DELETE_BINDERS_QUERY,
