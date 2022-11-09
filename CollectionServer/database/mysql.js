@@ -147,6 +147,10 @@ async function listCardInGhostDeck(binder_id) {
         rows => rows.flatMap(card => Array(card.count).fill({name: card.name})));
 }
 
+async function listAutoBuildForGhostDeck(binder_id) {
+    return makeQuery(queries.LIST_AUTO_BUILD_FOR_GHOST_DECK_QUERY, [binder_id]);
+}
+
 async function countCardsInBinder(binder_id) {
     return makeQuery(
         queries.buildCountCardsInBinderQuery(binder_id === 0),
@@ -225,6 +229,7 @@ module.exports = {
     queryCardsInfoByName,
     listCardInBinder,
     listCardInGhostDeck,
+    listAutoBuildForGhostDeck,
     countCardsInBinder,
     addCardToCollection,
     deleteCardInCollection,
