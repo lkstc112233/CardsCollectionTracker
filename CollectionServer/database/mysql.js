@@ -144,7 +144,7 @@ async function listCardInGhostDeck(binder_id) {
     return makeQuery(
         queries.LIST_CARDS_IN_GHOST_DECK_QUERY,
         [binder_id],
-        rows => rows.flatMap(card => Array(card.count).fill({name: card.name})));
+        rows => rows.flatMap(card => Array(card.count).fill({name: card.name, id: -1, binder_id: binder_id})));
 }
 
 async function listAutoBuildForGhostDeck(binder_id) {
