@@ -279,9 +279,10 @@ WHERE card_oracle_infos.scryfall_id = fulfilled.id
 
 const LIST_CARDS_IN_GHOST_DECK_QUERY = `
 SELECT
-    card_oracle_id,
+    card_oracle_infos.card_oracle_name AS name,
     SUM(count) AS count
 FROM ghost_cards
+JOIN card_oracle_infos ON ghost_cards.card_oracle_id = card_oracle_infos.scryfall_id
 WHERE ghost_binder_id = ?
 GROUP BY card_oracle_id
 `;
