@@ -121,9 +121,7 @@ async function deleteBinder(id) {
 }
 
 async function getBinderType(binder_id) {
-    return makeQuery(
-        queries.GET_BINDER_TYPE_QUERY,
-        [binder_id]);
+    return makeQuery(queries.GET_BINDER_TYPE_QUERY, [binder_id], res => res[0].type);
 }
 
 async function queryBinders() {

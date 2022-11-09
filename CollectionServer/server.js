@@ -158,7 +158,13 @@ async function listOrCountCardInBinder(binder_id, name_only) {
             return {cards_names: res.reduce((a, v) => ({...a, [v.name]: v.count}), {})};
         });
     }
-    return db.listCardInBinder(binder_id).then(res => {
+    return db.getBinderType(binder_id).then(type => {
+        if (type === 4) {
+            return db.listCardInGhostDeck(binder_id);
+        } else {
+            return db.listCardInBinder(binder_id);
+        }
+    }).then(res => {
         return {cards:
             res.map(card => {return {
                 id: card.id,
