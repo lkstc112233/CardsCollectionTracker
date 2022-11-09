@@ -12,7 +12,7 @@ const {
 
 let pool;
 
-async function makeQuery(query, parameters) {
+async function makeQuery(query, parameters, result_transformer) {
     if (!pool) {
         return Promise.reject('Called before connection is made.');
     }
@@ -22,7 +22,11 @@ async function makeQuery(query, parameters) {
             parameters,
             (err, rows) => {
                 if (err) return rej(err);
-                acc(rows);
+                if (result_transformer !== undefined && result_transformer instanceof Function) {
+                    acc(result_transformer(rows));
+                } else {
+                    acc(rows);
+                }
             },
         );
     })
