@@ -286,6 +286,65 @@ WHERE ghost_binder_id = ?
 GROUP BY card_oracle_id
 `;
 
+const LIST_AUTO_BUILD_FOR_GHOST_DECK_QUERY = `
+SELECT
+    id,
+    version,
+    binder_id,
+    card_id,
+    name,
+    image,
+    printed_name,
+    language,
+    set_name,
+    collectors_id
+FROM (
+    SELECT
+        id,
+        version,
+        binder_id,
+        card_id,
+        name,
+        image,
+        printed_name,
+        language,
+        set_name,
+        collectors_id,
+        count_limit,
+        (@rn:=if(@prev = oracle_id, @rn +1, 1)) as rownumb,
+        @prev:= oracle_id
+    FROM (
+        SELECT
+            cards_collection.id AS id,
+            cards_collection.version AS version,
+            IFNULL(cards_collection.binder_rent, cards_collection.binder_id) AS binder_id,
+            card_infos.scryfall_id AS card_id,
+            card_infos.card_name AS name,
+            card_infos.scryfall_image_uri AS image,
+            card_infos.card_printed_name AS printed_name,
+            card_infos.lang AS language,
+            set_infos.set_name AS set_name,
+            card_infos.collectors_id AS collectors_id,
+            card_infos.oracle_id AS oracle_id,
+            ghost.count AS count_limit
+        FROM cards_collection
+        JOIN card_infos ON cards_collection.card_id = card_infos.scryfall_id
+        JOIN set_infos ON card_infos.set_id = set_infos.scryfall_id
+        JOIN (
+            SELECT
+                card_oracle_id,
+                SUM(count) AS count
+            FROM ghost_cards
+            WHERE ghost_binder_id = ?
+            GROUP BY card_oracle_id
+        ) AS ghost ON ghost.card_oracle_id = card_infos.oracle_id
+        ORDER BY oracle_id, binder_id ASC
+    ) AS sorted_all_cards
+    JOIN (select @prev:=NULL, @rn :=0) AS vars
+) AS grouped_list
+WHERE rownumb <= count_limit
+`;
+
 function buildListCardsInBinderQuery(all_binders) {
     return `
     SELECT
@@ -477,6 +536,7 @@ module.exports = {
     CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
     LIST_CARDS_IN_GHOST_DECK_QUERY,
+    LIST_AUTO_BUILD_FOR_GHOST_DECK_QUERY,
     buildAlterTableQuery,
     buildQueryCardInfoByName,
     buildListCardsInBinderQuery,
