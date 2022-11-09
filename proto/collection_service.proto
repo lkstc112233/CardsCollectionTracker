@@ -23,6 +23,7 @@ service CollectionService {
     rpc AddToWishlist (AddToWishlistRequest) returns (AddToWishlistResponse) {}
     rpc ListWishlist (ListWishlistRequest) returns (ListWishlistResponse) {}
     rpc CleanupFulfilledWishes (CleanupFulfilledWishesRequest) returns (CleanupFulfilledWishesResponse) {}
+    rpc ShowSolidifyGhostDeckPlan (ShowSolidifyGhostDeckPlanRequest) returns (ShowSolidifyGhostDeckPlanResponse) {}
     rpc SolidifyGhostDeck (SolidifyGhostDeckRequest) returns (SolidifyGhostDeckResponse) {}
 }
 
@@ -190,6 +191,16 @@ message ListWishlistResponse {
 message CleanupFulfilledWishesRequest {}
 
 message CleanupFulfilledWishesResponse {}
+
+message ShowSolidifyGhostDeckPlanRequest {
+    // The ghost deck id.
+    int32 binder_id = 1;
+}
+
+message ShowSolidifyGhostDeckPlanResponse {
+    // The plan for ghost deck. Only shows cards that already exist in collection.
+    repeated card_collection.Card cards = 1;
+}
 
 message SolidifyGhostDeckRequest {
     // The ghost deck id.
