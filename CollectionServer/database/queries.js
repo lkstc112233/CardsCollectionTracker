@@ -277,6 +277,15 @@ SET card_oracle_infos.wish_count = 0
 WHERE card_oracle_infos.scryfall_id = fulfilled.id
 `;
 
+const LIST_CARDS_IN_GHOST_DECK_QUERY = `
+SELECT
+    card_oracle_id,
+    SUM(count) AS count
+FROM ghost_cards
+WHERE ghost_binder_id = ?
+GROUP BY card_oracle_id
+`;
+
 function buildListCardsInBinderQuery(all_binders) {
     return `
     SELECT
@@ -467,6 +476,7 @@ module.exports = {
     LIST_CARDS_IN_GENERIC_WISHLIST_QUERY,
     CLEANUP_CARDS_IN_GENERIC_WISHLIST_QUERY,
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
+    LIST_CARDS_IN_GHOST_DECK_QUERY,
     buildAlterTableQuery,
     buildQueryCardInfoByName,
     buildListCardsInBinderQuery,
