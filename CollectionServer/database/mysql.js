@@ -151,6 +151,10 @@ async function listAutoBuildForGhostDeck(binder_id) {
     return makeQuery(queries.LIST_AUTO_BUILD_FOR_GHOST_DECK_QUERY, [binder_id]);
 }
 
+async function rentAllCardsToDeck(card_ids, binder_id) {
+    return makeQuery(queries.RENT_ALL_CARDS_TO_DECK_QUERY, [binder_id, binder_id, card_ids]);
+}
+
 async function countCardsInBinder(binder_id) {
     return makeQuery(
         queries.buildCountCardsInBinderQuery(binder_id === 0),
@@ -234,6 +238,7 @@ module.exports = {
     listCardInBinder,
     listCardInGhostDeck,
     listAutoBuildForGhostDeck,
+    rentAllCardsToDeck,
     countCardsInBinder,
     addCardToCollection,
     deleteCardInCollection,
