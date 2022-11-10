@@ -355,6 +355,11 @@ FROM (
 WHERE rownumb <= count_limit
 `;
 
+const RENT_ALL_CARDS_TO_DECK_QUERY = `
+UPDATE cards_collection SET binder_rent = ?
+WHERE binder_id <> ? AND id IN (?)
+`;
+
 function buildListCardsInBinderQuery(all_binders) {
     return `
     SELECT
@@ -549,6 +554,7 @@ module.exports = {
     COUNT_CARDS_IN_COLLECTION_BY_NAME_QUERY,
     LIST_CARDS_IN_GHOST_DECK_QUERY,
     LIST_AUTO_BUILD_FOR_GHOST_DECK_QUERY,
+    RENT_ALL_CARDS_TO_DECK_QUERY,
     buildAlterTableQuery,
     buildQueryCardInfoByName,
     buildListCardsInBinderQuery,
