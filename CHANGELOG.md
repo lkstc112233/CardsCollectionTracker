@@ -11,6 +11,15 @@ Let's have a change log!
 
 ## Collection Server
 
+### Changelog 0.9
+* Added **Ghost Deck** as a binder type.
+* Added Create ghost deck function.
+    * Ghost deck does not hold real card, it's only a plan.
+* Added calculate ghost deck cards function.
+    * It calculates how to create the deck with cards in collection (binder & deck)
+* Added solidify ghost deck function.
+    * With the result above, it builds the deck with cards in the result.
+
 ### Changelog 0.8
 
 * Added **Deck** as a binder type.
