@@ -288,6 +288,17 @@ function showSolidifyGhostDeckPlan(call, callback) {
     });
 }
 
+function solidifyGhostDeck(call, callback) {
+    db.rentAllCardsToDeck(call.request.card_id, call.request.binder_id)
+    .then(() => db.deleteAllCardsInGhostDeck(call.request.binder_id))
+    .then(() => db.changeBinderType(call.request.binder_id, 3))
+    .then(() => {
+        callback(null, {});
+    }).catch(err => {
+        callback({code: 2, message: err}, null);
+    });
+}
+
 grpc.bindRpcHandler('updateMetadata', updateMetadata);
 grpc.bindRpcHandler('addBinder', addBinder);
 grpc.bindRpcHandler('listBinders', listBinders);
@@ -303,6 +314,7 @@ grpc.bindRpcHandler('addToWishlist', addToWishlist);
 grpc.bindRpcHandler('listWishlist', listWishlist);
 grpc.bindRpcHandler('cleanupFulfilledWishes', cleanupFulfilledWishes);
 grpc.bindRpcHandler('showSolidifyGhostDeckPlan', showSolidifyGhostDeckPlan);
+grpc.bindRpcHandler('solidifyGhostDeck', solidifyGhostDeck);
 grpc.startServer('0.0.0.0:33333');
 
 const gracefulShutdown = () => {
