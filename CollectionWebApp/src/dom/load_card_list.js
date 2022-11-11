@@ -1,4 +1,4 @@
-const { createCardDom, createWishCardDom, createCardInfoDom, createWishCardInfoDom } = require('./create_card');
+const { createCardDom, createWishCardDom, createCardInfoDom, createWishCardInfoDom, createGhostCardDom } = require('./create_card');
 const grpc = require('../grpc');
 const DragSelect = require('dragselect');
 const { getSelectedBinderName, increaseSelectedBinderCountBy } = require('./selected_binder');
@@ -50,38 +50,81 @@ ds.subscribe('callback', (callbackObj) => {
     }
 });
 
+async function maybeGetGhostResponse(binder, type) {
+    if (type === 4) {
+        return grpc.showSolidifyGhostDeckPlan(binder);
+    } else {
+        return Promise.resolve();
+    }
+}
+
+function cardSorter(a, b) {
+    if (a.getCardInfo().getName() < b.getCardInfo().getName()) {
+        return -1;
+    }
+    if (a.getCardInfo().getName() > b.getCardInfo().getName()) {
+        return 1;
+    }
+    return 0;
+}
+
+// Assume input is sorted.
+function mergeCardLists(dest, from) {
+    var fromIndex = 0;
+    for (var destIndex = 0; destIndex < dest.length; ++destIndex) {
+        if (fromIndex >= from.length) {
+            break;
+        }
+        if (dest[destIndex].getCardInfo().getName() === from[fromIndex].getCardInfo().getName()) {
+            dest[destIndex] = from[fromIndex];
+            fromIndex += 1;
+        }
+    }
+    return dest;
+}
+
 async function loadBinderDom(binder, type) {
     listResponse = await grpc.listAllBinderCards(binder);
-    cardsList = listResponse.getCardsList()
-        .map(card => createCardDom(card, binder))
-        .map(cardDom => {
-            var dragCardElem = document.createElement('div');
-            dragCardElem.className = 'drag-card';
-            dragCardElem.appendChild(cardDom);
-            cardDom.oncontextmenu = function() {
-                elemsToDelete = ds.getSelection();
-                if (!elemsToDelete.find(elem => elem === dragCardElem)) {
-                    elemsToDelete.push(dragCardElem);
-                }
-                if (!confirm(`Are you sure to delete ${elemsToDelete.length} card${elemsToDelete.length>1?'s':''} from your collection?\nThis operation cannot be reverted!`)) {
-                    return false;
-                }
-                Promise.all(elemsToDelete
-                    .filter(element => element.childElementCount > 0)
-                    .map(element => element.firstChild)
-                    .filter(element => element.className === 'card-box')
-                    .map(element => {
-                        id = element.id.match(cardIdFromElemId)[1];
-                        return grpc.deleteCardInCollection(id).then(() => element.parentElement);
-                    })).then((arr) => {
-                        arr.forEach(element => {
-                            element.remove();
+    ghostResponse = await maybeGetGhostResponse(binder, type);
+    cardsList = listResponse.getCardsList();
+    if (type === 4) {
+        cardsList = mergeCardLists(cardsList.sort(cardSorter), 
+            ghostResponse.getCardsList().sort(cardSorter));
+    }
+    if (type === 4) {
+        cardsList = cardsList.map(card => createGhostCardDom(card, binder));
+    } else {
+        cardsList = cardsList
+            .map(card => createCardDom(card, binder))
+            .map(cardDom => {
+                var dragCardElem = document.createElement('div');
+                dragCardElem.className = 'drag-card';
+                dragCardElem.appendChild(cardDom);
+                cardDom.oncontextmenu = function() {
+                    elemsToDelete = ds.getSelection();
+                    if (!elemsToDelete.find(elem => elem === dragCardElem)) {
+                        elemsToDelete.push(dragCardElem);
+                    }
+                    if (!confirm(`Are you sure to delete ${elemsToDelete.length} card${elemsToDelete.length>1?'s':''} from your collection?\nThis operation cannot be reverted!`)) {
+                        return false;
+                    }
+                    Promise.all(elemsToDelete
+                        .filter(element => element.childElementCount > 0)
+                        .map(element => element.firstChild)
+                        .filter(element => element.className === 'card-box')
+                        .map(element => {
+                            id = element.id.match(cardIdFromElemId)[1];
+                            return grpc.deleteCardInCollection(id).then(() => element.parentElement);
+                        })).then((arr) => {
+                            arr.forEach(element => {
+                                element.remove();
+                            });
                         });
-                    });
-                return false;
-            };
-            return dragCardElem;
-        });
+                    return false;
+                };
+                return dragCardElem;
+            });
+    }
     document.getElementById('cards-collection').replaceChildren(...cardsList);
     ds.clearSelection();
     if (type !== 4) {
