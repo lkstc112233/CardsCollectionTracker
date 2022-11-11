@@ -48,7 +48,7 @@ ds.subscribe('callback', (callbackObj) => {
     }
 });
 
-async function loadBinderDom(binder = 0) {
+async function loadBinderDom(binder, type) {
     listResponse = await grpc.listAllBinderCards(binder);
     cardsList = listResponse.getCardsList()
         .map(card => createCardDom(card, binder))
@@ -82,7 +82,9 @@ async function loadBinderDom(binder = 0) {
         });
     document.getElementById('cards-collection').replaceChildren(...cardsList);
     ds.clearSelection();
-    ds.setSelectables(cardsList);
+    if (type !== 4) {
+        ds.setSelectables(cardsList);
+    }
 }
 
 async function loadWishlistDom() {

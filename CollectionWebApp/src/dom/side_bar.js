@@ -30,6 +30,19 @@ async function refreshMetadata() {
     refreshingMetadata = false;
 }
 
+function getBinderSymbol(type) {
+    switch(type) {
+        case 1:
+            return '&gt;';
+        case 3:
+            return '&lt;';
+        case 4:
+            return '👻';
+        default:
+            return '🤔';
+    }
+}
+
 async function loadBinderListDoms() {
     listBindersResponse = await grpc.listBinders();
     return listBindersResponse.getBindersList().map(binder => {
@@ -44,7 +57,7 @@ async function loadBinderListDoms() {
             }
         }
         binderButton.className = `menu-button${additionalClassName}`;
-        binderButton.innerHTML = `${binder.getType() === 1? '&gt;' : '&lt;'}<span class="menu-text">${binder.getName()}
+        binderButton.innerHTML = `${getBinderSymbol(binder.getType())}<span class="menu-text">${binder.getName()}
                 (${binder.getCardCount()}${binder.getRentOutCount() === 0?'': ' - ' + binder.getRentOutCount()})</span>`;
         binderButton.onclick = function() {
             if (selected_binder.getSelectedBinder() === binder.getId() &&
@@ -69,7 +82,7 @@ async function loadBinderListDoms() {
             bottom_bar.collapseBottomBar();
             clearAllPlaceholders();
             loadBinderSidebar();
-            loadBinderDom(binder.getId());
+            loadBinderDom(binder.getId(), binder.getType());
         };
         binderButton.oncontextmenu = function() {
             if (binder.getId() === selected_binder.getSelectedBinder()) {
@@ -81,19 +94,24 @@ async function loadBinderListDoms() {
                 if (newName === null) {
                     return false;
                 }
-                var hint = 'Change binder to deck?';
-                var newType = 3;
-                if (binder.getType() === 3) {
-                    hint = 'Change deck to binder?';
-                    newType = 1;
+                var shouldChange = false;
+                if (binder.getType() !== 4) {
+                    var hint = 'Change binder to deck?';
+                    var newType = 3;
+                    if (binder.getType() === 3) {
+                        hint = 'Change deck to binder?';
+                        newType = 1;
+                    }
+                    shouldChange = confirm(hint);
                 }
-                let shouldChange = confirm(hint);
                 grpc.updateBinder(binder.getId(), newName, shouldChange? newType: 0)
                     .then(() => loadBinderSidebar());
                 return false;
             }
-            bottom_bar.popBottomBar(binder.getId(), binder.getName(), binder.getCardCount(),
-                binder.getType() === 3? true: false);
+            if (binder.getType() !== 4) {
+                bottom_bar.popBottomBar(binder.getId(), binder.getName(), binder.getCardCount(),
+                    binder.getType() === 3? true: false);
+            }
             loadBinderSidebar();
             return false;
         }
