@@ -12,6 +12,7 @@ Let's have a change log!
 ## Collection Server
 
 ### Changelog 0.9
+
 * Added **Ghost Deck** as a binder type.
 * Added Create ghost deck function.
     * Ghost deck does not hold real card, it's only a plan.
@@ -32,6 +33,12 @@ Let's have a change log!
 * Other bug fixes.
 
 ## Collection WebApp
+
+### Changelog 0.9
+
+* Added **Ghost Deck** support.
+* Shows the ghost deck solidify plan in ghost deck.
+* Added solidify ghost deck function. Just click the ghost deck again.
 
 ### Changelog 0.8
 
