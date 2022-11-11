@@ -75,11 +75,22 @@ async function updatePlugin() {
                     };
                 }));
             };
+            var createGhostDeckButton = document.createElement('button');
+            createGhostDeckButton.innerHTML = 'Create a ghost deck';
+            createGhostDeckButton.onclick = async function() {
+                await grpc.createGhostDeck(deck.cards.map(card => {
+                    return {
+                        'name': card.name,
+                        'count': card.count,
+                    };
+                }), deck.name);
+            };
             var holderDom = document.createElement('div');
             holderDom.appendChild(titleDom);
             holderDom.appendChild(deckDom);
             holderDom.appendChild(showdiffButton);
             holderDom.appendChild(addToWishlistButton);
+            holderDom.appendChild(createGhostDeckButton);
             return holderDom;
         }
     ));
