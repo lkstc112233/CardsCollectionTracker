@@ -65,6 +65,64 @@ function getBinderName(binderId) {
     return binderId;
 }
 
+function createGhostCardDom(card, binder) {
+    var imageElem = document.createElement('img');
+    imageElem.loading = 'lazy';
+    imageElem.id = `card-${card.getId()}-image`;
+    imageElem.className = 'card-img';
+    var nameElem = document.createElement('div');
+    nameElem.innerText = card.getCardInfo().getPrintedName();
+    if (nameElem.innerText === '') {
+        nameElem.innerText = card.getCardInfo().getName();
+    }
+    var versionName = card.getVersion();
+    if (versionName !== '' && versionName !== 'nonfoil') {
+        nameElem.innerText += ` (${versionName})`;
+    }
+    nameElem.id = `card-${card.getId()}-name`;
+    nameElem.className = 'card-name';
+    var setElem = document.createElement('div');
+    setElem.innerText = card.getCardInfo().getSetName();
+    setElem.id = `card-${card.getId()}-set-name`;
+    setElem.className = 'set-name';
+    var collectorsId = card.getCardInfo().getCollectorsId();
+    if (collectorsId !== '') {
+        setElem.innerText += ` (${collectorsId})`;
+    }
+    var fromElem = document.createElement('div');
+    if (card.getBinderId() !== binder) {
+        fromElem.innerHTML = `From binder <b>"${getBinderName(card.getBinderId())}"</b>`;
+    } else {
+        fromElem.innerText = `Missing from collection`;
+    }
+    fromElem.id = `card-${card.getId()}-binder-name`;
+    fromElem.className = 'binder-name';
+    var cardInfoElem = document.createElement('div');
+    cardInfoElem.className = `card-box`;
+    cardInfoElem.id = `card-${card.getId()}-div`;
+    cardInfoElem.appendChild(nameElem);
+    cardInfoElem.appendChild(setElem);
+    cardInfoElem.appendChild(fromElem);
+    cardInfoElem.appendChild(imageElem);
+    cardInfoElem.addEventListener('mousemove', (e) => {
+        if (e.buttons & 1) {
+            var boundingRect = e.currentTarget.getBoundingClientRect();
+            imageElem.style.left = `${e.clientX - boundingRect.left}px`;
+            imageElem.style.top = `${e.clientY - boundingRect.top}px`;
+        } else {
+            imageElem.style.left = `${e.pageX}px`;
+            imageElem.style.top = `${e.pageY}px`;
+        }
+        imageElem.src = card.getCardInfo().getImageUri();
+        imageElem.style.opacity = 1;
+    });
+    cardInfoElem.addEventListener('mouseleave', (e) => {
+        imageElem.style.opacity = 0;
+        imageElem.style.zIndex = -1;
+    });
+    return cardInfoElem;
+}
+
 function createWishCardDom(wishCard) {
     var nameElem = document.createElement('div');
     nameElem.innerText = wishCard.getWishedCard().getCardInfo().getName();
@@ -223,6 +281,7 @@ function createWishCardInfoDom(name) {
 
 module.exports = {
     createCardDom,
+    createGhostCardDom,
     createWishCardDom,
     createCardInfoDom,
     createWishCardInfoDom,
