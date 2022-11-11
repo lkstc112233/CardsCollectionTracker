@@ -56,7 +56,18 @@ async function addToWishlist(cardList) {
     return client.addToWishlist(request);
 }
 
+async function createGhostDeck(cardList, name) {
+    await ensureClientInitialized();
+    var request = new collection_service_proto.AddBinderRequest();
+    request.setName(name);
+    request.setType(4);
+    cardList.map(card => buildWishcard(card.name, card.count))
+        .forEach(wish => request.addGhostCard(wish));
+    return client.addBinder(request);
+}
+
 module.exports = {
     checkCardCountInCollection,
     addToWishlist,
+    createGhostDeck,
 };
