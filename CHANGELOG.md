@@ -55,4 +55,6 @@ Let's have a change log!
 
 ## Collection plugin
 
-### Current version 0.7
+### Changelog 0.9
+
+* Added a button to create ghost deck.
