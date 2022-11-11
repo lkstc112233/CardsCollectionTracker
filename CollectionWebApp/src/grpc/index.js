@@ -114,6 +114,19 @@ async function cleanupFulfilledWishes() {
     return client.cleanupFulfilledWishes(request);
 }
 
+async function showSolidifyGhostDeckPlan(binder_id) {
+    var request = new collection_service_proto.ShowSolidifyGhostDeckPlanRequest();
+    request.setBinderId(binder_id);
+    return client.showSolidifyGhostDeckPlan(request);
+}
+
+async function solidifyGhostDeck(binder_id, card_ids) {
+    var request = new collection_service_proto.SolidifyGhostDeckRequest();
+    request.setBinderId(binder_id);
+    request.setCardIdList(card_ids);
+    return client.solidifyGhostDeck(request);
+}
+
 module.exports = {
     addCardToCollection,
     listAllBinderCards,
@@ -129,4 +142,6 @@ module.exports = {
     addToWishlist,
     listWishlist,
     cleanupFulfilledWishes,
+    showSolidifyGhostDeckPlan,
+    solidifyGhostDeck,
 };
