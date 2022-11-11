@@ -95,7 +95,8 @@ function createButtonRowDom(card, version) {
         await grpc.addCardToCollection(card.getId(), version, getSelectedBinder());
         var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
         if (sidebarButton.length === 1) {
-            sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(1)})</span>`;
+            sidebarButton[0].innerHTML = `&gt;<span class="menu-text">
+            <span id="binder-${getSelectedBinder()}-name-sidebar">${getSelectedBinderName()}</span> (${increaseSelectedBinderCountBy(1)})</span>`;
         }
     }
     buttonElem.addEventListener('keydown', (e) => {

@@ -37,11 +37,13 @@ ds.subscribe('callback', (callbackObj) => {
                     arr.forEach(element => element.remove());
                     var sidebarButton = document.getElementsByClassName('menu-button selected-menu-item');
                     if (sidebarButton.length === 1) {
-                        sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${getSelectedBinderName()} (${increaseSelectedBinderCountBy(-size)})</span>`;
+                        sidebarButton[0].innerHTML = `&gt;<span class="menu-text">
+                        <span id="binder-${getSelectedBinder()}-name-sidebar">${getSelectedBinderName()}</span> (${increaseSelectedBinderCountBy(-size)})</span>`;
                     }
                     var sidebarButton = document.getElementsByClassName('menu-button bottomed-menu-item');
                     if (sidebarButton.length === 1) {
-                        sidebarButton[0].innerHTML = `&gt;<span class="menu-text">${bottomBar.getBottomBinderName()} (${bottomBar.increaseBottomBinderCountBy(size)})</span>`;
+                        sidebarButton[0].innerHTML = `&gt;<span class="menu-text">
+                        <span id="binder-${bottomBar.getCurrentBottomBinder()}-name-sidebar">${bottomBar.getBottomBinderName()}</span> (${bottomBar.increaseBottomBinderCountBy(size)})</span>`;
                     }
                 }
             });

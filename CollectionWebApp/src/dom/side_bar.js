@@ -57,7 +57,8 @@ async function loadBinderListDoms() {
             }
         }
         binderButton.className = `menu-button${additionalClassName}`;
-        binderButton.innerHTML = `${getBinderSymbol(binder.getType())}<span class="menu-text">${binder.getName()}
+        binderButton.innerHTML = `${getBinderSymbol(binder.getType())}<span class="menu-text">
+                <span id="binder-${binder.getId()}-name-sidebar">${binder.getName()}</span>
                 (${binder.getCardCount()}${binder.getRentOutCount() === 0?'': ' - ' + binder.getRentOutCount()})</span>`;
         binderButton.onclick = function() {
             if (selected_binder.getSelectedBinder() === binder.getId() &&
