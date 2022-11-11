@@ -57,6 +57,14 @@ function createCardDom(card, binder = 0) {
     return cardInfoElem;
 }
 
+function getBinderName(binderId) {
+    var name = document.getElementById(`binder-${binderId}-name-sidebar`).innerText;
+    if (name !== undefined) {
+        return name;
+    }
+    return binderId;
+}
+
 function createWishCardDom(wishCard) {
     var nameElem = document.createElement('div');
     nameElem.innerText = wishCard.getWishedCard().getCardInfo().getName();
