@@ -1,6 +1,6 @@
 {
     "name": "collection_webapp",
-    "version": "0.7.0",
+    "version": "0.9.0",
     "private": true,
     "dependencies": {
         "google-protobuf": "^3.20.0",
