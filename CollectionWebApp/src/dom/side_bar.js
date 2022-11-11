@@ -43,6 +43,15 @@ function getBinderSymbol(type) {
     }
 }
 
+function getAllCardsId() {
+    var cardsDom = Array.from(document.getElementsByClassName('card-box'));
+    const idRegex = /card-(\d+)-div/;
+    return cardsDom
+        .map(dom => dom.id.match(idRegex))
+        .filter(match => match !== null)
+        .map(match => match[1]);
+}
+
 async function loadBinderListDoms() {
     listBindersResponse = await grpc.listBinders();
     return listBindersResponse.getBindersList().map(binder => {
@@ -65,6 +74,19 @@ async function loadBinderListDoms() {
                 binder.getType() === 3) {
                 if (confirm('Return all cards in deck back to binder?')) {
                     grpc.returnCardsInBinder(binder.getId()).then(() => {
+                        bottom_bar.collapseBottomBar();
+                        clearAllPlaceholders();
+                        loadBinderSidebar();
+                        loadBinderDom(binder.getId());
+                    });
+                }
+                return;
+            }
+            if (selected_binder.getSelectedBinder() === binder.getId() &&
+                binder.getType() === 4) {
+                cardIds = getAllCardsId();
+                if (confirm(`Build this deck with ${cardIds.length} cards?`)) {
+                    grpc.solidifyGhostDeck(binder.getId(), cardIds).then(() => {
                         bottom_bar.collapseBottomBar();
                         clearAllPlaceholders();
                         loadBinderSidebar();
